@@ -1,0 +1,61 @@
+package com.aurionpro.payrollsystem.entity.organization;
+
+import java.sql.Timestamp;
+
+import org.hibernate.validator.constraints.URL;
+
+import com.aurionpro.payrollsystem.entity.documents.DocumentType;
+import com.aurionpro.payrollsystem.entity.documents.FileFormat;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+@Data
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "organization_request_documents")
+public class OrganizationRequestDocuments {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "request_document_id")
+	private Long requestDocumentId;
+	
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinColumn(name = "request_id")
+	private OrganizationRequest requestId;
+	
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinColumn(name = "document_type_id")
+	private DocumentType documentTypeId;
+	
+	@Column(name = "cloudinary_url", nullable = false)
+	@URL
+	private String cloudinary_url;
+	
+	@Column(name = "document_size")
+	private Integer documentSize;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "file_format")
+	private FileFormat fileFormat;
+	
+	@Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private Timestamp createdAt;
+
+	@Column(name = "updated_at", columnDefinition = "TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	private Timestamp updatedAt;
+}
