@@ -12,10 +12,11 @@ import lombok.RequiredArgsConstructor;
 public class OrganizationApplicationRequestDto {
 	@NotBlank
 	private String organizationName;
+	
 	@Pattern(regexp = "^[UL][0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$", message = "Invalid CIN Format")
 	private String cinNumber;
 	
-	@Pattern(regexp = "^[a-zA-Z0-9._%-]+@[a-zA-Z]+\\.[a-z,A-Z]{2, }$", message = "Invalid Email Format")
+	@Pattern(regexp = "^[a-zA-Z0-9._%-]+@[a-zA-Z]+\\.[a-z,A-Z]{2,}$", message = "Invalid Email Format")
 	private String email;
 	
 	@Pattern(regexp = "^[6-9]{1}[0-9]{9}$", message = "Invalid Phone Number Format")

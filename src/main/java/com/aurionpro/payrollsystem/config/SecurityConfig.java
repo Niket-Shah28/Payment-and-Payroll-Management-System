@@ -1,8 +1,12 @@
 package com.aurionpro.payrollsystem.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,9 +22,6 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-
-import static org.springframework.security.config.Customizer.withDefaults;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 public class SecurityConfig {
@@ -61,14 +62,20 @@ public class SecurityConfig {
 	    .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
 	    .authorizeHttpRequests(request -> request
 	        // GENERAL
-	        .requestMatchers("**/login", "/swagger-ui/**",
+	        .requestMatchers("/auth/login", "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
                     "/swagger-resources",
                     "/webjars/**").permitAll()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/requests").permitAll()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/requests/documents").permitAll()
+	        
+	        .requestMatchers(HttpMethod.GET, "/organization/requests/pending").authenticated()
 
 	        // LOGOUT
-	        .requestMatchers("**/logout").authenticated()
+	        .requestMatchers("/logout").authenticated()
 
 	        .anyRequest().authenticated()
 	    )

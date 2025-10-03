@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -27,22 +28,36 @@ public class JwtTokenProvider {
 	@Value("${app-jwt-expiration-milliseconds}")
 	private Long jwtExpirationTime;
 	
+	@Autowired
+	private CustomUserDetailsService customUserService;
+	
 	public String generateToken(Authentication authentication) {
 		String username = authentication.getName();
 		Date currentDate = new Date();
 		
 		Date expirationTime = new Date(currentDate.getTime() + jwtExpirationTime);
 		
+		Long userId = customUserService.getUserId(username);
+		
 		String token = Jwts.builder().claims()
 					   .subject(username).issuedAt(new Date(System.currentTimeMillis()))
 					   .expiration(expirationTime).and()
-					   .claim("role", authentication.getAuthorities()).signWith(key()).compact();
+					   .claim("role", authentication.getAuthorities()).claim("userId", userId)
+					   .signWith(key()).compact();
 		
 		return token;
 	}
 	
 	private SecretKey key() {
 		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+	}
+	
+	public Claims getAllClaims(String token) {
+	    return Jwts.parser()
+	            .verifyWith(key()) 
+	            .build()
+	            .parseSignedClaims(token)
+	            .getPayload();
 	}
 	
 	public String getUsername(String token) {

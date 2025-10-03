@@ -29,7 +29,7 @@ public class User {
 	@Column(name = "reference_id")
 	private String referenceId;
 	
-	@Column(name = "password", columnDefinition = "CHAR(31)")
+	@Column(name = "password")
 	private String password;
 
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

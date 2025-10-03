@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,12 +35,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 			String username = jwtTokenProvider.getUsername(token);
 			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+			
+			Claims claims = jwtTokenProvider.getAllClaims(token);
+			Long userId = claims.get("userId", Long.class);
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 																		userDetails, null,
 																		userDetails.getAuthorities()
 																	  );
 			
 			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			authenticationToken.setDetails(userId);
 			
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 			

@@ -34,10 +34,10 @@ public class OrganizationRequest {
 	@Column(name = "cin_number", nullable = false)
 	private String cinNumber;
 	
-	@Column(name = "email", unique = true, nullable = false)
+	@Column(name = "email", nullable = false)
 	private String email;
 	
-	@Column(name = "phone_number", unique = true, nullable = false)
+	@Column(name = "phone_number", nullable = false)
 	private String phoneNumber;
 	
 	@Column(name = "address", nullable = false)
@@ -46,13 +46,13 @@ public class OrganizationRequest {
 	@Column(name = "nic_code", nullable = false)
 	private String nicCode;
 	
-	@Column(name = "gstin", nullable = false, unique = true)
+	@Column(name = "gstin", nullable = false)
 	private String gstin;
 	
-	@Column(name = "pan", nullable = false, unique = true)
+	@Column(name = "pan", nullable = false)
 	private String pan;
 	
-	@Column(name = "tan", nullable = false, unique = true)
+	@Column(name = "tan", nullable = false)
 	private String tan;
 	
 	@Enumerated(EnumType.STRING)

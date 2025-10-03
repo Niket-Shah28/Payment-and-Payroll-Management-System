@@ -32,19 +32,28 @@ public class CustomUserDetailsService implements UserDetailsService{
 		SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getRoleName());
 		
 		authorities.add(grantedAuthority);
+
+		return new org.springframework.security.core.userdetails.User(referenceId, 
+				user.getPassword(), authorities);
+	}
+	
+	public Long getUserId(String referenceId) {
+		User user = userRepository.findById(referenceId)
+                .orElseThrow(()-> new BadCredentialsException("Username Not found"));
 		
 		Long userId;
-
+		
 		if (user.getEmployee() != null) {
 		    userId = user.getEmployee().getEmployeeId();
 		} else if (user.getOrganization() != null) {
 		    userId = user.getOrganization().getOrganizationId();
-		} else {
+		} else if(user.getAdmin() != null) {
 		    userId = user.getAdmin().getAdminId();
 		}
-		
-		return new org.springframework.security.core.userdetails.User(userId.toString(), 
-				user.getPassword(), authorities);
+		else {
+			userId = 1L;
+		}
+		return userId;
 	}
 	
 }

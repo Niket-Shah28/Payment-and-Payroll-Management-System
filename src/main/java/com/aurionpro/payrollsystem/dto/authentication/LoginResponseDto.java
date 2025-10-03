@@ -9,5 +9,5 @@ import lombok.RequiredArgsConstructor;
 @Data
 public class LoginResponseDto {
 	private String accessToken;
-	private String tokenType;
+	private String tokenType="Bearer";
 }

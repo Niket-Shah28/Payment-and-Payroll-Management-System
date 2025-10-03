@@ -38,4 +38,12 @@ public class GlobalExceptionHandler {
 	            .status(HttpStatus.UNAUTHORIZED)
 	            .body(Map.of("error", exception.getMessage()));
 	}
+	
+	@ExceptionHandler
+	public ResponseEntity<Map<String, String>> handleOrganizationApplicationRequestException(OrganizationApplicationRequestException exception) {
+	    logger.error(exception.getMessage());
+	    return ResponseEntity
+	            .status(exception.getStatus())
+	            .body(Map.of("error", exception.getMessage()));
+	}
 }
