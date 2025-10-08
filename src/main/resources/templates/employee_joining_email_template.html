@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to the Payroll Portal</title>
+  <style>
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background-color: #f7f8fa;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    .header h1 {
+      color: #007bff;
+      margin: 0;
+    }
+    .content {
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+    .highlight {
+      font-weight: 600;
+      color: #007bff;
+    }
+    .btn {
+      display: inline-block;
+      background: #007bff;
+      color: #fff !important;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-weight: 500;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>Welcome to Our Payroll Portal!</h1>
+    </div>
+
+    <div class="content">
+      <p>Dear <span class="highlight">{{name}}</span>,</p>
+
+      <p>We’re excited to welcome you to our payroll portal! Your employee account has been created successfully.</p>
+
+      <p><strong>Reference ID for Login:</strong> <span class="highlight">{{referenceId}}</span></p>
+
+      <p>To complete your setup, please click the button below to set your password and activate your account.</p>
+
+      <p style="text-align:center;">
+        <a href="https://www.google.com" class="btn">Set Password</a>
+      </p>
+
+      <p>If you have any questions, feel free to reach out to our HR team.</p>
+
+      <p>Welcome aboard!</p>
+      <p>— The HR Team</p>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 1990 ABC Company. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
