@@ -73,6 +73,14 @@ public class SecurityConfig {
 	        .requestMatchers(HttpMethod.POST, "/organization/requests/documents").permitAll()
 	        
 	        .requestMatchers(HttpMethod.GET, "/organization/requests/pending").authenticated()
+	        
+	        .requestMatchers(HttpMethod.GET, "/banks/transactions").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/banks/organizations/info").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/banks/transactions").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/banks/payments/requests").authenticated()
+	        .requestMatchers(HttpMethod.PUT, "/banks/payments/requests").authenticated()
+	        
+	        
 
 	        // LOGOUT
 	        .requestMatchers("/logout").authenticated()

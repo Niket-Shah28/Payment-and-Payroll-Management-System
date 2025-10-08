@@ -1,6 +1,7 @@
 package com.aurionpro.payrollsystem.entity.transaction;
 
 import java.sql.Timestamp;
+import java.time.Month;
 
 import org.hibernate.validator.constraints.URL;
 
@@ -43,12 +44,11 @@ public class PaymentRequest {
 	@Column(name = "amount", nullable = false)
 	private Double amount;
 	
-	@Column(name = "payment_file_url", nullable = false)
+	@Column(name = "payment_file_url")
 	@URL
 	private String paymentFileUrl;
 	
-	@Column(name = "schedule_time", nullable = false)
-	private Timestamp scheduledTime;
+	
 	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "organization_id", nullable = false)
@@ -73,6 +73,23 @@ public class PaymentRequest {
 	
 	@Column(name = "recipient_ifsc_code")
 	private String recipientIfscCode;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "month", nullable = false)
+	private Month month;
+	
+	private Integer year;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "payment_mode", nullable = false)
+	private PaymentMode paymentMode;
+	
+	@Column(name = "schedule_time")
+	private Timestamp scheduledTime;
+
+
+	@Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private Timestamp createdAt;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)

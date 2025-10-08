@@ -30,9 +30,6 @@ public class Transaction {
 	@Column(name = "transaction_id", columnDefinition = "CHAR(36) NOT NULL DEFAULT (UUID())")
 	private String transactionId;
 
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinColumn(name = "organization_id")
-	private Organization organizationId;
 	
 	@Column(name = "description", nullable = false)
 	private String description;
@@ -73,11 +70,5 @@ public class Transaction {
 	@Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp createdAt;
 	
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinColumn(name = "employee_id")
-	private Employee employeeId;
 	
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinColumn(name = "vendor_id")
-	private Vendor vendorId;
 }
