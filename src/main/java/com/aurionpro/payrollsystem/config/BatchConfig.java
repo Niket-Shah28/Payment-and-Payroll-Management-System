@@ -8,6 +8,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +51,14 @@ public class BatchConfig {
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
             FlatFileItemReader<PaymentRecipientData> reader,
+            ItemProcessor<PaymentRecipientData, PaymentRecipientData> processor,
             PaymentProcedureWriter writer,
             PaymentChunkListener listener
     ) {
         return new StepBuilder("paymentStep", jobRepository)
-                .<PaymentRecipientData, PaymentRecipientData>chunk(5, transactionManager)
+                .<PaymentRecipientData, PaymentRecipientData>chunk(1500, transactionManager)
                 .reader(reader)
+                .processor(processor)
                 .writer(writer)
                 .listener(listener)
                 .build();

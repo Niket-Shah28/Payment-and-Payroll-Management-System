@@ -16,21 +16,28 @@ import org.springframework.web.multipart.MultipartFile;
 import com.aurionpro.payrollsystem.dto.employee.BusinessUnitDto;
 import com.aurionpro.payrollsystem.dto.employee.DepartmentDto;
 import com.aurionpro.payrollsystem.dto.employee.EmailLoginInfoDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeDesignationUpdateDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeRequestDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeRoleDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeUploadDataDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
 import com.aurionpro.payrollsystem.entity.bankAccount.OrganizationBankAccount;
+import com.aurionpro.payrollsystem.entity.employee.Employee;
+import com.aurionpro.payrollsystem.entity.employee.EmployeeSalary;
 import com.aurionpro.payrollsystem.entity.employee.Status;
 import com.aurionpro.payrollsystem.entity.organization.Organization;
 import com.aurionpro.payrollsystem.entity.transaction.PaymentMode;
 import com.aurionpro.payrollsystem.entity.transaction.PaymentRequest;
+import com.aurionpro.payrollsystem.exception.BatchProcessingException;
 import com.aurionpro.payrollsystem.exception.OrganizationException;
 import com.aurionpro.payrollsystem.repository.BusinessUnitRepository;
 import com.aurionpro.payrollsystem.repository.DepartmentRepository;
 import com.aurionpro.payrollsystem.repository.EmployeeRepository;
 import com.aurionpro.payrollsystem.repository.EmployeeRoleRepository;
+import com.aurionpro.payrollsystem.repository.EmployeeSalaryRepository;
 import com.aurionpro.payrollsystem.repository.OrganizationBankAccountRepository;
 import com.aurionpro.payrollsystem.repository.PaymentRequestRepository;
 import com.aurionpro.payrollsystem.service.email.EmailService;
@@ -61,6 +68,9 @@ public class OrganizationServiceImpl implements OrganizationService{
 	
 	@Autowired
 	private PaymentRequestRepository paymentRequestRepository;
+	
+	@Autowired
+	private EmployeeSalaryRepository employeeSalaryRepository;
 	
 	@Autowired
     private BulkPaymentJob bulkPaymentJob;
@@ -299,13 +309,40 @@ public class OrganizationServiceImpl implements OrganizationService{
 		request = paymentRequestRepository.save(request);      
 		
 		if(request.getStatus() == Status.APPROVED) {
-			try {
-				bulkPaymentJob.runPayroll(request.getPaymentFileUrl(), request.getMonth().toString(), 
-						request.getYear(), PaymentMode.NEFT, request.getOrganizationId().getOrganizationId(), request.getOrganizationId().getEmail());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			};
+			if(request.getSinglePayment() == false) {
+				try {
+					bulkPaymentJob.runPayroll(request.getPaymentFileUrl(), request.getMonth().toString(), 
+							request.getYear(), PaymentMode.NEFT, request.getOrganizationId().getOrganizationId(), request.getOrganizationId().getEmail());
+				} catch (Exception e) {
+					throw new BatchProcessingException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+				};
+			}
+			else {
+				SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+		                .withProcedureName("processs_single_payment");
+				Map<String, Object> inParams = new HashMap<>();
+				inParams.put("p_recipient_id", ((request.getEmployeeId()!=null)?request.getEmployeeId():request.getVendorId()));
+				inParams.put("p_recipient_account_number", request.getRecipientAccountNumber());
+				inParams.put("p_recipient_ifsc", request.getRecipientIfscCode());
+				inParams.put("p_recipient_bank_name", request.getRecipientBankName());
+				inParams.put("p_recipient_account_holder_name", request.getRecipientAccountHolderName());
+				inParams.put("p_organization_id", request.getOrganizationId());
+				inParams.put("p_amount", request.getAmount());				
+				inParams.put("p_payment_mode", request.getPaymentMode().toString());
+				inParams.put("p_payment_recipient_type", request.getPaymentRecipientType().toString());
+				
+				Map<String, Object> outParams = jdbcCall.execute(inParams);
+				
+				Boolean success = (Boolean) outParams.get("o_success");
+		        String message = (String) outParams.get("o_message");
+		        
+		        String paymentRecipientType = request.getPaymentRecipientType().toString().substring(0, 1).toUpperCase()+request.getPaymentRecipientType().toString().substring(1).toLowerCase();
+		        
+		        String final_email_message = "Dear "+request.getOrganizationId().getOrganizationName()+"\n"
+		        							 +"Your Payment Request for "+paymentRecipientType+
+		        							 ": "+((paymentRecipientType == "Vendor")?request.getVendorId().getName():(request.getEmployeeId().getFirstName()+" "+request.getEmployeeId().getLastName()))+
+		        							 " "+((success)?"is completed successfully.":" has failed due to "+message.toLowerCase());
+		        emailService.sendSingleTransactionEmail(request.getOrganizationId().getEmail(), final_email_message, "Payment Request Status");			}
 		}
 	}
 
@@ -323,7 +360,6 @@ public class OrganizationServiceImpl implements OrganizationService{
 		else {
 			throw new OrganizationException("BANK ACCOUNT ALREADY EXISTS", HttpStatus.BAD_REQUEST);
 		}
-		
 	}
 
 	@Override
@@ -376,6 +412,103 @@ public class OrganizationServiceImpl implements OrganizationService{
         }
         return;
 	}
+
+	@Override
+	public void addSingleEmployee(Long organizationId, EmployeeRequestDto emp) {
+		
+		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("add_single_employee");
+		Map<String, Object> params = new HashMap<>();
+
+		params.put("p_organization_id", organizationId);
+        params.put("p_first_name", emp.getFirstName());
+        params.put("p_middle_name", emp.getMiddleName());
+        params.put("p_last_name", emp.getLastName());
+        params.put("p_gender", emp.getGender().toString());
+        params.put("p_salutation", emp.getSalutation().toString());
+        params.put("p_spouse", emp.getSpouse());
+        params.put("p_date_of_birth", emp.getDateOfBirth());
+        params.put("p_blood_group", emp.getBloodGroup());
+        params.put("p_nationality", emp.getNationality());
+        params.put("p_pan_number", emp.getPanNumber());
+        params.put("p_aadhar_number", emp.getAadharNumber());
+        params.put("p_manager_id", emp.getManagerId());
+        params.put("p_office_email", emp.getOfficeEmail());
+        params.put("p_personal_email", emp.getPersonalEmail());
+        params.put("p_phone_number", emp.getPhoneNumber());
+        params.put("p_basic_salary", emp.getBasicSalary());
+        params.put("p_house_rent_allowance", emp.getHouseRentAllowance());
+        params.put("p_dearness_allowance", emp.getDearnessAllowance());
+        params.put("p_provident_fund", emp.getProvidentFund());
+        params.put("p_other_allowance", emp.getOtherAllowance());
+        params.put("p_final_salary", emp.getFinalSalary());
+        params.put("p_grade", emp.getGrade());
+        params.put("p_employee_role_id", emp.getEmployeeRoleId());
+        params.put("p_business_unit_id", emp.getBusinessUnitId());
+        params.put("p_department_id", emp.getBusinessUnitId());
+
+        Map<String, Object> result = jdbcCall.execute(params);
+
+        Boolean success = (Boolean) result.get("o_success");
+        String message = (String) result.get("o_message");
+        
+        if(!success) {
+        	throw new OrganizationException(message, HttpStatus.BAD_REQUEST);
+        }
+	}
+
+	@Override
+	public void updateEmployeeSalary(Long employeeId, EmployeeSalaryUpdateDto dto) {
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->new OrganizationException("Employee Not Found", HttpStatus.BAD_REQUEST));
+		
+		EmployeeSalary salary = employee.getSalary();
+		
+		modelMapper.getConfiguration().setSkipNullEnabled(true);
+		modelMapper.map(dto, salary);
+
+		employeeSalaryRepository.save(salary);	
 	
-	
+	}
+
+	@Override
+	public void updateEmployeeDesignation(Long employeeId, EmployeeDesignationUpdateDto dto) {
+		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("update_employee_designation");
+		
+		Map<String, Object> params = new HashMap<>();
+		
+		params.put("p_employee_id", employeeId);
+		params.put("p_business_unit_id", dto.getBusinessUnitId());
+		params.put("p_department_id", dto.getDepartmentId());
+		params.put("p_employee_role_id", dto.getEmployeeRoleId());
+		params.put("p_grade", dto.getGrade());
+		
+		Map<String, Object> result = jdbcCall.execute(params);
+		
+		Boolean success = (Boolean) result.get("o_success");
+        String message = (String) result.get("o_message");
+        
+        if(!success) {
+        	throw new OrganizationException(message, HttpStatus.BAD_REQUEST);
+        }
+	}
+
+	@Override
+	public void removeEmployee(Long employeeId) {
+		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("remove_employee");
+		
+		Map<String, Object> params = new HashMap<>();
+		
+		params.put("p_employee_id", employeeId);
+		
+		Map<String, Object> result = jdbcCall.execute(params);
+		
+		Boolean success = (Boolean) result.get("o_success");
+        String message = (String) result.get("o_message");
+        
+        if(!success) {
+        	throw new OrganizationException(message, HttpStatus.BAD_REQUEST);
+        }
+	}
 }

@@ -2,7 +2,6 @@ package com.aurionpro.payrollsystem.entity.employee;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import com.aurionpro.payrollsystem.entity.organization.Organization;
 
@@ -17,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -90,4 +90,7 @@ public class Employee {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "organization_id") 
     private Organization organization;
+	
+	@OneToOne(mappedBy = "employeeId", fetch = FetchType.LAZY)
+	private EmployeeSalary salary;
 }

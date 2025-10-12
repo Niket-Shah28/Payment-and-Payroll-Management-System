@@ -85,6 +85,9 @@ public class PaymentRequest {
 	@Column(name = "recipient_ifsc_code")
 	private String recipientIfscCode;
 	
+	@Column(name = "recipient_account_holder_name")
+	private String recipientAccountHolderName;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private Status status;

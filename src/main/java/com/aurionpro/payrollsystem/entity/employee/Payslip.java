@@ -39,14 +39,52 @@ public class Payslip {
 	@Column(name = "year", nullable = false)
 	private Integer year;
 	
-	@Column(name = "payslip_url", nullable = false)
-	@URL
-	private String payslipUrl;
+	@Column(name = "employee_name", nullable = false)
+	private String name;
 	
-	@Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(name = "department", nullable = false)
+	private String department;
+	
+	@Column(name = "role", nullable = false)
+	private String role;
+	
+	@Column(name = "business_unit", nullable = false)
+	private String businessUnit;
+	
+	@Column(name = "account_number", nullable = false)
+	private String accountNumber;
+	
+	@Column(name = "ifsc_code", nullable = false)
+	private String ifscCode;
+	
+	@Column(name = "bank_name", nullable = false)
+	private String bankName;
+	
+	@Column(name = "basic_salary", columnDefinition = "DECIMAL(15, 2)", nullable = false)
+	private Double basicSalary;
+	
+	@Column(name = "house_rent_allowance", columnDefinition = "DECIMAL(15, 2)", nullable = false)
+	private Double houseRentAllowance;
+	
+	@Column(name = "dearness_allowance", columnDefinition = "DECIMAL(15, 2)", nullable = false)
+	private Double dearnessAllowance;
+	
+	@Column(name = "provident_fund", columnDefinition = "DECIMAL(15, 2)", nullable = false)
+	private Double providentFund;
+	
+	@Column(name = "other_allowance", columnDefinition = "DECIMAL(15, 2)", nullable = false)
+	private Double otherAllowance;
+	
+	@Column(name = "actual_salary", columnDefinition = "DECIMAL(15, 2)", nullable = false)
+	private Double actualSalary;
+	
+	@Column(name = "final_salary", columnDefinition = "DECIMAL(15, 2)", nullable = false)
+	private Double finalSalary;
+	
+	@Column(name = "created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp createdAt;
 	
-	@Column(name = "updated_at", columnDefinition = "TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	@Column(name = "updated_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
 	private Timestamp updatedAt;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

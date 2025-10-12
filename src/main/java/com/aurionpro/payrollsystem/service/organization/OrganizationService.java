@@ -6,7 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.aurionpro.payrollsystem.dto.employee.BusinessUnitDto;
 import com.aurionpro.payrollsystem.dto.employee.DepartmentDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeDesignationUpdateDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeRequestDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeRoleDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
@@ -32,4 +35,8 @@ public interface OrganizationService {
 	void removeOrganizationBankAccount(Long accountId);
 	OrganizationBankAccountResponseDto getOrganizationBankAccount(Long organizationId);
 	void depositAmount(Long accountId, Double amount);
+	void addSingleEmployee(Long organizationId, EmployeeRequestDto emp);
+	void updateEmployeeSalary(Long employeeId, EmployeeSalaryUpdateDto dto);
+	void updateEmployeeDesignation(Long employeeId, EmployeeDesignationUpdateDto dto);
+	void removeEmployee(Long employeeId);
 }

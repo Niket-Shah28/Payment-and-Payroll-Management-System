@@ -54,33 +54,24 @@ public class PaymentProcedureWriter implements ItemWriter<PaymentRecipientData> 
         																	i.getFinalSalary()		
         																)
         															).toList();
-        
-        System.out.println(employeeTransactionData);
+
         String chunkJson = objectMapper.writeValueAsString(employeeTransactionData);
+ 
         
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("process_chunk_payment");
-
-//        Map<String, Object> inParams = Map.of(
-//                "p_organization_id", organizationId,
-//                "p_employee_chunk", chunkJson,
-//                "p_payment_mode", paymentMode
-//        );
+                .withProcedureName("batch_payment");
         
         Map<String, Object> inParams = new HashMap<>();
         inParams.put("p_organization_id", organizationId);
-        inParams.put("p_employee_chunk", objectMapper.writeValueAsString(employeeTransactionData));
+        inParams.put("p_employee_chunk", chunkJson);
         inParams.put("p_payment_mode", paymentMode);
 
         Map<String, Object> out = jdbcCall.execute(inParams);
 
-        // Convert JSON to List<TransactionChunkRecords>
         List<TransactionChunkRecords> records = objectMapper.readValue(
         		(String) out.get("o_transaction_status_chunk"), 
                 new TypeReference<List<TransactionChunkRecords>>() {}
         );
-        
-        System.out.println(records);
 
         stepExecution.getExecutionContext().put("chunkRecords", records);
     }
