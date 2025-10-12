@@ -1,5 +1,6 @@
 package com.aurionpro.payrollsystem.exception;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
 	    return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
 	}
 	
-	@ExceptionHandler({ BadCredentialsException.class, JwtException.class })
+	@ExceptionHandler({ BadCredentialsException.class, JwtException.class, IOException.class })
 	public ResponseEntity<Map<String, String>> handleAuthExceptions(RuntimeException exception) {
 	    logger.error(exception.getMessage());
 	    return ResponseEntity
@@ -39,11 +40,12 @@ public class GlobalExceptionHandler {
 	            .body(Map.of("error", exception.getMessage()));
 	}
 	
-	@ExceptionHandler
-	public ResponseEntity<Map<String, String>> handleOrganizationApplicationRequestException(OrganizationApplicationRequestException exception) {
+	@ExceptionHandler(BaseCustomException.class)
+	public ResponseEntity<Map<String, String>> handleCustomException(BaseCustomException exception) {
 	    logger.error(exception.getMessage());
 	    return ResponseEntity
 	            .status(exception.getStatus())
 	            .body(Map.of("error", exception.getMessage()));
 	}
+	
 }

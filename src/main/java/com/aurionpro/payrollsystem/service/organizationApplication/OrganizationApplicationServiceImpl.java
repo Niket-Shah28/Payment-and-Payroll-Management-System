@@ -11,11 +11,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 
+import com.aurionpro.payrollsystem.dto.employee.EmailLoginInfoDto;
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationApplicationRequestDetailsDto;
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationApplicationRequestDocumentsDto;
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationApplicationRequestDto;
+import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationRequestDocumentsResponseDto;
+import com.aurionpro.payrollsystem.entity.employee.Status;
 import com.aurionpro.payrollsystem.exception.OrganizationApplicationRequestException;
 import com.aurionpro.payrollsystem.repository.OrganizationApplicationRepository;
+import com.aurionpro.payrollsystem.service.email.EmailService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,13 +39,15 @@ public class OrganizationApplicationServiceImpl implements OrganizationApplicati
 	@Autowired
     private JdbcTemplate jdbcTemplate;
 	
+	@Autowired
+	private EmailService emailService;
+	
 	@Override
 	public Long addOrganizationApplication(OrganizationApplicationRequestDto dto) {
 		
 		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
                 .withProcedureName("add_organization_application_request");
 
-        // Input params
         Map<String, Object> inParams = new HashMap<>();
         inParams.put("p_organization_name", dto.getOrganizationName());
         inParams.put("p_cin_number", dto.getCinNumber());
@@ -99,4 +105,39 @@ public class OrganizationApplicationServiceImpl implements OrganizationApplicati
 	public List<OrganizationApplicationRequestDetailsDto> getPendingRequests() {
 		return organizationApplicationRepository.getPendingRequests();
 	}
+
+	@Override
+	public List<OrganizationRequestDocumentsResponseDto> getRequestDocuments(Long requestId) {
+		return organizationApplicationRepository.getRequestDocuments(requestId);
+	}
+
+	@Override
+	public void processOrganizationRequest(Long requestId, Status status) {
+		
+		
+		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("process_organization_request");
+		
+		Map<String, Object> inParams = new HashMap<>();
+        inParams.put("p_request_id", requestId);
+        inParams.put("p_status", status.toString());
+        
+        Map<String, Object> outParams = jdbcCall.execute(inParams);
+        Boolean success = (Boolean) outParams.get("o_success");
+        String message = (String) outParams.get("o_message");
+        String referenceId = (String) outParams.get("o_reference_id");
+		String organizationEmail = (String) outParams.get("o_organization_email");
+		String organizationName = (String) outParams.get("o_organization_name");
+        
+        System.out.println(referenceId);
+        
+        if(!success) {
+			throw new OrganizationApplicationRequestException(message, HttpStatus.NOT_FOUND);
+		}
+        
+        emailService.sendEmail("joining_email_template.html", new EmailLoginInfoDto(referenceId, organizationEmail, organizationName), "Welcome To Our Payroll System");
+		return;
+	}
+	
+	
 }

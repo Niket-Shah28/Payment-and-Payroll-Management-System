@@ -8,14 +8,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationApplicationRequestDetailsDto;
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationApplicationRequestDocumentsDto;
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationApplicationRequestDto;
+import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationRequestDocumentsResponseDto;
+import com.aurionpro.payrollsystem.entity.employee.Status;
 import com.aurionpro.payrollsystem.service.organizationApplication.OrganizationApplicationService;
 
 import jakarta.validation.Valid;
@@ -42,5 +47,18 @@ public class OrganizationApplicationController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<OrganizationApplicationRequestDetailsDto>> getPendingRequests(){
 		return new ResponseEntity<>(organizationApplicationService.getPendingRequests(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{requestId}/documents")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<List<OrganizationRequestDocumentsResponseDto>> getOrganizationRequestDocuments(@PathVariable Long requestId){
+		return new ResponseEntity<>(organizationApplicationService.getRequestDocuments(requestId), HttpStatus.OK);
+	}
+	
+	@PutMapping("/{requestId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<List<OrganizationRequestDocumentsResponseDto>> processOrganizationRequest(@PathVariable Long requestId, @RequestParam(name="status") Status status){
+		organizationApplicationService.processOrganizationRequest(requestId, status);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

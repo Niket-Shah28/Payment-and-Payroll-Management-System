@@ -40,7 +40,7 @@ public class Organization {
 	@Column(name = "address", nullable = false)
 	private String address;
 	
-	@Column(name = "nicCode")
+	@Column(name = "nic_code")
 	private Integer nicCode;
 	
 	@Column(name = "gstin", nullable = false, unique = true)

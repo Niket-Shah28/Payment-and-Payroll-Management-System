@@ -1,19 +1,14 @@
 package com.aurionpro.payrollsystem.entity.transaction;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
-import com.aurionpro.payrollsystem.entity.employee.Employee;
-import com.aurionpro.payrollsystem.entity.organization.Organization;
-import com.aurionpro.payrollsystem.entity.vendor.Vendor;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +24,6 @@ public class Transaction {
 	@Id
 	@Column(name = "transaction_id", columnDefinition = "CHAR(36) NOT NULL DEFAULT (UUID())")
 	private String transactionId;
-
 	
 	@Column(name = "description", nullable = false)
 	private String description;
@@ -41,7 +35,8 @@ public class Transaction {
 	private String destinationAccountNumber;
 	
 	@Column(name = "reference_number")
-	private String reference_number;
+	@Convert(converter = UuidBinaryConverter.class) 
+	private UUID referenceNumber;
 	
 	@Column(name = "receiver_bank_name")
 	private String receiverBankName;
@@ -49,11 +44,11 @@ public class Transaction {
 	@Column(name = "receiver_ifsc_code")
 	private String receiverIfscCode;
 	
-	@Column(name = "amount", columnDefinition = "DECIMAL(15, 2)")
-	private Double amount;
-	
 	@Column(name = "receiver_holder_name")
 	private String receiverHolderName;
+	
+	@Column(name = "amount", columnDefinition = "DECIMAL(15, 2)")
+	private Double amount;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "paymentMode", nullable = false)
@@ -69,6 +64,4 @@ public class Transaction {
 	
 	@Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp createdAt;
-	
-	
 }

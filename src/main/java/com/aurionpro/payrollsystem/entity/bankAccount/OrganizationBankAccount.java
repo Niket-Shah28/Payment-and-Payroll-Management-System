@@ -2,6 +2,8 @@ package com.aurionpro.payrollsystem.entity.bankAccount;
 
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.aurionpro.payrollsystem.entity.organization.Organization;
 
 import jakarta.persistence.CascadeType;
@@ -18,12 +20,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "organization_bank_account")
+@ToString
 public class OrganizationBankAccount {
 
 	@Id
@@ -44,9 +48,6 @@ public class OrganizationBankAccount {
 	@Column(name = "ifsc_code", nullable = false)
 	private String ifscCode;
 	
-	@Column(name = "bank_name", nullable = false)
-	private String bankName;
-	
 	@Column(name = "account_holder_name", nullable = false)
 	private String accountHolderName;
 	
@@ -55,11 +56,11 @@ public class OrganizationBankAccount {
 	private AccountType accountType;
 	
 	@Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
-	private Boolean isActive;
+	private Boolean isActive=true;
 	
-	@Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(name = "created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp createdAt;
 	
-	@Column(name = "updated_at", columnDefinition = "TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	@Column(name = "updated_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
 	private Timestamp updatedAt;
 }

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Payslip</title>
+    <style>
+		
+		@page {
+		    /* Changes A4 from 210x297mm to 297x210mm */
+		    size: A4 landscape; 
+		    margin: 5mm; /* Keep margins small */
+		}
+		
+		
+        body { font-family: 'Arial', sans-serif; font-size: 10pt; }
+        .payslip-container { width: 100%; max-width: 800px; margin: 0 auto; border: 1px solid #333; padding: 20px; }
+        h1 { text-align: center; color: #1e3a8a; font-size: 16pt; margin-bottom: 5px; }
+        h2 { text-align: center; font-size: 12pt; color: #666; margin-top: 0; border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; color: #333; }
+        .total-row th, .total-row td { background-color: #e0f2f1; font-weight: bold; border-top: 2px solid #1e3a8a; }
+        .section-header { background-color: #1e3a8a; color: white; padding: 5px; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="payslip-container">
+    
+    <h1>ABC COMPANY PAYROLL SYSTEM</h1>
+    <h2 th:text="'Payslip for ' + ${payslip.month} + ' ' + ${payslip.year}">
+        Payslip for Month Year
+    </h2>
+
+    <!-- Employee Details -->
+    <div class="section-header">Employee Details</div>
+    <table>
+        <tr>
+            <th width="20%">Employee ID</th>
+            <td width="30%" th:text="${payslip.employeeId}">12345</td>
+            <th width="20%">Employee Name</th>
+            <td width="30%" th:text="${payslip.name}">John Doe</td>
+        </tr>
+        <tr>
+            <th>Department</th>
+            <td th:text="${payslip.department}">Technology</td>
+            <th>Role</th>
+            <td th:text="${payslip.role}">Software Engineer</td>
+        </tr>
+        <tr>
+            <th>Business Unit</th>
+            <td th:text="${payslip.businessUnit}">BU-CORE</td>
+            <th>Account No</th>
+            <td th:text="${payslip.accountNumber}">9876543210</td>
+        </tr>
+        <tr>
+            <th>Bank Name</th>
+            <td th:text="${payslip.bankName}">HDFC Bank</td>
+            <th>IFSC Code</th>
+            <td th:text="${payslip.ifscCode}">HDFC0001234</td>
+        </tr>
+    </table>
+
+    <!-- Salary Details -->
+    <div class="section-header">Earnings and Deductions</div>
+    <table>
+        <thead>
+            <tr>
+                <th width="40%">Earnings</th>
+                <th width="10%">Amount</th>
+                <th width="40%">Deductions</th>
+                <th width="10%">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Basic Salary</td>
+                <td th:text="${payslip.basicSalary}">10000.00</td>
+                <td>Provident Fund (PF)</td>
+                <td th:text="${payslip.providentFund}">1800.00</td>
+            </tr>
+            <tr>
+                <td>House Rent Allowance (HRA)</td>
+                <td th:text="${payslip.houseRentAllowance}">4000.00</td>
+                
+            </tr>
+            <tr>
+                <td>Dearness Allowance (DA)</td>
+                <td th:text="${payslip.dearnessAllowance}">1000.00</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Other Allowances</td>
+                <td th:text="${payslip.otherAllowance}">500.00</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <!-- Summary Row -->
+            <tr class="total-row">
+                <th colspan="1">Actual Salary (Total Earnings)</th>
+                <td th:text="${payslip.actualSalary}">15500.00</td>
+                <th colspan="1">Total Deductions</th>
+                <td th:text="${payslip.providentFund}">1800.00</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <!-- Final Salary -->
+    <div class="section-header" style="text-align: right; background-color: #0d9488;">
+        Net Pay (In Hand): <span th:text="${payslip.finalSalary}" style="font-size: 14pt;">13700.00</span>
+    </div>
+</div>
+
+</body>
+</html>

@@ -2,14 +2,8 @@ package com.aurionpro.payrollsystem.exception;
 
 import org.springframework.http.HttpStatus;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
-@Data
-@RequiredArgsConstructor
-@AllArgsConstructor
-public class OrganizationApplicationRequestException extends RuntimeException{
-	private String message;
-	private HttpStatus status;
+public class OrganizationApplicationRequestException extends BaseCustomException{
+	public OrganizationApplicationRequestException(String message, HttpStatus status) {
+        super(message, status);
+    }
 }

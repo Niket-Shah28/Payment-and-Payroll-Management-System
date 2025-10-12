@@ -1,7 +1,7 @@
 package com.aurionpro.payrollsystem.entity.employee;
 
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import com.aurionpro.payrollsystem.entity.organization.Organization;
 
@@ -16,16 +16,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "employee")
+@ToString
 public class Employee {
 
 	@Id
@@ -50,11 +53,14 @@ public class Employee {
 	@Column(name = "salutation", nullable = false)
 	private Salutation salutation;
 	
+	@Column(name = "profile_photo_url")
+	private String profilePhotoUrl;
+	
 	@Column(name = "spouse")
 	private String spouse;
 	
 	@Column(name = "date_of_birth", nullable = false)
-	private LocalDate dateOfBirth;
+	private Date dateOfBirth;
 	
 	@Column(name = "blood_group", nullable = false)
 	private String bloodGroup;
@@ -84,4 +90,7 @@ public class Employee {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "organization_id") 
     private Organization organization;
+	
+	@OneToOne(mappedBy = "employeeId", fetch = FetchType.LAZY)
+	private EmployeeSalary salary;
 }

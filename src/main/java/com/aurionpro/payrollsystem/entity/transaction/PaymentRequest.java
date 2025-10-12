@@ -41,14 +41,25 @@ public class PaymentRequest {
 	@Column(name = "paymentRecipientType")
 	private PaymentRecipientType paymentRecipientType;
 	
-	@Column(name = "amount", nullable = false)
+	@Column(name = "amount")
 	private Double amount;
 	
-	@Column(name = "payment_file_url")
+	@Column(name = "payment_file_url", nullable = false)
 	@URL
 	private String paymentFileUrl;
 	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "month", nullable = false)
+	private Month month;
 	
+	private Integer year;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "payment_mode", nullable = false)
+	private PaymentMode paymentMode;
+	
+	@Column(name = "schedule_time")
+	private Timestamp scheduledTime;
 	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "organization_id", nullable = false)
@@ -74,22 +85,8 @@ public class PaymentRequest {
 	@Column(name = "recipient_ifsc_code")
 	private String recipientIfscCode;
 	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "month", nullable = false)
-	private Month month;
-	
-	private Integer year;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "payment_mode", nullable = false)
-	private PaymentMode paymentMode;
-	
-	@Column(name = "schedule_time")
-	private Timestamp scheduledTime;
-
-
-	@Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private Timestamp createdAt;
+	@Column(name = "recipient_account_holder_name")
+	private String recipientAccountHolderName;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)

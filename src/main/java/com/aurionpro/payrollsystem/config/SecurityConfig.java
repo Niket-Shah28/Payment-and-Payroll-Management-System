@@ -74,13 +74,57 @@ public class SecurityConfig {
 	        
 	        .requestMatchers(HttpMethod.GET, "/organization/requests/pending").authenticated()
 	        
+	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents").authenticated()
+	        
+	        .requestMatchers(HttpMethod.PUT, "/organization/requests/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/departments").authenticated()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/businessUnits").authenticated()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/employee/roles").authenticated()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/employees").authenticated()
+	        
+	        .requestMatchers(HttpMethod.PATCH, "/organization/departments/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.PATCH, "/organization/businessUnits/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.PATCH, "/organization/employee/roles/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.DELETE, "/organization/departments/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.DELETE, "/organization/businessUnits/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.DELETE, "/organization/employee/roles/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/bankAccount").authenticated()
+	        
+	        .requestMatchers(HttpMethod.PATCH, "/organization/bankAccount/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.DELETE, "/organization/bankAccount/*").authenticated()
+	        
+	        .requestMatchers(HttpMethod.GET, "/organization/bankAccount").authenticated()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/bankAccount/*/deposit").authenticated()
+	        
+	        .requestMatchers(HttpMethod.POST, "/organization/paymentRequest/*").permitAll()
+	        
 	        .requestMatchers(HttpMethod.GET, "/banks/transactions").authenticated()
+	        
 	        .requestMatchers(HttpMethod.GET, "/banks/organizations/info").authenticated()
+	        
 	        .requestMatchers(HttpMethod.GET, "/banks/transactions").authenticated()
+	        
 	        .requestMatchers(HttpMethod.GET, "/banks/payments/requests").authenticated()
-	        .requestMatchers(HttpMethod.PUT, "/banks/payments/requests").authenticated()
 	        
+	        .requestMatchers(HttpMethod.PATCH, "/organization/employees/*/salary").authenticated()
 	        
+	        .requestMatchers(HttpMethod.PUT, "/organization/employees/*/designation").authenticated()
+	        
+	        .requestMatchers(HttpMethod.DELETE, "/organization/employees/*").authenticated()
+	        
+	        //.requestMatchers(HttpMethod.PUT, "/banks/payments/requests").authenticated()
 
 	        // LOGOUT
 	        .requestMatchers("/logout").authenticated()

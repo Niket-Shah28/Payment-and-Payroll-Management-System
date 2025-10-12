@@ -36,7 +36,7 @@ public class OrganizationRequestDocuments {
 	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "request_id")
-	private OrganizationRequest requestId;
+	private OrganizationRequest request;
 	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "document_type_id")
@@ -44,7 +44,7 @@ public class OrganizationRequestDocuments {
 	
 	@Column(name = "cloudinary_url", nullable = false)
 	@URL
-	private String cloudinary_url;
+	private String cloudinaryUrl;
 	
 	@Column(name = "document_size")
 	private Integer documentSize;

@@ -42,6 +42,6 @@ public class BusinessUnit {
 	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "organization_id", nullable = false)
-	private Organization organizationId;
+	private Organization organization;
 
 }

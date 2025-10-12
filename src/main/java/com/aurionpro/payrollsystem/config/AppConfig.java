@@ -1,20 +1,42 @@
 package com.aurionpro.payrollsystem.config;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.aurionpro.payrollsystem.service.payment.PayslipService;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
 @Configuration
 public class AppConfig {
-	 @Bean
-	    public ModelMapper modelMapper() {
-	        ModelMapper mapper = new ModelMapper();
+	
+	@Value("${cloud_name}")
+	private String cloudName;
 
-	        mapper.getConfiguration()
-	              .setSkipNullEnabled(true)                // Ignores nulls during mapping
-	              .setMatchingStrategy(MatchingStrategies.STRICT); // Only map exact field names
+	@Value("${cloudinary_api_key}")
+	private String apiKey;
 
-	        return mapper;
-	    }
+	@Value("${cloudinary_api_secret}")
+	private String apiSecret;
+	
+	@Bean
+	ModelMapper mapper() {
+		return new ModelMapper();
+	}
+	
+	@Bean
+    Cloudinary cloudinary() {
+        return new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", cloudName,
+            "api_key", apiKey,
+            "api_secret", apiSecret
+        ));
+    }
+	
+	@Bean
+	PayslipService payslipService() {
+		return new PayslipService();
+	}
 }

@@ -4,7 +4,10 @@ app.log
 app.log.*
 *.log
 *.gz
-logs/wrapper/maven-wrapper.jar
+logs/
+
+target/
+.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
