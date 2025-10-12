@@ -118,6 +118,8 @@ public class SecurityConfig {
 	        
 	        .requestMatchers(HttpMethod.GET, "/banks/payments/requests").authenticated()
 	        
+	        .requestMatchers(HttpMethod.PUT, "/organization/employees/*/salary").authenticated()
+	        
 	        //.requestMatchers(HttpMethod.PUT, "/banks/payments/requests").authenticated()
 
 	        // LOGOUT

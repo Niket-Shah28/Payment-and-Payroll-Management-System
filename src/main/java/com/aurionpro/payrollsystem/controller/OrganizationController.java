@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.aurionpro.payrollsystem.dto.employee.BusinessUnitDto;
 import com.aurionpro.payrollsystem.dto.employee.DepartmentDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeDesignationUpdateDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeRequestDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeRoleDto;
+import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
@@ -181,8 +185,31 @@ public class OrganizationController {
 	}
 	
 	@PostMapping("/paymentRequest/{requestId}")
-	public ResponseEntity<Void> acceptPaymentRequest(@PathVariable Long requestId){
-		organizationService.processPaymentRequest(requestId, Status.APPROVED);
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<Void> acceptPaymentRequest(@PathVariable Long requestId, @RequestParam Status status){
+		organizationService.processPaymentRequest(requestId, status);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@PostMapping("/employee")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Void> addSingleEmployee(@RequestBody @Valid EmployeeRequestDto dto, Authentication authentication){
+		Long organizationId = (Long) authentication.getDetails();
+		organizationService.addSingleEmployee(organizationId, dto);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@PatchMapping("/employees/{employeeId}/salary")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Void> updateEmployeeSalaryDetails(@PathVariable Long employeeId, @RequestBody @Valid EmployeeSalaryUpdateDto dto){
+		organizationService.updateEmployeeSalary(employeeId, dto);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@PutMapping("/employees/{employeeId}/designation")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Void> updateEmployeeDesignationDetails(@PathVariable Long employeeId, @RequestBody @Valid EmployeeDesignationUpdateDto dto){
+		organizationService.updateEmployeeDesignation(employeeId, dto);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 

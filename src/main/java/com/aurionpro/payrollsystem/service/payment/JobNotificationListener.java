@@ -32,9 +32,8 @@ public class JobNotificationListener implements JobExecutionListener {
 	
 	  @Override
 	  public void afterJob(JobExecution jobExecution) {
+		System.out.println("END TIME: "+System.currentTimeMillis());
 	    if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
-	    	
-	    	System.out.println("AFTER JOBN");
 	    	
 	    	@SuppressWarnings("unchecked")
 			List<FailedTransactionRecipientDto> failedList = 
@@ -43,7 +42,6 @@ public class JobNotificationListener implements JobExecutionListener {
 	    	Long passCount = jobExecution.getExecutionContext().getLong("passCount");
 	    	
 	    	String organizationEmail = jobExecution.getJobParameters().getString("organizationEmail");
-	    	System.out.println("AFTER JOB");
             try {
                 File csvFile = generateCsvFile(failedList);
                 emailService.sendOrganizationPaymentRequestReportMail(passCount, failedList.size(), csvFile, organizationEmail);
@@ -55,14 +53,13 @@ public class JobNotificationListener implements JobExecutionListener {
 	  
 	  @Override
 	  public void beforeJob(JobExecution jobExecution) {
-		  System.out.println("BEFORE JOB");
+		  System.out.println("START TIME: "+System.currentTimeMillis());
 		  jobExecution.getExecutionContext().put("passCount", 0L);
 		  jobExecution.getExecutionContext().put("failCount", 0L);
 		  jobExecution.getExecutionContext().put("failedTransactions", new ArrayList<FailedTransactionRecipientDto>());
 	  }
 	  
 	  private File generateCsvFile(List<FailedTransactionRecipientDto> failedList) throws IOException {
-		  System.out.println("FILE GENERATION");
 		  File tempFile = File.createTempFile("failed_transactions_", ".csv");
           try (PrintWriter writer = new PrintWriter(tempFile)) {
             // Header

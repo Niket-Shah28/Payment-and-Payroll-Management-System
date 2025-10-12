@@ -37,7 +37,6 @@ public class PaymentChunkListener implements ChunkListener{
 	@Override
     public void afterChunk(ChunkContext context) {
         StepExecution stepExecution = context.getStepContext().getStepExecution();
-        System.out.println("---------CHUNK START----------");
 
         @SuppressWarnings("unchecked")
         List<PaymentRecipientData> items =
@@ -48,7 +47,6 @@ public class PaymentChunkListener implements ChunkListener{
             (List<TransactionChunkRecords>) stepExecution.getExecutionContext().get("chunkRecords");
         
         if (chunkRecords == null || chunkRecords.isEmpty()) {
-            System.out.println("---------CHUNK END (EMPTY/REDUNDANT)----------");
             return; 
         }
         
@@ -69,8 +67,6 @@ public class PaymentChunkListener implements ChunkListener{
 										                Function.identity() 
 										            ));
         
-        
-        
         for(TransactionChunkRecords record:chunkRecords) {
         	PaymentRecipientData recipient = itemsMap.get(record.getEmployeeId());
         	if(record.getStatus() == TransactionStatus.FAIL) {
@@ -87,9 +83,6 @@ public class PaymentChunkListener implements ChunkListener{
         	}
         	else {
         		passCount++;
-        		System.out.println(recipient);
-        		System.out.println(month);
-        		System.out.println(year);
         		PayslipDataDto payslipData = new PayslipDataDto(
 					recipient.getEmployeeId(),
 					recipient.getName(),
@@ -109,16 +102,10 @@ public class PaymentChunkListener implements ChunkListener{
 					Month.valueOf(month),
 					year
         		);
-        		System.out.println("HELLLOOOO");
-        		
-        		try {
-					payslipService.generateAndSavePayslip(payslipData);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+        		//payslipService.generateAndSavePayslip(payslipData);
         	}
         } 
-        System.out.println("---------CHUNK END----------");
+
         stepExecution.getJobExecution().getExecutionContext().put("passCount", passCount);
         stepExecution.getJobExecution().getExecutionContext().put("failCount", failCount);
         stepExecution.getJobExecution().getExecutionContext().put("failedTransactions", failedTransactions);

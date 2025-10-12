@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -52,8 +53,6 @@ public class EmailService {
 	}
 
 	public void sendOrganizationPaymentRequestReportMail(long successCount, int failedCount, File csvFile, String organizationEmail) throws MessagingException {
-        
-		System.out.println("INSIDE MAIL SENDER");
 		
 		MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -73,6 +72,15 @@ public class EmailService {
         helper.addAttachment("failed_transactions.csv", csvFile);
 
         javaMailSender.send(message);
-        //log.info("Job summary mail sent to {}", organizationEmail);
     }
+	
+	public void sendSingleTransactionEmail(String organizationEmail, String body, String subject) {
+	    SimpleMailMessage message = new SimpleMailMessage();
+	    message.setTo(organizationEmail);
+	    message.setSubject(subject);
+	    message.setText(body);
+
+	    javaMailSender.send(message);
+	}
+
 }
