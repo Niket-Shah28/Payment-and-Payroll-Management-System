@@ -492,4 +492,23 @@ public class OrganizationServiceImpl implements OrganizationService{
         	throw new OrganizationException(message, HttpStatus.BAD_REQUEST);
         }
 	}
+
+	@Override
+	public void removeEmployee(Long employeeId) {
+		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("remove_employee");
+		
+		Map<String, Object> params = new HashMap<>();
+		
+		params.put("p_employee_id", employeeId);
+		
+		Map<String, Object> result = jdbcCall.execute(params);
+		
+		Boolean success = (Boolean) result.get("o_success");
+        String message = (String) result.get("o_message");
+        
+        if(!success) {
+        	throw new OrganizationException(message, HttpStatus.BAD_REQUEST);
+        }
+	}
 }

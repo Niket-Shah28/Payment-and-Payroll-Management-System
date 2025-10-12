@@ -38,4 +38,5 @@ public interface OrganizationService {
 	void addSingleEmployee(Long organizationId, EmployeeRequestDto emp);
 	void updateEmployeeSalary(Long employeeId, EmployeeSalaryUpdateDto dto);
 	void updateEmployeeDesignation(Long employeeId, EmployeeDesignationUpdateDto dto);
+	void removeEmployee(Long employeeId);
 }

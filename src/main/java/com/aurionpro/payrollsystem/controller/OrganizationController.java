@@ -212,5 +212,11 @@ public class OrganizationController {
 		organizationService.updateEmployeeDesignation(employeeId, dto);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
-
+	
+	@DeleteMapping("/employees/{employeeId}")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Void> deleteEmployee(@PathVariable Long employeeId){
+		organizationService.removeEmployee(employeeId);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
 }
