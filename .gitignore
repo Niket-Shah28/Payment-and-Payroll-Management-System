@@ -1,7 +1,10 @@
 HELP.md
+# Log files
 app.log
-target/
-.mvn/wrapper/maven-wrapper.jar
+app.log.*
+*.log
+*.gz
+logs/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
