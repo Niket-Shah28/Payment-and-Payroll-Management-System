@@ -23,6 +23,7 @@ import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationReque
 import com.aurionpro.payrollsystem.entity.employee.Status;
 import com.aurionpro.payrollsystem.service.organizationApplication.OrganizationApplicationService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -37,6 +38,7 @@ public class OrganizationApplicationController {
 		return new ResponseEntity<>(Map.of("requestId", requestId), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/documents")
 	public ResponseEntity<Void> organizationApplicationRequestDocuments(@RequestBody @Valid OrganizationApplicationRequestDocumentsDto dto){
 		organizationApplicationService.addOrganizationApplicationDocuments(dto);
@@ -44,16 +46,18 @@ public class OrganizationApplicationController {
 	}
 	
 	@GetMapping("/pending")
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<OrganizationApplicationRequestDetailsDto>> getPendingRequests(){
 		return new ResponseEntity<>(organizationApplicationService.getPendingRequests(), HttpStatus.OK);
 	}
 	
-	@GetMapping("/{requestId}/documents")
+	 @GetMapping("/{requestId}/documents")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<OrganizationRequestDocumentsResponseDto>> getOrganizationRequestDocuments(@PathVariable Long requestId){
-		return new ResponseEntity<>(organizationApplicationService.getRequestDocuments(requestId), HttpStatus.OK);
-	}
+	 public ResponseEntity<List<OrganizationRequestDocumentsResponseDto>> getDocumentsList(
+	            @PathVariable Long requestId) {
+	        List<OrganizationRequestDocumentsResponseDto> documents = organizationApplicationService.getRequestDocuments(requestId);
+	        return ResponseEntity.ok(documents);
+	    }
 	
 	@PutMapping("/{requestId}")
 	@PreAuthorize("hasRole('ADMIN')")
@@ -61,4 +65,24 @@ public class OrganizationApplicationController {
 		organizationApplicationService.processOrganizationRequest(requestId, status);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
+	
+	@GetMapping("/{requestId}/documents/{documentId}/view")
+	@PreAuthorize("hasRole('ADMIN')")
+	public void viewDocument(
+	        @PathVariable Long requestId,
+	        @PathVariable Long documentId,
+	        HttpServletResponse response) {
+		organizationApplicationService.streamDocument(requestId, documentId, response, false);
+	}
+	@GetMapping("/{requestId}/documents/{documentId}/download")
+	 @PreAuthorize("hasRole('ADMIN')")
+	public void downloadDocument(
+	        @PathVariable Long requestId,
+	        @PathVariable Long documentId,
+	        HttpServletResponse response) {
+
+	    organizationApplicationService.streamDocument(requestId, documentId, response, true);
+	}
+
+
 }

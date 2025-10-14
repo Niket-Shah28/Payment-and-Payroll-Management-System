@@ -22,8 +22,10 @@ public interface OrganizationApplicationRepository extends JpaRepository<Organiz
 	List<OrganizationApplicationRequestDetailsDto> getPendingRequests();
 	
 	@Query("SELECT new com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationRequestDocumentsResponseDto("
-		 + "o.cloudinaryUrl, o.documentType.documentTypeName) "
-		 + "FROM OrganizationRequestDocuments o "
-		 + "WHERE o.request.requestId = :requestId")
-	List<OrganizationRequestDocumentsResponseDto> getRequestDocuments(@Param("requestId") Long requestId);
+	         + "d.requestDocumentId, d.documentType.documentTypeName) "
+	         + "FROM OrganizationRequestDocuments d "
+	         + "WHERE d.request.requestId = :requestId")
+	List<OrganizationRequestDocumentsResponseDto> getDocumentsList(@Param("requestId") Long requestId);
+	
+	
 }

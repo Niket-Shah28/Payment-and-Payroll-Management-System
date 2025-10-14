@@ -1,5 +1,9 @@
 package com.aurionpro.payrollsystem.service.organizationApplication;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +21,15 @@ import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationAppli
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationApplicationRequestDto;
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationRequestDocumentsResponseDto;
 import com.aurionpro.payrollsystem.entity.employee.Status;
+import com.aurionpro.payrollsystem.entity.organization.OrganizationRequestDocuments;
 import com.aurionpro.payrollsystem.exception.OrganizationApplicationRequestException;
+import com.aurionpro.payrollsystem.repository.OrganizationApplicationDocuments;
 import com.aurionpro.payrollsystem.repository.OrganizationApplicationRepository;
 import com.aurionpro.payrollsystem.service.email.EmailService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 
 @Service
@@ -41,6 +49,9 @@ public class OrganizationApplicationServiceImpl implements OrganizationApplicati
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private OrganizationApplicationDocuments organizationApplicationDocuments;
 	
 	@Override
 	public Long addOrganizationApplication(OrganizationApplicationRequestDto dto) {
@@ -108,7 +119,7 @@ public class OrganizationApplicationServiceImpl implements OrganizationApplicati
 
 	@Override
 	public List<OrganizationRequestDocumentsResponseDto> getRequestDocuments(Long requestId) {
-		return organizationApplicationRepository.getRequestDocuments(requestId);
+		return organizationApplicationRepository.getDocumentsList(requestId);
 	}
 
 	@Override
@@ -138,6 +149,51 @@ public class OrganizationApplicationServiceImpl implements OrganizationApplicati
         emailService.sendEmail("joining_email_template.html", new EmailLoginInfoDto(referenceId, organizationEmail, organizationName), "Welcome To Our Payroll System");
 		return;
 	}
+	
+	@Override
+	public void streamDocument(Long requestId, Long documentId, HttpServletResponse response, boolean isDownload) {
+	    OrganizationRequestDocuments document = organizationApplicationDocuments
+	            .findByRequest_RequestIdAndRequestDocumentId(requestId, documentId)
+	            .orElseThrow(() -> new OrganizationApplicationRequestException("Document not found", HttpStatus.NOT_FOUND));
+
+	    String fileUrl = document.getCloudinaryUrl();
+	    String fileType = document.getFileFormat().name();
+
+	    try (InputStream inputStream = new URL(fileUrl).openStream();
+	         OutputStream outputStream = response.getOutputStream()) {
+
+	      
+	        switch (fileType.toLowerCase()) {
+	            case "pdf" -> response.setContentType("application/pdf");
+	            case "jpg", "jpeg", "png" -> response.setContentType("image/" + fileType.toLowerCase());
+	            default -> response.setContentType("application/octet-stream");
+	        }
+
+	        
+	        String fileName = "document_" + documentId + "." + fileType.toLowerCase();
+	        if (isDownload) {
+	            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+	        } else {
+	            response.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+	        }
+
+	        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+
+	        
+	        byte[] buffer = new byte[8192];
+	        int bytesRead;
+	        while ((bytesRead = inputStream.read(buffer)) != -1) {
+	            outputStream.write(buffer, 0, bytesRead); 
+	        }
+
+	        outputStream.flush();
+
+	    } catch (IOException e) {
+	        throw new RuntimeException("Error streaming document", e);
+	    }
+	}
+
+
 	
 	
 }
