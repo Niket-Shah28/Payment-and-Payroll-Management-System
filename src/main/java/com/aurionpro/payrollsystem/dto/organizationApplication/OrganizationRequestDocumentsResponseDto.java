@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class OrganizationRequestDocumentsResponseDto {
-	private String documentTypeName;
-	private String cloudinaryUrl;
+	  private Long requestDocumentId;
+	    private String documentTypeName;
 }

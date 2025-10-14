@@ -8,6 +8,8 @@ import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationAppli
 import com.aurionpro.payrollsystem.dto.organizationApplication.OrganizationRequestDocumentsResponseDto;
 import com.aurionpro.payrollsystem.entity.employee.Status;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 public interface OrganizationApplicationService {
 	public Long addOrganizationApplication(OrganizationApplicationRequestDto dto);
 	
@@ -18,5 +20,7 @@ public interface OrganizationApplicationService {
 	public List<OrganizationRequestDocumentsResponseDto> getRequestDocuments(Long requestId);
 	
 	public void processOrganizationRequest(Long requestId, Status status);
+
+	public 	void streamDocument(Long requestId, Long documentId, HttpServletResponse response, boolean isDownload);
 	
 }
