@@ -1,0 +1,119 @@
+/* 1. Global Reset: Ensure no margin/padding and block external scrollbars */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Blocks all external scrolling (vertical and horizontal) */
+  font-family: Arial, sans-serif;
+  box-sizing: border-box; /* Crucial for reliable width/height calculation */
+}
+
+/* 2. Angular Host Element: Ensure it fills the full space */
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden; /* Ensure host doesn't create scroll */
+}
+
+/* 3. Login Wrapper: Full viewport size, centering, and background */
+.login-wrapper {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Use 100% of viewport height */
+  width: 100vw; /* Use 100% of viewport width */
+  padding: 10px; /* Small padding prevents card from touching screen edges */
+  box-sizing: border-box; /* Include padding within 100vw/100vh */
+  
+  /* Background Color */
+  background-color: #f4f6f9; /* Simple, soft background color */
+}
+
+/* 4. Login Card: Constrained width and height */
+.login-card {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  /* Max width and constraint */
+  width: 100%; /* Take up the full available width within the padding */
+  max-width: 400px; /* Do not exceed 400px on large screens */
+  
+  /* Height constraint to prevent vertical overflow */
+  max-height: 100%; 
+  overflow-y: auto; /* If content is too long for the screen, only the card scrolls internally */
+  
+  text-align: center;
+}
+
+/* --- Form and Input Styling (Kept clean and non-scroll-inducing) --- */
+
+.login-card h2 {
+  color: #333333;
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+
+.login-card .subtitle {
+  color: #777777;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555555;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Ensures padding doesn't widen the input */
+  font-size: 16px;
+}
+
+.password-wrapper {
+  display: flex;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+}
+
+.password-wrapper input {
+  flex-grow: 1;
+  border: none;
+  padding: 12px;
+}
+
+.password-wrapper .toggle-btn {
+  background-color: #e9ecef;
+  color: #007bff;
+  border: none;
+  padding: 0 15px;
+  cursor: pointer;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+}

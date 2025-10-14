@@ -1,0 +1,31 @@
+<nav class="navbar">
+  <div class="navbar-left">
+    <button class="toggle-btn" (click)="toggleNavbar()">☰</button>
+  </div>
+
+  <div class="navbar-right">
+    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile" class="profile-pic">
+    <span class="username">John Doe</span>
+  </div>
+</nav>
+
+<!-- Slide-in Collapsible Navbar -->
+<div class="side-menu" [class.open]="isNavbarOpen">
+  <ul>
+    <li *ngFor="let tab of tabs">
+      <a routerLink="{{ tab.link }}"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }"
+         (click)="closeNavbar()">
+        {{ tab.name }}
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Optional Overlay for closing on click outside -->
+<div class="overlay" *ngIf="isNavbarOpen" (click)="closeNavbar()"></div>
+
+<div class="main-content">
+  <router-outlet></router-outlet>
+</div>
