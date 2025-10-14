@@ -23,6 +23,7 @@ public class LeaveResponseDto {
     private LocalDate endDate;
     private LeaveStatus leaveStatus; // Pending/Approved/Rejected
     private String reason;
-    private EmployeeLeaves remainingDays;
+   private EmployeeLeaves remainingDays;
+    //private EmployeeLeavesDto employeeLeaves;
 
 }

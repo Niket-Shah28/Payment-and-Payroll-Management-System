@@ -46,7 +46,7 @@ public class Payslip {
 	private String department;
 	
 	@Column(name = "role", nullable = false)
-	private String role;  //developer, hr, etc
+	private String role; 
 	
 	@Column(name = "business_unit", nullable = false)
 	private String businessUnit;

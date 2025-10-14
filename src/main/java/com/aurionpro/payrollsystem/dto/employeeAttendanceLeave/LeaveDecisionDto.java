@@ -19,7 +19,7 @@ public class LeaveDecisionDto {
 	@NotBlank
 	private LeaveStatus leaveStatus;
 	
-	@NotBlank
-	private Long employeeId;
+//	@NotBlank
+//	private Long employeeId;
 
 }

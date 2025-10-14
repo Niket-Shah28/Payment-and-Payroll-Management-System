@@ -10,4 +10,5 @@ import com.aurionpro.payrollsystem.entity.leave.LeaveType;
 @Repository
 public interface LeaveTypeRepository extends JpaRepository<LeaveType, Long> {
 	Optional<LeaveType> findById (Long leaveType);
+	
 }

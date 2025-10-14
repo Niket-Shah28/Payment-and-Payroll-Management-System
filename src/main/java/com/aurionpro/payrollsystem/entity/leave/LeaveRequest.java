@@ -1,6 +1,6 @@
 package com.aurionpro.payrollsystem.entity.leave;
 
-import java.time.LocalDate;
+import java.time.LocalDate;	
 
 import com.aurionpro.payrollsystem.entity.employee.Employee;
 import com.aurionpro.payrollsystem.entity.employee.Status;
@@ -43,7 +43,7 @@ public class LeaveRequest {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "leaveStatus", nullable = false)
-	private LeaveStatus leaveStatus;
+	private Status leaveStatus;
 	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "leave_type_id", nullable = false)

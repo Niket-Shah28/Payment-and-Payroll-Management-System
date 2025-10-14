@@ -1,8 +1,7 @@
 package com.aurionpro.payrollsystem.entity.employee;
 
-import java.sql.Date;
+import java.sql.Date;	
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import com.aurionpro.payrollsystem.entity.organization.Organization;
 

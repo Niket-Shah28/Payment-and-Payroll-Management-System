@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class LeaveApplyRequestDto {
 
 	
-	//private Long managerId;
+	private Long managerId;
 	
 	@NotNull(message="Leave type id cannot be null")
 	private Long leaveTypeId;

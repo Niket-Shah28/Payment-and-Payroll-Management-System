@@ -124,8 +124,11 @@ public class SecurityConfig {
 	        
 	        .requestMatchers(HttpMethod.DELETE, "/organization/employees/*").authenticated()
 	        
-	        //.requestMatchers(HttpMethod.PUT, "/banks/payments/requests").authenticated()
 	        
+	        
+	        
+	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/view").hasAuthority("ROLE_ADMIN")
+	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/download").authenticated()
 	        
 	        //Employee Interface Features
 	        

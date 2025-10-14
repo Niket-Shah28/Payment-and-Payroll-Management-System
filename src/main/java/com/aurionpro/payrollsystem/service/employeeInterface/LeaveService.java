@@ -8,7 +8,7 @@ import com.aurionpro.payrollsystem.dto.employeeAttendanceLeave.LeaveResponseDto;
 
 public interface LeaveService {
 	
-	LeaveResponseDto applyLeave(Long employeeId, Long managerId, LeaveApplyRequestDto dto);
+	LeaveResponseDto applyLeave(Long employeeId, LeaveApplyRequestDto dto);
     List<LeaveResponseDto> getLeavesForEmployee(Long employeeId);
     List<LeaveResponseDto> getLeavesForManager(Long managerId);
     LeaveResponseDto decideLeave(LeaveDecisionDto dto, Long managerId);
