@@ -123,15 +123,68 @@ public class SecurityConfig {
 	        .requestMatchers(HttpMethod.PUT, "/organization/employees/*/designation").authenticated()
 	        
 	        .requestMatchers(HttpMethod.DELETE, "/organization/employees/*").authenticated()
-	       
 	        
-	       
+	        //.requestMatchers(HttpMethod.PUT, "/banks/payments/requests").authenticated()
 	        
-	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/view").hasAuthority("ROLE_ADMIN")
-	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/download").authenticated()
-	
-
-
+	        
+	        //Employee Interface Features
+	        
+	        //organization side's ticket
+	        .requestMatchers(HttpMethod.GET, "/organization/tickets").authenticated()
+	        .requestMatchers(HttpMethod.POST, "/organization/ticket/respond").authenticated()
+	        .requestMatchers(HttpMethod.PATCH, "/organization/ticket/close").authenticated()
+	        
+	        
+	        .requestMatchers(HttpMethod.GET, "/employee/address").authenticated()
+	        .requestMatchers(HttpMethod.PATCH, "/employee/address").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/contactdetails").authenticated()
+	        .requestMatchers(HttpMethod.PATCH, "/employee/contactdetails").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/profiledetails").authenticated()
+	        .requestMatchers(HttpMethod.PATCH, "/employee/profiletdetails").authenticated()
+	        
+	        .requestMatchers(HttpMethod.GET, "/employee/bank-account").authenticated()
+	        .requestMatchers(HttpMethod.PATCH, "/employee/bank-account/{accountId}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/bank-account/{accountId}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/bank-account/active").authenticated()
+	        .requestMatchers(HttpMethod.GET,"/employee/bank-info").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/bank-info/{bankInfoId}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/bank-info/{employeeId}").authenticated()
+	        .requestMatchers(HttpMethod.PATCH, "/employee/bank-info/{bankInfoId}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/bank-info/active").authenticated()
+	        
+	        
+	        
+	        
+	     .requestMatchers(HttpMethod.POST, "/employee/ticket").authenticated()
+	     .requestMatchers(HttpMethod.GET, "/employee/ticket").authenticated()
+	     .requestMatchers(HttpMethod.GET, "/employee/ticket/{ticketId}").authenticated()
+	     .requestMatchers(HttpMethod.GET, "/employee/ticket/open").authenticated()
+	     .requestMatchers(HttpMethod.GET, "/employee/ticket/close").authenticated()
+	     .requestMatchers(HttpMethod.POST, "/employee/ticket/response").authenticated()
+	     .requestMatchers(HttpMethod.PATCH, "/employee/ticket/{ticketId}").authenticated()
+	        
+	        
+	        .requestMatchers(HttpMethod.GET, "/employee/payslips").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/payslips/summaries").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/payslips/{payslipId}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/payslips/timeperiod/month{month}/year/{year}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/payslips/year/{year}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/payslips/latest").authenticated()
+	       // .requestMatchers(HttpMethod.GET, "/employee/payslips/{payslipId}/download").authenticated()
+	        
+	        .requestMatchers(HttpMethod.POST, "/employee/documents/upload").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/documents").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/documents/{documentId}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/documents/type/{documentTypeId}").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/documents/types").authenticated()
+	        
+	        .requestMatchers(HttpMethod.GET, "/employee/attendance").authenticated()
+	        .requestMatchers(HttpMethod.POST, "/employee/attendance/mark").authenticated()
+	        .requestMatchers(HttpMethod.POST, "/employee/leave/apply").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/leave/view").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/leave/view/manager/{managerId}").authenticated()
+	        .requestMatchers(HttpMethod.POST, "/employee/leave/manager/decision").authenticated()
+	        
 
 	        // LOGOUT
 	        .requestMatchers("/logout").authenticated()

@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.aurionpro.payrollsystem.entity.employee.Employee;
-import com.aurionpro.payrollsystem.entity.employee.EmployeeSalary;
+import com.aurionpro.payrollsystem.entity.employee.EmployeeDesignationRole;
 
 @Repository
-public interface EmployeeSalaryRepository extends JpaRepository<EmployeeSalary, Long>{
+public interface EmployeeDesignationRoleRepository extends JpaRepository<EmployeeDesignationRole, Long>{
+	
+	Optional<EmployeeDesignationRole> findByEmployeeId(Employee employeeId);
 
-	 Optional<EmployeeSalary> findByEmployeeId(Employee employeeId);
 }

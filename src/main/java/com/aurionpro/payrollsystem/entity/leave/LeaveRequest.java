@@ -43,7 +43,7 @@ public class LeaveRequest {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "leaveStatus", nullable = false)
-	private Status leaveStatus;
+	private LeaveStatus leaveStatus;
 	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "leave_type_id", nullable = false)
