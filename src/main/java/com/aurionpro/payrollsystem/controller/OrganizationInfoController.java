@@ -17,6 +17,8 @@ import com.aurionpro.payrollsystem.dto.OrganizationInfo.OrganizationDocumentDto;
 import com.aurionpro.payrollsystem.dto.OrganizationInfo.OrganizationInfoDto;
 import com.aurionpro.payrollsystem.service.OrganizationInfo.OrganizationInfoService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/banks/organizations")
 public class OrganizationInfoController {
@@ -44,4 +46,19 @@ public class OrganizationInfoController {
         List<OrganizationDocumentDto> documents = organizationService.getDocumentsByOrganizationId(organizationId);
         return ResponseEntity.ok(documents);
     }
+    
+    @GetMapping("/{orgId}/documents/{docId}/view")
+    public void viewDocument(@PathVariable Long orgId,
+                             @PathVariable Long docId,
+                             HttpServletResponse response) {
+    	organizationService.streamEmployeeDocument(orgId, docId, response, false);
+    }
+
+    @GetMapping("/{orgId}/documents/{docId}/download")
+    public void downloadDocument(@PathVariable Long orgId,
+                                 @PathVariable Long docId,
+                                 HttpServletResponse response) {
+    	organizationService.streamEmployeeDocument(orgId, docId, response, true);
+    }
+
 }
