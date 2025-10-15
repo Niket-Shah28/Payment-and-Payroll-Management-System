@@ -4,7 +4,7 @@ import { EmployeeDashboard } from './components/employee-dashboard/employee-dash
 
 const routes: Routes = [
   {
-    path:'dahsboard',
+    path:'dashboard',
     component:EmployeeDashboard
   }
 ];
