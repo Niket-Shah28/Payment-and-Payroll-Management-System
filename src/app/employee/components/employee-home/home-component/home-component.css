@@ -1,0 +1,43 @@
+.info-card {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #ffffff 0%, #f7f7ff 100%);
+      border-left: 5px solid #007bff;
+      animation: fadeIn 0.8s ease-out;
+    }
+    .welcome-header {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #004d99;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .organization-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #007bff;
+      display: block;
+      margin-top: 0.5rem;
+    }
+    .mission-statement {
+      font-size: 1rem;
+      color: #555;
+      margin-top: 1.5rem;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 1.5rem;
+      line-height: 1.6;
+    }
+    .contact-info {
+      font-size: 0.9rem;
+      color: #777;
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: #e9f5ff;
+      border-radius: 8px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }

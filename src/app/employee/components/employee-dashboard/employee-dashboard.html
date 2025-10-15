@@ -5,7 +5,8 @@
 
   <div class="navbar-right">
     <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile" class="profile-pic">
-    <span class="username">John Doe</span>
+    <!-- Bind the dynamically fetched username -->
+    <span class="username">{{ username }}</span>
   </div>
 </nav>
 
@@ -13,10 +14,10 @@
 <div class="side-menu" [class.open]="isNavbarOpen">
   <ul>
     <li *ngFor="let tab of tabs">
-      <a routerLink="{{ tab.link }}"
-         routerLinkActive="active"
-         [routerLinkActiveOptions]="{ exact: true }"
-         (click)="closeNavbar()">
+      <a [routerLink]="tab.link"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeNavbar()">
         {{ tab.name }}
       </a>
     </li>
