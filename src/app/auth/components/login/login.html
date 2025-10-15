@@ -24,6 +24,12 @@
         </div>
       </div>
 
+      <div
+        class="g-recaptcha"
+        [attr.data-sitekey]="capatchaSiteKey"
+        data-callback="onCaptchaResolved"
+      ></div>
+
       <button type="submit" class="login-btn">Login</button>
     </form>
   </div>
