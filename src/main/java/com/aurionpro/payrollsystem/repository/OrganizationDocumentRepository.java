@@ -3,6 +3,7 @@ package com.aurionpro.payrollsystem.repository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +17,7 @@ import com.aurionpro.payrollsystem.entity.documents.Documents;
 public interface OrganizationDocumentRepository extends JpaRepository<Documents, Long> {
 
     @Query(value = """
-        SELECT d.cloudinary_url AS cloudinaryUrl,
+        SELECT d.document_id AS documentId,
                d.created_at AS createdAt,
                dt.document_type_name AS documentTypeName
         FROM documents d
@@ -24,6 +25,8 @@ public interface OrganizationDocumentRepository extends JpaRepository<Documents,
         WHERE d.organization_id = :organizationId
     """, nativeQuery = true)
     List<OrganizationDocumentDto> findDocumentsByOrganizationId(@Param("organizationId") Long organizationId);
+    
+    Optional<Documents> findByOrganization_OrganizationIdAndDocumentId(Long organizationId, Long documentId);
 }
 
 

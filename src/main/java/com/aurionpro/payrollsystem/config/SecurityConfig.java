@@ -128,8 +128,9 @@ public class SecurityConfig {
 	       
 	        
 	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/view").hasAuthority("ROLE_ADMIN")
-	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/download").authenticated()
-	
+	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/download").hasAuthority("ROLE_ADMIN")
+	        .requestMatchers(HttpMethod.GET, "/banks/organizations/*/documents/*/view").hasAuthority("ROLE_ADMIN")
+	        .requestMatchers(HttpMethod.GET, "/banks/organizations/*/documents/*/download").hasAuthority("ROLE_ADMIN")
 
 
 

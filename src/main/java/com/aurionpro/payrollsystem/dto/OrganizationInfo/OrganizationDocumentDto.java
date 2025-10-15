@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrganizationDocumentDto {
     
-    private String cloudinaryUrl;
+    private long documentId;
     private Timestamp createdAt;
     private String documentTypeName; 
 }
