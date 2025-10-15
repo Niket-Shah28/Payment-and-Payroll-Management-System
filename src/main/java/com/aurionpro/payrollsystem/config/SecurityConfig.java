@@ -185,6 +185,12 @@ public class SecurityConfig {
 	        .requestMatchers(HttpMethod.GET, "/employee/leave/view/manager/{managerId}").authenticated()
 	        .requestMatchers(HttpMethod.POST, "/employee/leave/manager/decision").authenticated()
 	        
+	        
+	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/view").hasAuthority("ROLE_ADMIN")
+	        .requestMatchers(HttpMethod.GET, "/organization/requests/*/documents/*/download").hasAuthority("ROLE_ADMIN")
+	        .requestMatchers(HttpMethod.GET, "/banks/organizations/*/documents/*/view").hasAuthority("ROLE_ADMIN")
+	        .requestMatchers(HttpMethod.GET, "/banks/organizations/*/documents/*/download").hasAuthority("ROLE_ADMIN")
+	        
 
 	        // LOGOUT
 	        .requestMatchers("/logout").authenticated()
