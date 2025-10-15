@@ -9,9 +9,12 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class LoginRequestDto {
-	@NotBlank(message = "ReferenceId is required")
+	@NotBlank(message = "Reference Id is required")
 	private String referenceId;
 	
 	@NotBlank(message = "Password is required")
 	private String password;
+	
+	@NotBlank(message = "Capatcha Response is required")
+	private String capatchaResponse;
 }

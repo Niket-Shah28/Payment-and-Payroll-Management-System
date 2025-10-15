@@ -3,6 +3,7 @@ package com.aurionpro.payrollsystem.service.authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,8 @@ public class AuthServiceImpl implements AuthService {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	
+	
 	@Autowired
 	private JwtTokenProvider tokenProvider;
 	
@@ -27,6 +30,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public LoginResponseDto login(LoginRequestDto dto) {
+		
+		
+		
 		try {
 	        Authentication authentication = authenticationManager.authenticate(
 	            new UsernamePasswordAuthenticationToken(dto.getReferenceId(), dto.getPassword()));

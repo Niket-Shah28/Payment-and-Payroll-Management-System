@@ -1,6 +1,7 @@
 package com.aurionpro.payrollsystem.entity.ticket;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.aurionpro.payrollsystem.entity.employee.Employee;
 import com.aurionpro.payrollsystem.entity.organization.Organization;
@@ -10,11 +11,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,4 +55,8 @@ public class Ticket {
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "organization_id", nullable = false)
 	private Organization organization; 
+	
+	@OneToMany(mappedBy = "ticketId", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private List<TicketResponse> responses;
+ 
 }

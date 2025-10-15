@@ -4,7 +4,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import com.aurionpro.payrollsystem.service.authentication.CapatchaService;
 import com.aurionpro.payrollsystem.service.payment.PayslipService;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -38,5 +40,15 @@ public class AppConfig {
 	@Bean
 	PayslipService payslipService() {
 		return new PayslipService();
+	}
+	
+	@Bean
+	CapatchaService capatchaService() {
+		return new CapatchaService();
+	}
+	
+	@Bean
+	WebClient webClient() {
+		return WebClient.builder().build();
 	}
 }

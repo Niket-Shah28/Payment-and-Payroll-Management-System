@@ -27,7 +27,7 @@ public class EmployeeBankInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "employee_bank_info_id")
-	private Long EmployeeBankInfoId;
+	private Long employeeBankInfoId;
 	
 	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "employee_id", nullable = false)

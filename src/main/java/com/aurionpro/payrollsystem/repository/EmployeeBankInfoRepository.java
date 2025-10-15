@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 import com.aurionpro.payrollsystem.entity.bankAccount.EmployeeBankInfo;
 import com.aurionpro.payrollsystem.entity.employee.Employee;
 
-@Repository
+//@Repository
 public interface EmployeeBankInfoRepository extends JpaRepository<EmployeeBankInfo, Long> {
     
-	 Optional<EmployeeBankInfo> findByEmployee(Employee employeeId);
+	Optional<EmployeeBankInfo> findByEmployee(Employee employeeId);
 	
 	//
     Optional<EmployeeBankInfo> findByEmployee_EmployeeId(Long employeeId);
