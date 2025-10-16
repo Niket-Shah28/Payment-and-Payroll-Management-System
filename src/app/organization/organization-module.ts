@@ -2,12 +2,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { OrganizationRoutingModule } from './organization-routing-module';
-import { OrganizationDashboard } from './components/organization-dashboard/organization-dashboard';
+import { OrganizationDepartments } from './components/organization-departments/organization-departments';
+import { OrganizationLayoutComponent } from './components/organization-layout-component/organization-layout-component';
+import { HomePage } from './components/home-page/home-page';
 
 
 @NgModule({
   declarations: [
-    OrganizationDashboard
+    OrganizationLayoutComponent,
+    OrganizationDepartments,
+    OrganizationLayoutComponent,
+    HomePage
   ],
   imports: [
     CommonModule,

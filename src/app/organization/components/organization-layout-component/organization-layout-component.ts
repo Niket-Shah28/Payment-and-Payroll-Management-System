@@ -1,19 +1,19 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-organization-dashboard',
+  selector: 'app-organization-layout-component',
   standalone: false,
-  templateUrl: './organization-dashboard.html',
-  styleUrl: './organization-dashboard.css'
+  templateUrl: './organization-layout-component.html',
+  styleUrl: './organization-layout-component.css'
 })
-export class OrganizationDashboard {
+export class OrganizationLayoutComponent {
   isNavbarOpen = false;
 
   tabs = [
     { name: 'HOME', link: '/home' },
     { name: 'MANAGE EMPLOYEES', link: '/manage-employees' },
     { name: 'MANAGE VENDORS', link: '/manage-vendors' },
-    { name: 'MANAGE DEPARTMENT', link: '/manage-department' },
+    { name: 'MANAGE DEPARTMENT', link: '/organization/dashboard/departments' },
     { name: 'MANAGE BUSINESS UNITS', link: '/manage-business-units' },
     { name: 'MANAGE EMPLOYEE ROLES', link: '/manage-employee-roles' },
     { name: 'TICKETS', link: '/tickets' },

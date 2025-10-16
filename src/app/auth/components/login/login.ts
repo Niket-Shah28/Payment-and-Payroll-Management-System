@@ -71,7 +71,7 @@ export class Login {
         this.loginService.saveToken(val);
         this.role = this.loginService.getRole();
         if(this.role === UserRole.ROLE_ORGANIZATION){
-          this.router.navigate(['/organization/dashboard'])
+          this.router.navigate(['/organization/dashboard/home'])
         }
         else if(this.role === UserRole.ROLE_EMPLOYEE){
           this.router.navigate(['/employee/dashboard'])
