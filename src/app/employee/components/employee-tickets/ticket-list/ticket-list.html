@@ -1,0 +1,44 @@
+<div class="container mt-3">
+  <h3>My Tickets</h3>
+  <div class="mb-3">
+    <button class="btn btn-outline-primary me-2" (click)="setFilter('ALL')">All</button>
+    <button class="btn btn-outline-success me-2" (click)="setFilter('OPEN')">Open</button>
+    <button class="btn btn-outline-secondary" (click)="setFilter('CLOSE')">Closed</button>
+  </div>
+
+  <table class="table table-bordered table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Query</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>Responses</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ticket of tickets">
+        <td>{{ ticket.ticketId }}</td>
+        <td>{{ ticket.query }}</td>
+        <td>
+          <span 
+            class="badge" 
+            [ngClass]="{
+              'bg-success': ticket.status === 'OPEN',
+              'bg-secondary': ticket.status === 'CLOSE'
+            }"
+          >
+            {{ ticket.status }}
+          </span>
+        </td>
+        <td>{{ ticket.createdAt | date: 'short' }}</td>
+        <td>{{ ticket.responseCount }}</td>
+        <td>
+          <button class="btn btn-sm btn-info" (click)="viewTicket(ticket.ticketId)">View</button>
+           <button class="btn btn-sm btn-warning" (click)="editTicketQuery(ticket)">Edit Query</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

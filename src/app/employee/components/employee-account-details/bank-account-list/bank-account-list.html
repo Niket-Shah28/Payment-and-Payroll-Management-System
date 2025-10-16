@@ -1,0 +1,43 @@
+<div class="container mt-3">
+  <h3>Bank Accounts</h3>
+
+  <div class="mb-3 text-end">
+    <button class="btn btn-primary" (click)="goToEmployeeBankInfo()">
+      View Bank Info
+    </button>
+  </div>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Account Number</th>
+        <th>Bank Name</th>
+        <th>IFSC</th>
+        <th>Account Type</th>
+        <th>Holder Name</th>
+        <th>Active</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let acc of accounts">
+        <td>{{ acc.accountId }}</td>
+        <td>{{ acc.accountNumber }}</td>
+        <td>{{ acc.bankName }}</td>
+        <td>{{ acc.ifscCode }}</td>
+        <td>{{ acc.accountType }}</td>
+        <td>{{ acc.accountHolderName }}</td>
+        <td>{{ acc.isActive ? 'Yes' : 'No' }}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-1" (click)="viewAccount(acc.accountId)">
+            View
+          </button>
+          <button class="btn btn-sm btn-warning me-1" (click)="editAccount(acc)">
+            Edit
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,195 @@
+
+<div class="container my-5">
+ 
+  <!-- PROFILE SECTION -->
+  <div class="card mb-4 p-3 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>Profile Details</h4>
+      <button class="btn btn-sm btn-outline-primary" (click)="toggleEdit('profile')">
+        {{ editingProfile ? 'Cancel' : 'Edit' }}
+      </button>
+    </div>
+    <form [formGroup]="profileForm" *ngIf="profileForm && editingProfile" (ngSubmit)="submitProfile()">
+      <div class="row mt-3">
+        <div class="col-md-4 mb-3">
+          <label>First Name</label>
+          <input type="text" class="form-control" formControlName="firstName">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label>Middle Name</label>
+          <input type="text" class="form-control" formControlName="middleName">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label>Last Name</label>
+          <input type="text" class="form-control" formControlName="lastName">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label>Gender</label>
+          <select class="form-select" formControlName="gender">
+            <option value="MALE">Male</option>
+            <option value="FEMALE">Female</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label>Salutation</label>
+          <select class="form-select" formControlName="salutation">
+            <option value="MR">Mr</option>
+            <option value="MRS">Mrs</option>
+            <option value="MS">Ms</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label>Date of Birth</label>
+          <input type="date" class="form-control" formControlName="dateOfBirth">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label>Blood Group</label>
+          <input type="text" class="form-control" formControlName="bloodGroup">
+        </div>
+        <div class="col-md-4">
+          <label>Nationality</label>
+          <input type="text" class="form-control" formControlName="nationality">
+        </div>
+        <div class="col-md-4">
+          <label>Spouse</label>
+          <input type="text" class="form-control" formControlName="spouse">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label>PAN Number</label>
+          <input type="text" class="form-control" formControlName="panNumber">
+        </div>
+        <div class="col-md-6">
+          <label>Aadhar Number</label>
+          <input type="text" class="form-control" formControlName="aadharNumber">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label>Profile Photo</label>
+        <input type="file" class="form-control" (change)="onFileSelected($event)">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <div *ngIf="!editingProfile" class="mt-3">
+      <p><strong>Name:</strong> {{profileData.firstName}} {{profileData.middleName}} {{profileData.lastName}}</p>
+      <p><strong>Gender:</strong> {{profileData.gender}}</p>
+      <p><strong>Salutation:</strong> {{profileData.salutation}}</p>
+      <p><strong>Date of Birth:</strong> {{profileData.dateOfBirth}}</p>
+      <p><strong>Blood Group:</strong> {{profileData.bloodGroup}}</p>
+      <p><strong>Nationality:</strong> {{profileData.nationality}}</p>
+      <p><strong>PAN:</strong> {{profileData.panNumber}}</p>
+      <p><strong>Aadhar:</strong> {{profileData.aadharNumber}}</p>
+      <p><strong>Profile Photo</strong></p>
+      <img *ngIf="profileData?.profilePhotoUrl" [src]="profileData.profilePhotoUrl" class="img-thumbnail" width="150">
+    </div>
+</div>
+
+
+
+  <!-- ADDRESS SECTION -->
+  <div class="card mb-4 p-3 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>Address Details</h4>
+      <button class="btn btn-sm btn-outline-primary" (click)="toggleEdit('address')">
+        {{ editingAddress ? 'Cancel' : 'Edit' }}
+      </button>
+    </div>
+    <form [formGroup]="addressForm" *ngIf="addressForm && editingAddress" (ngSubmit)="submitAddress()">
+      <div class="row mt-3">
+        <div class="col-md-6 mb-3">
+          <label>Current Address</label>
+          <input type="text" class="form-control" formControlName="currentAddress">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label>Permanent Address</label>
+          <input type="text" class="form-control" formControlName="permanentAddress">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label>City</label>
+          <input type="text" class="form-control" formControlName="city">
+        </div>
+        <div class="col-md-4">
+          <label>State</label>
+          <input type="text" class="form-control" formControlName="state">
+        </div>
+        <div class="col-md-4">
+          <label>Pincode</label>
+          <input type="text" class="form-control" formControlName="pincode">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label>Country</label>
+        <input type="text" class="form-control" formControlName="country">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <div *ngIf="!editingAddress" class="mt-3">
+      <p><strong>Current Address:</strong> {{addressData.currentAddress}}</p>
+      <p><strong>Permanent Address:</strong> {{addressData.permanentAddress}}</p>
+      <p><strong>City:</strong> {{addressData.city}}</p>
+      <p><strong>State:</strong> {{addressData.state}}</p>
+      <p><strong>Pincode:</strong> {{addressData.pincode}}</p>
+      <p><strong>Country:</strong> {{addressData.country}}</p>
+    </div>
+  </div>
+
+  <!-- CONTACT SECTION -->
+  <div class="card mb-4 p-3 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>Contact Details</h4>
+      <button class="btn btn-sm btn-outline-primary" (click)="toggleEdit('contact')">
+        {{ editingContact ? 'Cancel' : 'Edit' }}
+      </button>
+    </div>
+    <form [formGroup]="contactForm" *ngIf="contactForm && editingContact" (ngSubmit)="submitContact()">
+      <div class="row mt-3">
+        <div class="col-md-4 mb-3">
+          <label>Email</label>
+          <input type="email" class="form-control" formControlName="email">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label>Office Email</label>
+          <input type="email" class="form-control" formControlName="officeEmail">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label>Phone Number</label>
+          <input type="text" class="form-control" formControlName="phoneNumber">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label>Emergency Contact</label>
+          <input type="text" class="form-control" formControlName="emergencyContact">
+        </div>
+        <div class="col-md-4">
+          <label>Emergency Contact Relation</label>
+          <input type="text" class="form-control" formControlName="emergencyContactRelation">
+        </div>
+        <div class="col-md-4">
+          <label>Alternate Mobile Number</label>
+          <input type="text" class="form-control" formControlName="alternateMobileNumber">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <div *ngIf="!editingContact" class="mt-3">
+      <p><strong>Email:</strong> {{contactData.email}}</p>
+      <p><strong>Office Email:</strong> {{contactData.officeEmail}}</p>
+      <p><strong>Phone:</strong> {{contactData.phoneNumber}}</p>
+      <p><strong>Emergency Contact:</strong> {{contactData.emergencyContact}}</p>
+      <p><strong>Emergency Relation:</strong> {{contactData.emergencyContactRelation}}</p>
+      <p><strong>Alternate Number:</strong> {{contactData.alternateMobileNumber}}</p>
+    </div>
+  </div>
+</div>

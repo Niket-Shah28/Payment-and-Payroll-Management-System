@@ -1,20 +1,24 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { EmployeeDto } from '../dto/employee-dto';
+import { ProfileResponseDto } from '../dto/profile-response-dto';
+import { LoginService } from '../../auth/service/login-service'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
 
-   private apiUrl = 'http://localhost:8080/auth/login';
+  private baseUrl = 'http://localhost:8080/employee';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private loginService: LoginService) {}
 
- getEmployeeReferenceId(): Observable<EmployeeDto> {
-    // When you implement authentication, you will add token headers here.
-    return this.http.get<EmployeeDto>(this.apiUrl);
+  getProfile(): Observable<ProfileResponseDto> {
+    const token = this.loginService.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<ProfileResponseDto>(`${this.baseUrl}/profile`, { headers });
   }
-  
+
 }

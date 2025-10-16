@@ -1,0 +1,11 @@
+h3, h5 {
+  margin-bottom: 15px;
+}
+
+.card {
+  border-radius: 8px;
+}
+
+textarea {
+  resize: none;
+}

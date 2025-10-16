@@ -4,5 +4,5 @@
 export const environment = {
   production: false,
   // Add all variables from .env here
-  CAPATCHA_SITE_KEY: 'SITE_KEY'
+  CAPATCHA_SITE_KEY: '6Lf-UOsrAAAAAC44Yt-kaQJJO113yclaA86wHBEs'
 };

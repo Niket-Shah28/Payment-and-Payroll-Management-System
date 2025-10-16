@@ -3,10 +3,10 @@
     <button class="toggle-btn" (click)="toggleNavbar()">☰</button>
   </div>
 
-  <div class="navbar-right">
-    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile" class="profile-pic">
-    <!-- Bind the dynamically fetched username -->
-    <span class="username">{{ username }}</span>
+ <div class="navbar-right">
+    <img [src]="profilePhotoUrl" alt="Profile" class="profile-pic">
+    <!-- Optional: display employee name next to photo -->
+    <!--<span class="username">{{ username }}</span>-->
   </div>
 </nav>
 
@@ -14,15 +14,16 @@
 <div class="side-menu" [class.open]="isNavbarOpen">
   <ul>
     <li *ngFor="let tab of tabs">
-      <a [routerLink]="tab.link"
+      <a [routerLink]="tab?.link"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
         (click)="closeNavbar()">
-        {{ tab.name }}
+        {{ tab?.name }}
       </a>
     </li>
   </ul>
 </div>
+
 
 <!-- Optional Overlay for closing on click outside -->
 <div class="overlay" *ngIf="isNavbarOpen" (click)="closeNavbar()"></div>

@@ -1,19 +1,43 @@
-<div class="p-4">
-    <div class="info-card">
-        <h1 class="welcome-header">
-            Hello, Employee! 
-            <span class="organization-name">{{ companyName }} Portal</span>
-        </h1>
-        <p class="text-xl font-light text-gray-700 mt-2">{{ tagline }}</p>
+<div class="home-container container text-center mt-5">
 
-        <p class="mission-statement">
-            {{ mission }}
-        </p>
-        
-        <p class="contact-info">
-            For immediate assistance, please contact the Internal Support Desk. Remember to verify your contact information in the Account Details tab.
-            <br><br>
-            Organization Values: Integrity, Innovation, and Dedication.
-        </p>
+  <div class="welcome-card card p-4 shadow-sm">
+    <div class="card-body">
+      <h1 class="welcome-text mb-3">Welcome, Employee!!</h1>
+      <p class="lead text-muted mb-4">
+        We are glad to have you at <strong>{{organizationName}}</strong>.
+      </p>
+      <hr class="my-4">
+      <p>
+        Explore your dashboard to view payslips, mark attendance, raise tickets, and manage your account.
+      </p>
+     <!-- <button class="btn btn-primary btn-lg mt-3">Go to Dashboard</button>-->
     </div>
+  </div>
+
+  <div class="info-section mt-5">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="info-card card h-100 text-center p-3 shadow-sm">
+          <i class="bi bi-person-lines-fill display-4 text-primary mb-3"></i>
+          <h5>Employee Services</h5>
+          <p>Access your profile, account details, and manage your tasks seamlessly.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="info-card card h-100 text-center p-3 shadow-sm">
+          <i class="bi bi-building display-4 text-primary mb-3"></i>
+          <h5>About Organization</h5>
+          <p>Learn more about our vision, mission, and work culture at {{ organizationName }}.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="info-card card h-100 text-center p-3 shadow-sm">
+          <i class="bi bi-graph-up display-4 text-primary mb-3"></i>
+          <h5>Performance & Growth</h5>
+          <p>Track your performance and explore opportunities for learning and growth.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

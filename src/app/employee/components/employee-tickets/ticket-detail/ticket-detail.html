@@ -1,0 +1,20 @@
+<div class="container mt-3" *ngIf="ticket">
+  <h3>Ticket #{{ticket.ticketId}}</h3>
+  <p><strong>Query:</strong> {{ticket.query}}</p>
+  <p><strong>Status:</strong> {{ticket.status}}</p>
+  <hr>
+  <h5>Responses</h5>
+  <div *ngFor="let r of ticket.responses" class="p-2 border rounded mb-2">
+    <p>{{r.response}}</p>
+    <small class="text-muted">{{r.createdAt | date:'short'}}</small>
+  </div>
+
+ <div class="mt-3">
+  <form (ngSubmit)="sendReply()">
+    <textarea [(ngModel)]="replyText" name="replyText" rows="3" class="form-control" placeholder="Write your reply..."></textarea>
+    <button type="submit" class="btn btn-primary mt-2">Send Reply</button>
+  </form>
+</div>
+
+
+</div>

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EmployeeService } from '../../services/employee-service';
+import { ProfileResponseDto } from '../../dto/profile-response-dto';
 
 @Component({
   selector: 'app-employee-dashboard',
@@ -7,50 +8,43 @@ import { EmployeeService } from '../../services/employee-service';
   templateUrl: './employee-dashboard.html',
   styleUrl: './employee-dashboard.css'
 })
-export class EmployeeDashboard {
+export class EmployeeDashboard implements OnInit {
 
-   isNavbarOpen = false;
-  // Initialize username to a loading state
-  username: string = 'Fetching ID...'; 
+  isNavbarOpen = false;
+  profilePhotoUrl: string = 'assets/default-avatar.png'; // fallback image
 
   tabs = [
-    // Use relative links
-    { name: 'HOME', link: 'home' }, 
+    { name: 'HOME', link: 'home' },
+    { name: 'PROFILE', link: 'profile' },
     { name: 'RAISE TICKETS', link: 'raise-tickets' },
-    { name: 'ACCOUNT DETAILS', link: 'account-details' },
+    { name: 'MY TICKETS', link: 'tickets' }, 
+    { name: 'ACCOUNT DETAILS', link: 'bank-account-list' },
     { name: 'PAYSLIP', link: 'payslip' },
     { name: 'MARK ATTENDANCE', link: 'mark-attendance' },
     { name: 'APPLY LEAVE', link: 'apply-leave' },
+    { name: 'DESIGNATION', link: 'designation' },
+    { name: 'EMPLOYEE GROWTH', link: 'employee-growth' }
   ];
 
   constructor(private employeeService: EmployeeService) { }
 
   ngOnInit(): void {
-    this.fetchEmployeeReferenceId();
+    this.fetchProfilePhoto();
   }
 
-  fetchEmployeeReferenceId(): void {
-    console.log('Attempting to fetch employee Reference ID...');
-    
-    this.employeeService.getEmployeeReferenceId().subscribe({
-      next: (employeeData:any) => {
-        // SUCCESS: Check the data structure before assigning
-        if (employeeData && employeeData.referenceId) {
-            this.username = employeeData.referenceId;
-            console.log('Successfully fetched Reference ID:', this.username);
-        } else {
-            this.username = 'ID Missing (API Success)';
-            console.error('API call succeeded, but "referenceId" field was missing in the response body.', employeeData);
+  fetchProfilePhoto(): void {
+    this.employeeService.getProfile().subscribe({
+      next: (profile: ProfileResponseDto) => {
+        if (profile.profilePhotoUrl) {
+          this.profilePhotoUrl = profile.profilePhotoUrl;
         }
       },
-      error: (error:any) => {
-        // ERROR: Log detailed error object for network issues (CORS, 401, 404, 500)
-        this.username = 'Error Fetching ID'; 
-        console.error('CRITICAL API ERROR: Could not fetch Reference ID.', error);
-        console.error('Check Network Tab: Status code:', error.status, 'Message:', error.message);
+      error: (err) => {
+        console.error('Error fetching profile photo:', err);
       }
     });
   }
+
 
   toggleNavbar() {
     this.isNavbarOpen = !this.isNavbarOpen;
@@ -59,5 +53,8 @@ export class EmployeeDashboard {
   closeNavbar() {
     this.isNavbarOpen = false;
   }
+
+
+  
 
 }

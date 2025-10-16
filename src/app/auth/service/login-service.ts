@@ -23,12 +23,17 @@ export class LoginService {
 
   getToken(){
     return localStorage.getItem("accessToken");
+    
   }
 
   getRole(){
     const accessToken = localStorage.getItem("accessToken");
     const payload = accessToken?.split(".")[1];
+    console.log(accessToken);
     const decodedPayload = JSON.parse(atob(payload!));
     return decodedPayload['role'][0]['authority'] as UserRole;
   }
+
+
+
 }

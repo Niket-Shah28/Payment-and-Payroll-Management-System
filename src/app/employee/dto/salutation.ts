@@ -1,0 +1,1 @@
+export type Salutation = 'MR' | 'MS' | 'MRS' | 'OTHER';

@@ -1,0 +1,33 @@
+<p>employee-bank-info-list works!</p>
+<div class="container mt-3">
+  <h3>Employee Bank Info</h3>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Employee ID</th>
+        <th>PF Number</th>
+        <th>UAN Number</th>
+        <th>Account Number</th>
+        <th>Bank Name</th>
+        <th>Active</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let info of bankInfos">
+        <td>{{ info.employeeBankInfoId }}</td>
+        <td>{{ info.employeeId }}</td>
+        <td>{{ info.pfNumber }}</td>
+        <td>{{ info.uanNumber }}</td>
+        <td>{{ info.accountDetails.accountNumber }}</td>
+        <td>{{ info.accountDetails.bankName }}</td>
+        <td>{{ info.isActive ? 'Yes' : 'No' }}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-1" (click)="viewBankInfo(info.employeeBankInfoId)">View</button>
+          <button class="btn btn-sm btn-warning" (click)="editBankInfo(info)">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

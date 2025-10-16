@@ -5,6 +5,15 @@ body, html {
   overflow-x: hidden;
 }
 
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
 /* Top Navbar */
 .navbar {
   display: flex;
