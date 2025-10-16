@@ -10,26 +10,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class EmployeeAddressRequestDto {
-	
-	//@NotBlank(message = "Address is mandatory.")
+
 	@Size(max = 300)
 	private String currentAddress;
-	
-	//@NotBlank(message = "Address is mandatory.")
+
 	@Size(max = 300)
 	private String permanentAddress;
-	
-	//@NotBlank(message = "State is mandatory.")
+
 	private String state;
 
-    //@NotBlank(message = "City is mandatory.")
 	private String city;
-    
-    //@NotBlank(message = "Pincode is mandatory.")
-    @Pattern(regexp = "^[0-9]{6}$", message = "Pincode must be 6 digits.")
+
+	@Pattern(regexp = "^[0-9]{6}$", message = "Pincode must be 6 digits.")
 	private String pincode;
-	
-    //@NotBlank(message = "Country is mandatory.")
+
 	private String country;
 
 }

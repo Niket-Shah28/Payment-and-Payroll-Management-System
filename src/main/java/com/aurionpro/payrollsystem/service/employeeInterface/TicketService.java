@@ -9,12 +9,12 @@ import com.aurionpro.payrollsystem.dto.employeeRaiseTicket.TicketSummaryDto;
 
 public interface TicketService {
 
-	TicketDto createTicket(TicketCreateDto createDto);
+	TicketDto createTicket(TicketCreateDto createDto, Long employeeID);
 
 
 	List<TicketSummaryDto> getAllTicketsByEmployeeId(Long employeeId);
 	
-	TicketResponseDto  giveReplyToTicketResponse (TicketResponseDto responseDto);
+	TicketResponseDto  giveReplyToTicketResponse (TicketResponseDto responseDto,  Long employeeId);
 	
 	TicketDto updateTicket(Long ticketId, String updatedQuery);
 

@@ -135,12 +135,12 @@ public class SecurityConfig {
 	        .requestMatchers(HttpMethod.PATCH, "/organization/ticket/close").authenticated()
 	        
 	        
-	        .requestMatchers(HttpMethod.GET, "/employee/address").authenticated()
-	        .requestMatchers(HttpMethod.PATCH, "/employee/address").authenticated()
-	        .requestMatchers(HttpMethod.GET, "/employee/contactdetails").authenticated()
-	        .requestMatchers(HttpMethod.PATCH, "/employee/contactdetails").authenticated()
-	        .requestMatchers(HttpMethod.GET, "/employee/profiledetails").authenticated()
-	        .requestMatchers(HttpMethod.PATCH, "/employee/profiletdetails").authenticated()
+	        .requestMatchers(HttpMethod.GET, "/employee/address").permitAll()
+	        .requestMatchers(HttpMethod.PATCH, "/employee/address").permitAll()
+	        .requestMatchers(HttpMethod.GET, "/employee/contactdetails").permitAll()
+	        .requestMatchers(HttpMethod.PATCH, "/employee/contactdetails").permitAll()
+	        .requestMatchers(HttpMethod.GET, "/employee/profiledetails").permitAll()
+	        .requestMatchers(HttpMethod.PATCH, "/employee/profiletdetails").permitAll()
 	        
 	        .requestMatchers(HttpMethod.GET, "/employee/bank-account").authenticated()
 	        .requestMatchers(HttpMethod.PATCH, "/employee/bank-account/{accountId}").authenticated()

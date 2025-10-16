@@ -16,10 +16,4 @@ public class TicketCreateDto {
 	@Size(min = 10, max = 1000, message = "Query must be between 10 and 1000 characters")
 	private String query;
 
-	@NotNull(message = "Employee ID is required")
-	private Long employeeId;
-
-	@NotNull(message = "Organization ID is required")
-	private Long organizationId;
-
 }

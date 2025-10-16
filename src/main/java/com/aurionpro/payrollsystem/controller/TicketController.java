@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,20 +28,29 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/employee")
+@CrossOrigin(origins="http://localhost:4200")
 public class TicketController {
 
 	@Autowired
 	private TicketService ticketService;
 
-	 @PostMapping("/ticket")
-	 @PreAuthorize("hasRole('EMPLOYEE')")
-	    public ResponseEntity<TicketDto> createTicket(@Valid @RequestBody TicketCreateDto createDto) {
-	        TicketDto createdTicket = ticketService.createTicket(createDto);
-	        return ResponseEntity.status(HttpStatus.CREATED).body(createdTicket);
-	    }
+	@PostMapping("/tickets")
+	@PreAuthorize("hasRole('EMPLOYEE')")
+	public ResponseEntity<TicketDto> createTicket(@Valid @RequestBody TicketCreateDto createDto,
+	                                              Authentication authentication) {
+	    
+	    Long employeeId = (Long) authentication.getDetails();
+
+	    
+	    TicketDto createdTicket = ticketService.createTicket(createDto, employeeId);
+
+	    return ResponseEntity.status(HttpStatus.CREATED).body(createdTicket);
+	}
+
+
 	    
 	   
-	    @GetMapping("/ticket")
+	    @GetMapping("/tickets")
 	    @PreAuthorize("hasRole('EMPLOYEE')")
 	    public ResponseEntity<List<TicketSummaryDto>> getAllTicketsByEmployeeId( Authentication authentication) {
 	    	Long employeeId = (Long) authentication.getDetails();
@@ -48,7 +58,7 @@ public class TicketController {
 	        return ResponseEntity.ok(tickets);
 	    }
 	  
-	    @GetMapping("/ticket/{ticketId}")
+	    @GetMapping("/tickets/{ticketId}")
 	    @PreAuthorize("hasRole('EMPLOYEE')")
 	    public ResponseEntity<TicketDto> getTicketWithResponses(@PathVariable Long ticketId) {
 	        TicketDto ticket = ticketService.getTicketWithResponses(ticketId);
@@ -56,7 +66,7 @@ public class TicketController {
 	    }
 	    
 	   
-	    @GetMapping("/ticket/open")
+	    @GetMapping("/tickets/open")
 	    @PreAuthorize("hasRole('EMPLOYEE')")
 	    public ResponseEntity<List<TicketSummaryDto>> getOpenTicketsByEmployeeId(Authentication authentication) {
 	    	Long employeeId = (Long) authentication.getDetails();
@@ -65,7 +75,7 @@ public class TicketController {
 	    }
 	    
 	  
-	    @GetMapping("/ticket/close")
+	    @GetMapping("/tickets/close")
 	    @PreAuthorize("hasRole('EMPLOYEE')")
 	    public ResponseEntity<List<TicketSummaryDto>> getClosedTicketsByEmployeeId(Authentication authentication) {
 	    	Long employeeId = (Long) authentication.getDetails();
@@ -88,14 +98,15 @@ public class TicketController {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	    }
 	    
-	    @PostMapping("/ticket/response")
+	    @PostMapping("/tickets/response")
 	    @PreAuthorize("hasRole('EMPLOYEE')")
-	    public ResponseEntity<TicketResponseDto> giveReplyToTicketResponse(@Valid @RequestBody TicketResponseDto responseDto) {
-	        TicketResponseDto response = ticketService.giveReplyToTicketResponse(responseDto);
+	    public ResponseEntity<TicketResponseDto> giveReplyToTicketResponse(@Valid @RequestBody TicketResponseDto responseDto, Authentication authentication) {
+	    	Long employeeId = (Long) authentication.getDetails();
+	        TicketResponseDto response = ticketService.giveReplyToTicketResponse(responseDto,employeeId);
 	        return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	    }
 	    
-	    @PatchMapping("/ticket/{ticketId}")
+	    @PatchMapping("/tickets/{ticketId}")
 	    @PreAuthorize("hasRole('EMPLOYEE')")
 	    public ResponseEntity<TicketDto> updateTicket(
 	            @PathVariable Long ticketId,

@@ -42,25 +42,29 @@ public class TicketServiceImpl implements TicketService {
 	
 	@Override
 	@Transactional
-	public TicketDto createTicket(TicketCreateDto createDto) {
-		Ticket ticket = new Ticket();
+	public TicketDto createTicket(TicketCreateDto createDto, Long employeeId) {
+
+	    Employee employee = employeeRepository.findById(employeeId)
+	            .orElseThrow(() -> new RuntimeException("Employee not found with id: " + employeeId));
+
+	    Organization organization = employee.getOrganization();
+	    if (organization == null) {
+	        throw new RuntimeException("Employee does not belong to any organization");
+	    }
+
+	    Ticket ticket = new Ticket();
 	    ticket.setQuery(createDto.getQuery());
 	    ticket.setStatus(TicketStatus.OPEN);
 	    ticket.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()));
-
-	  
-	    Employee employee = employeeRepository.findById(createDto.getEmployeeId())
-	        .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + createDto.getEmployeeId()));
 	    ticket.setEmployee(employee);
-
-	    
-	    Organization organization = organizationRepository.findById(createDto.getOrganizationId())
-	        .orElseThrow(() -> new ResourceNotFoundException("Organization not found with ID: " + createDto.getOrganizationId()));
 	    ticket.setOrganization(organization);
 
+	 
 	    Ticket savedTicket = ticketRepository.save(ticket);
 	    return convertToDto(savedTicket);
 	}
+
+
 
 	@Override
 	public List<TicketSummaryDto> getAllTicketsByEmployeeId(Long employeeId) {
@@ -72,6 +76,7 @@ public class TicketServiceImpl implements TicketService {
 	public TicketDto getTicketWithResponses(Long ticketId) {
 		Ticket ticket = ticketRepository.findByIdWithDetails(ticketId)
 				.orElseThrow(() -> new RuntimeException("Ticket not found with id: " + ticketId));
+		 
 
 		List<TicketResponse> responses = ticketResponseRepository.findByTicketIdWithDetails(ticketId);
 
@@ -186,19 +191,23 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
-	public TicketResponseDto giveReplyToTicketResponse(TicketResponseDto responseDto) {
-		Ticket ticket = ticketRepository.findById(responseDto.getTicketId())
+	public TicketResponseDto giveReplyToTicketResponse(TicketResponseDto responseDto, Long employeeId) {
+
+	    // 1️⃣ Get the ticket
+	    Ticket ticket = ticketRepository.findById(responseDto.getTicketId())
 	            .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ID: " + responseDto.getTicketId()));
 
-	    // Validate employee
-	    Employee employee = employeeRepository.findById(responseDto.getEmployeeId())
-	            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + responseDto.getEmployeeId()));
+	    // 2️⃣ Get the employee from the database
+	    Employee employee = employeeRepository.findById(employeeId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeId));
 
-	    // Validate organization
-	    Organization organization = organizationRepository.findById(responseDto.getOrganizationId())
-	            .orElseThrow(() -> new ResourceNotFoundException("Organization not found with ID: " + responseDto.getOrganizationId()));
+	    // 3️⃣ Get organization automatically from employee
+	    Organization organization = employee.getOrganization();
+	    if (organization == null) {
+	        throw new RuntimeException("Employee does not belong to any organization");
+	    }
 
-	    // Create response entity
+	    // 4️⃣ Create new TicketResponse
 	    TicketResponse response = new TicketResponse();
 	    response.setResponse(responseDto.getResponse());
 	    response.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()));
@@ -208,16 +217,18 @@ public class TicketServiceImpl implements TicketService {
 
 	    TicketResponse savedResponse = ticketResponseRepository.save(response);
 
-	    // Convert to DTO and return
-//	    TicketResponseDto dto = new TicketResponseDto();
-	    responseDto.setResponse(savedResponse.getResponse());
-	    responseDto.setCreatedAt(savedResponse.getCreatedAt());
-	    responseDto.setEmployeeId(employee.getEmployeeId());
-	    responseDto.setOrganizationId(organization.getOrganizationId());
-	    responseDto.setTicketId(ticket.getTicketId());
+	    // 5️⃣ Convert entity → DTO
+	    TicketResponseDto dto = new TicketResponseDto();
+	    dto.setResponseId(savedResponse.getResponseId());
+	    dto.setResponse(savedResponse.getResponse());
+	    dto.setCreatedAt(savedResponse.getCreatedAt());
+	    dto.setEmployeeId(employee.getEmployeeId());
+	    dto.setOrganizationId(organization.getOrganizationId());
+	    dto.setTicketId(ticket.getTicketId());
 
-	    return responseDto;
+	    return dto;
 	}
+
 	
 	
 	@Override
