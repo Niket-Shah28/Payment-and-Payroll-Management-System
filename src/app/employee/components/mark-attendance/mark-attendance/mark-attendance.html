@@ -1,36 +1,63 @@
-<div class="container mt-4 attendance-container">
-  <h2 class="text-center mb-3">Mark Your Attendance</h2>
+<div class="container mt-4 attendance-container shadow-lg p-4 rounded-4">
+  <h2 class="text-center fw-bold mb-3 text-gradient">Mark Your Attendance</h2>
 
-  <p class="text-center text-primary mb-4">
+  <p class="text-center text-secondary mb-4">
     Stay consistent! Mark your attendance daily to stay productive and track your growth.
   </p>
 
   <!-- Attendance Status Selector -->
-  <div class="mb-3 d-flex justify-content-center">
-    <label for="statusSelect" class="form-label me-2">Select Attendance Status:</label>
-    <select [(ngModel)]="attendanceStatus" id="statusSelect" class="form-select w-auto">
+  <div class="mb-4 d-flex justify-content-center align-items-center">
+    <label for="statusSelect" class="form-label fw-semibold me-2">Select Attendance Status:</label>
+    <select [(ngModel)]="attendanceStatus" id="statusSelect" class="form-select w-auto shadow-sm">
       <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
     </select>
   </div>
 
   <!-- Month Navigation -->
-  <div class="d-flex justify-content-between align-items-center mb-2 calendar-header">
-    <button class="btn btn-secondary btn-sm" (click)="prevMonth()">&lt;</button>
-    <h4>{{ currentDate | date: 'MMMM yyyy' }}</h4>
-    <button class="btn btn-secondary btn-sm" (click)="nextMonth()">&gt;</button>
+  <div class="d-flex justify-content-between align-items-center mb-3 calendar-header">
+    <button class="btn btn-outline-primary btn-sm" (click)="prevMonth()">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+    <h4 class="fw-bold mb-0">{{ currentDate | date: 'MMMM yyyy' }}</h4>
+    <button class="btn btn-outline-primary btn-sm" (click)="nextMonth()">
+      <i class="bi bi-chevron-right"></i>
+    </button>
   </div>
 
-  <!-- Calendar -->
-  <div class="calendar">
-    <div class="day" *ngFor="let day of monthDays"
-         (click)="toggleDate(day)"
-         [ngClass]="getDayClass(day)">
+  <!-- Weekday Labels -->
+  <div class="calendar-weekdays mb-1">
+    <div class="weekday">Sun</div>
+    <div class="weekday">Mon</div>
+    <div class="weekday">Tue</div>
+    <div class="weekday">Wed</div>
+    <div class="weekday">Thu</div>
+    <div class="weekday">Fri</div>
+    <div class="weekday">Sat</div>
+  </div>
+
+  <!-- Calendar Dates -->
+  <div class="calendar-grid">
+    <!-- Blank spaces before first day -->
+    <div
+      class="blank-day"
+      *ngFor="let i of [].constructor(monthDays[0]?.getDay())"
+    ></div>
+
+    <!-- Actual Dates -->
+    <div
+      class="day shadow-sm"
+      *ngFor="let day of monthDays"
+      (click)="toggleDate(day)"
+      [ngClass]="getDayClass(day)"
+    >
       {{ day.getDate() }}
     </div>
   </div>
 
   <!-- Submit -->
-  <div class="d-flex justify-content-center mt-3">
-    <button class="btn btn-success" (click)="markAttendance()">Mark Attendance</button>
+  <div class="d-flex justify-content-center mt-4">
+    <button class="btn btn-gradient px-4 py-2 fw-semibold shadow" (click)="markAttendance()">
+      ✅ Mark Attendance
+    </button>
   </div>
 </div>

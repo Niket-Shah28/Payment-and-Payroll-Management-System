@@ -11,7 +11,7 @@ import { AttendanceResponseDto } from '../../../dto/attendance-response.model';
   styleUrls: ['./mark-attendance.css']
 })
 export class MarkAttendance {
- selectedDates: Date[] = [];
+  selectedDates: Date[] = [];
   attendanceStatus: AttendanceStatus = AttendanceStatus.PRESENT;
   statusOptions = Object.values(AttendanceStatus);
 
@@ -19,6 +19,17 @@ export class MarkAttendance {
   currentDate: Date = new Date();
 
   attendanceMap: Map<string, AttendanceStatus> = new Map(); // key = yyyy-mm-dd
+
+  // ✅ List of national holidays (YYYY-MM-DD format)
+  nationalHolidays: string[] = [
+    '2025-01-26', // Republic Day
+    '2025-08-15', // Independence Day
+    '2025-10-02', // Gandhi Jayanti
+    '2025-12-25', // Christmas
+    '2025-10-23', // Diwali
+    '2025-10-24', // Diwali
+    '2025-10-25'  // Diwali
+  ];
 
   constructor(private attendanceService: AttendanceService) {}
 
@@ -38,24 +49,82 @@ export class MarkAttendance {
   }
 
   prevMonth() {
-  const year = this.currentDate.getFullYear();
-  const month = this.currentDate.getMonth() - 1; // go to previous month
-  this.currentDate = new Date(year, month, 1);   // create new Date object
-  this.generateMonthDays(this.currentDate);
-  this.loadAttendance();
-}
+    const year = this.currentDate.getFullYear();
+    const month = this.currentDate.getMonth() - 1;
+    this.currentDate = new Date(year, month, 1);
+    this.generateMonthDays(this.currentDate);
+    this.loadAttendance();
+  }
 
-nextMonth() {
-  const year = this.currentDate.getFullYear();
-  const month = this.currentDate.getMonth() + 1; // go to next month
-  this.currentDate = new Date(year, month, 1);   // create new Date object
-  this.generateMonthDays(this.currentDate);
-  this.loadAttendance();
-}
+  nextMonth() {
+    const year = this.currentDate.getFullYear();
+    const month = this.currentDate.getMonth() + 1;
+    this.currentDate = new Date(year, month, 1);
+    this.generateMonthDays(this.currentDate);
+    this.loadAttendance();
+  }
 
+  // ✅ Check if date is a weekend
+  isWeekend(date: Date): boolean {
+    const day = date.getDay();
+    return day === 0 || day === 6; // Sunday or Saturday
+  }
+
+  // ✅ Check if date is a national holiday
+  isNationalHoliday(date: Date): boolean {
+    const key = date.toISOString().split('T')[0];
+    return this.nationalHolidays.includes(key);
+  }
+
+  // ✅ Check if date is older than 1 week (before 7 days from today)
+  isOlderThanOneWeek(date: Date): boolean {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7); // 7 days ago
+
+    // compare only date part (ignore time)
+    const dateOnly = new Date(date.toDateString());
+    const sevenDaysAgoOnly = new Date(sevenDaysAgo.toDateString());
+
+    return dateOnly < sevenDaysAgoOnly;
+  }
+
+  // ✅ NEW: Check if date is in the future (after current date)
+  isFutureDate(date: Date): boolean {
+    const today = new Date();
+    const dateOnly = new Date(date.toDateString());
+    const todayOnly = new Date(today.toDateString());
+
+    return dateOnly > todayOnly; // future date (tomorrow or later)
+  }
 
   toggleDate(date: Date) {
     const key = date.toISOString().split('T')[0];
+
+    // Prevent marking attendance on weekends
+    if (this.isWeekend(date)) {
+      alert('🚫 You cannot mark attendance on weekends!');
+      return;
+    }
+
+    // Prevent marking attendance on national holidays
+    if (this.isNationalHoliday(date)) {
+      alert('🚫 You cannot mark attendance on national holidays!');
+      return;
+    }
+
+    // Prevent marking attendance for dates older than one week
+    if (this.isOlderThanOneWeek(date)) {
+      alert('⚠️ You can only mark attendance for the past 7 days. Older dates are locked.');
+      return;
+    }
+
+    // ✅ Prevent marking attendance for future dates
+    if (this.isFutureDate(date)) {
+      alert('🚫 You cannot mark attendance for future dates!');
+      return;
+    }
+
     const index = this.selectedDates.findIndex(d => d.toISOString().split('T')[0] === key);
     if (index > -1) this.selectedDates.splice(index, 1);
     else this.selectedDates.push(date);
@@ -70,34 +139,35 @@ nextMonth() {
     const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
     const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
 
-    // Convert Date -> string before passing to service
-    this.attendanceService.getAttendance(firstDay.toISOString().split('T')[0], lastDay.toISOString().split('T')[0])
-      .subscribe((data: AttendanceResponseDto[]) => {
-        this.attendanceMap.clear();
-        data.forEach(d => this.attendanceMap.set(d.date, d.attendanceStatus));
-      });
+    this.attendanceService.getAttendance(
+      firstDay.toISOString().split('T')[0],
+      lastDay.toISOString().split('T')[0]
+    ).subscribe((data: AttendanceResponseDto[]) => {
+      this.attendanceMap.clear();
+      data.forEach(d => this.attendanceMap.set(d.date, d.attendanceStatus));
+    });
   }
 
   markAttendance() {
     if (this.selectedDates.length === 0) {
-      alert('Please select at least one date!');
+      alert('Please select at least one valid date!');
       return;
     }
 
     const request: AttendanceMarkRequest = {
-      dates: this.selectedDates.map(d => d.toISOString().split('T')[0]), // convert Date -> string
+      dates: this.selectedDates.map(d => d.toISOString().split('T')[0]),
       attendanceStatus: this.attendanceStatus
     };
 
     this.attendanceService.markAttendance(request).subscribe({
       next: (res: AttendanceResponseDto[]) => {
         res.forEach(r => this.attendanceMap.set(r.date, r.attendanceStatus));
-        alert(`Attendance marked successfully as "${this.attendanceStatus}" for ${this.selectedDates.length} day(s)!`);
+        alert(`✅ Attendance marked successfully as "${this.attendanceStatus}" for ${this.selectedDates.length} day(s)!`);
         this.selectedDates = [];
       },
       error: (err) => {
         console.error(err);
-        alert('Failed to mark attendance!');
+        alert('❌ Failed to mark attendance!');
       }
     });
   }
@@ -106,15 +176,18 @@ nextMonth() {
     const key = date.toISOString().split('T')[0];
     const status = this.attendanceMap.get(key);
 
+    if (this.isWeekend(date)) return 'weekend'; // gray for weekends
+    if (this.isNationalHoliday(date)) return 'holiday'; // red for holidays
+    if (this.isOlderThanOneWeek(date)) return 'locked'; // faded gray for old dates
+    if (this.isFutureDate(date)) return 'locked'; // same style for future dates
     if (this.isSelected(date)) return 'selected';
+
     if (!status) return '';
 
     switch (status) {
       case AttendanceStatus.PRESENT: return 'present';
       case AttendanceStatus.ABSENT: return 'absent';
-      case AttendanceStatus.LEAVE: return 'leave';
       case AttendanceStatus.OUTDOOR: return 'outdoor';
-      case AttendanceStatus.UNPAID_LEAVE: return 'unpaid-leave';
       default: return '';
     }
   }
@@ -126,5 +199,4 @@ nextMonth() {
   get year(): number {
     return this.currentDate.getFullYear();
   }
-
 }

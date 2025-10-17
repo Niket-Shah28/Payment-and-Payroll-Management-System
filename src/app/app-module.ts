@@ -6,7 +6,8 @@ import { App } from './app';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './employee/interceptors/auth.interceptor'; 
+import { TokenInterceptor } from './interceptors/token-interceptor';
+
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import { AuthInterceptor } from './employee/interceptors/auth.interceptor';
   providers: [
     provideBrowserGlobalErrorListeners(), 
     {provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
+    useClass: TokenInterceptor,
     multi: true}
   ],
   bootstrap: [App]
