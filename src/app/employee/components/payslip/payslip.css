@@ -1,0 +1,47 @@
+.text-gradient {
+  background: linear-gradient(90deg, #007bff, #004aad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.payslip-container {
+  background: linear-gradient(135deg, #ffffff, #e9f2ff);
+  border-radius: 16px;
+}
+
+.input-card {
+  border: 1px solid #d0e1ff;
+  background: linear-gradient(135deg, #f9fbff, #eef5ff);
+  border-radius: 12px;
+}
+
+.payslip-card {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+}
+
+.bg-gradient {
+  background: linear-gradient(90deg, #007bff, #004aad);
+}
+
+.btn-gradient {
+  background: linear-gradient(90deg, #007bff, #004aad);
+  color: white;
+  border: none;
+  transition: 0.3s;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(90deg, #004aad, #007bff);
+  transform: translateY(-2px);
+}
+
+.table-primary {
+  background: linear-gradient(90deg, #e3f2fd, #bbdefb);
+}
+
+.table-info {
+  background: linear-gradient(90deg, #d0ebff, #b3e5fc);
+}

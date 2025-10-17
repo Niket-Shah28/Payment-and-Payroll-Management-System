@@ -15,6 +15,7 @@ import { AccountService } from './services/account-service';
 import { BankAccountList } from './components/employee-account-details/bank-account-list/bank-account-list';
 import { EmployeeBankInfoList } from './components/employee-bank-info-list/employee-bank-info-list';
 import { MarkAttendance } from './components/mark-attendance/mark-attendance/mark-attendance';
+import { Payslip } from './components/payslip/payslip';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { MarkAttendance } from './components/mark-attendance/mark-attendance/mar
     TicketDetail,
     BankAccountList,
     EmployeeBankInfoList,
-    MarkAttendance
+    MarkAttendance,
+    Payslip
     
   ],
   imports: [

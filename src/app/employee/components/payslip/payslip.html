@@ -1,0 +1,102 @@
+<div class="container py-4 payslip-container">
+  <h2 class="text-center mb-4 text-gradient fw-bold">Payslip Portal</h2>
+
+  <!-- Input Card -->
+  <div class="card shadow-sm input-card mb-4">
+    <div class="card-body d-flex flex-wrap gap-3 justify-content-center">
+      <div>
+        <label class="form-label fw-semibold">Select Month</label>
+        <select class="form-select" [(ngModel)]="selectedMonth">
+          <option value="">-- Select Month --</option>
+          <option *ngFor="let m of months" [value]="m">{{ m }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label fw-semibold">Select Year</label>
+        <input type="number" class="form-control" [(ngModel)]="selectedYear" min="2000" max="2100" placeholder="e.g. 2025">
+      </div>
+
+      <div class="align-self-end">
+        <button class="btn btn-gradient" (click)="viewPayslip()">
+          <i class="bi bi-search"></i> View Payslip
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payslip Display -->
+  <div *ngIf="payslip" class="card shadow-lg payslip-card">
+    <div class="card-header bg-gradient text-white text-center fw-bold">
+      Payslip for {{ payslip.payslipMonth }} {{ payslip.year }}
+    </div>
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <p><strong>Name:</strong> {{ payslip.employeeName }}</p>
+          <p><strong>Department:</strong> {{ payslip.department }}</p>
+          <p><strong>Role:</strong> {{ payslip.role }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Bank:</strong> {{ payslip.bankName }}</p>
+          <p><strong>Account No:</strong> {{ payslip.accountNumber }}</p>
+          <p><strong>IFSC:</strong> {{ payslip.ifscCode }}</p>
+        </div>
+      </div>
+
+      <table class="table table-bordered align-middle text-center">
+        <thead class="table-primary">
+          <tr>
+            <th>Earnings</th>
+            <th>Amount</th>
+            <th>Deductions</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Basic Salary</td>
+            <td>{{ payslip.basicSalary | currency:'INR' }}</td>
+            <td>Provident Fund</td>
+            <td>{{ payslip.providentFund | currency:'INR' }}</td>
+          </tr>
+          <tr>
+            <td>HRA</td>
+            <td>{{ payslip.houseRentAllowance | currency:'INR' }}</td>
+            <td></td><td></td>
+          </tr>
+          <tr>
+            <td>DA</td>
+            <td>{{ payslip.dearnessAllowance | currency:'INR' }}</td>
+            <td></td><td></td>
+          </tr>
+          <tr>
+            <td>Other Allowances</td>
+            <td>{{ payslip.otherAllowances | currency:'INR' }}</td>
+            <td></td><td></td>
+          </tr>
+          <tr class="table-info fw-bold">
+            <td>Total Earnings</td>
+            <td>{{ payslip.actualSalary | currency:'INR' }}</td>
+            <td>Total Deductions</td>
+            <td>{{ payslip.providentFund | currency:'INR' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-end mt-3">
+        <h5 class="fw-bold text-primary">Net Salary: {{ payslip.finalSalary | currency:'INR' }}</h5>
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-gradient" (click)="downloadPayslip()">
+          <i class="bi bi-download"></i> Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center mt-3 text-primary fw-semibold">
+    <div class="spinner-border text-primary me-2" role="status"></div> Loading Payslip...
+  </div>
+</div>
