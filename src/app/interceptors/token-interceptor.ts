@@ -4,7 +4,7 @@ import { LoginService } from '../auth/service/login-service';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class tokenInterceptor implements HttpInterceptor {
+export class TokenInterceptor implements HttpInterceptor {
 
   constructor(private authToken: LoginService) {}
 
@@ -12,7 +12,6 @@ export class tokenInterceptor implements HttpInterceptor {
     const token = this.authToken.getToken();
 
     if (token) {
-      console.log('Token Found');
       const cloned = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`
@@ -20,8 +19,6 @@ export class tokenInterceptor implements HttpInterceptor {
       });
       return next.handle(cloned);
     }
-
-    console.log('Token not found');
     return next.handle(req);
   }
 };
