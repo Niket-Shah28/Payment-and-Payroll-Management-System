@@ -21,9 +21,9 @@ export class EmployeeDashboard implements OnInit {
     { name: 'ACCOUNT DETAILS', link: 'bank-account-list' },
     { name: 'PAYSLIP', link: 'payslip' },
     { name: 'MARK ATTENDANCE', link: 'mark-attendance' },
-    { name: 'APPLY LEAVE', link: 'apply-leave' },
-    { name: 'DESIGNATION', link: 'designation' },
-    { name: 'EMPLOYEE GROWTH', link: 'employee-growth' }
+    // { name: 'APPLY LEAVE', link: 'apply-leave' },
+    { name: 'DESIGNATION', link: 'designation' }
+    // { name: 'EMPLOYEE GROWTH', link: 'employee-growth' }
   ];
 
   constructor(private employeeService: EmployeeService) { }

@@ -34,9 +34,9 @@ export class AccountService {
     return this.http.get<BankAccountDetailsDto>(`${this.baseUrlAccount}/${accountId}`, { headers: this.getHeaders() });
   }
 
-  updateAccount(accountId: number, updateDto: BankAccountDetailsUpdateDto): Observable<BankAccountDetailsDto> {
-    return this.http.patch<BankAccountDetailsDto>(`${this.baseUrlAccount}/${accountId}`, updateDto, { headers: this.getHeaders() });
-  }
+ updateAccount(accountId: number, updateDto: BankAccountDetailsUpdateDto): Observable<BankAccountDetailsDto> {
+  return this.http.patch<BankAccountDetailsDto>(`${this.baseUrlAccount}/${accountId}`, updateDto, { headers: this.getHeaders() });
+}
 
   getActiveAccounts(): Observable<BankAccountDetailsDto[]> {
     return this.http.get<BankAccountDetailsDto[]>(`${this.baseUrlAccount}/active`, { headers: this.getHeaders() });

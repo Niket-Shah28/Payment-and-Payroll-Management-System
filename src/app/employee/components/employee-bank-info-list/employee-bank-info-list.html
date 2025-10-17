@@ -1,4 +1,4 @@
-<p>employee-bank-info-list works!</p>
+
 <div class="container mt-3">
   <h3>Employee Bank Info</h3>
   <table class="table table-bordered">
@@ -24,7 +24,7 @@
         <td>{{ info.accountDetails.bankName }}</td>
         <td>{{ info.isActive ? 'Yes' : 'No' }}</td>
         <td>
-          <button class="btn btn-sm btn-info me-1" (click)="viewBankInfo(info.employeeBankInfoId)">View</button>
+          <!-- <button class="btn btn-sm btn-info me-1" (click)="viewBankInfo(info.employeeBankInfoId)">View</button> -->
           <button class="btn btn-sm btn-warning" (click)="editBankInfo(info)">Edit</button>
         </td>
       </tr>

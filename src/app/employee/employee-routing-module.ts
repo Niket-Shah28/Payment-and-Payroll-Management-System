@@ -21,8 +21,10 @@ const routes: Routes = [
       { path: 'tickets', component: TicketList },
        { path: 'tickets/:ticketId', component: TicketDetail },
       {path: 'profile', component: EmployeeProfile},
-      {path: 'bank-account-list', component: BankAccountList},
-      {path: 'employee/employee-bank-info-list', component: EmployeeBankInfoList}
+      { path: 'bank-account-list', component: BankAccountList },
+    { path: 'bank-account-list/:accountId', component: BankAccountList },
+    { path: 'employee-bank-info-list', component: EmployeeBankInfoList },
+    { path: 'employee-bank-info-list/:bankInfoId', component: EmployeeBankInfoList } 
     ]
   }
 ];

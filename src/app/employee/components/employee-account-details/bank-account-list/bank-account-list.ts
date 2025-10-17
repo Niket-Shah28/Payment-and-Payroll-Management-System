@@ -3,6 +3,7 @@ import { BankAccountDetailsDto } from '../../../dto/bank-account-details-dto';
 import { BankAccountDetailsUpdateDto } from '../../../dto/bank-account-details-update-dto';
 import { AccountService } from '../../../services/account-service';
 import { Router } from '@angular/router';
+import { AccountType } from '../../../dto/account-type';
  
 
 @Component({
@@ -17,7 +18,7 @@ export class BankAccountList {
   
  constructor(
     private accountService: AccountService,
-    private router: Router // ✅ Inject Router properly
+    private router: Router 
   ) {}
 
 
@@ -33,36 +34,75 @@ export class BankAccountList {
   }
 
 editAccount(account: BankAccountDetailsDto) {
-    const newBankName = prompt('Edit Bank Name:', account.bankName);
-    if (!newBankName) return;
+  const updateDto: Partial<BankAccountDetailsUpdateDto> = {};
 
-    const updateDto: BankAccountDetailsUpdateDto = {
-      bankName: newBankName,
-      accountNumber: account.accountNumber, 
-      ifscCode: account.ifscCode,
-      accountType: account.accountType,
-      accountHolderName: account.accountHolderName,
-      isActive: account.isActive,
-    };
-
-    this.accountService.updateAccount(account.accountId!, updateDto).subscribe({
-      next: (updated) => {
-        alert('Account updated successfully');
-        account.bankName = updated.bankName;
-      },
-      error: (err) => {
-        console.error('Error updating account', err);
-        alert('Failed to update account');
-      },
-    });
+  // BANK NAME
+  const newBankName = prompt('Edit Bank Name:', account.bankName);
+  if (newBankName !== null && newBankName.trim() !== '') {
+    updateDto.bankName = newBankName.trim();
   }
 
-  viewAccount(accountId: number) {
-    this.router.navigate(['/employee/dashboard/bank-account', accountId]);
+  // IFSC
+  const newIfsc = prompt('Edit IFSC Code:', account.ifscCode);
+  if (newIfsc !== null && newIfsc.trim() !== '') {
+    updateDto.ifscCode = newIfsc.trim();
   }
+
+  // ACCOUNT TYPE (enum)
+  const newAccountType = prompt('Edit Account Type (SAVINGS/CURRENT):', account.accountType);
+  if (newAccountType !== null && newAccountType.trim() !== '') {
+    const type = newAccountType.toUpperCase();
+    if (type === 'SAVINGS' || type === 'CURRENT') {
+      updateDto.accountType = type as AccountType;
+    } else {
+      alert('Invalid account type! Edit cancelled.');
+      return;
+    }
+  }
+
+  // HOLDER NAME
+  const newHolder = prompt('Edit Holder Name:', account.accountHolderName);
+  if (newHolder !== null && newHolder.trim() !== '') {
+    updateDto.accountHolderName = newHolder.trim();
+  }
+
+  // IS ACTIVE (boolean)
+  const newActive = prompt('Is Active? (true/false):', account.isActive ? 'true' : 'false');
+  if (newActive !== null && (newActive.toLowerCase() === 'true' || newActive.toLowerCase() === 'false')) {
+    updateDto.isActive = newActive.toLowerCase() === 'true';
+  }
+
+  // IF NO CHANGES, do nothing
+  if (Object.keys(updateDto).length === 0) {
+    alert('No changes made.');
+    return;
+  }
+
+  // CALL BACKEND
+  this.accountService.updateAccount(account.accountId!, updateDto as BankAccountDetailsUpdateDto).subscribe({
+    next: (updated) => {
+      alert('Account updated successfully!');
+      Object.assign(account, updated); // reflect changes in UI
+    },
+    error: (err) => {
+      console.error('Error updating account', err);
+      alert('Failed to update account');
+    }
+  });
+}
+
+
+
+
+
+
+
+//  viewAccount(accountId: number) {
+//   alert(`View details for account ID: ${accountId}`);
+// }
 
   goToEmployeeBankInfo() {
-    this.router.navigate(['employee/dashboard/bank-info']);
+    this.router.navigate(['/employee/dashboard/employee-bank-info-list']);
   }
 
 }
