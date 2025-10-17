@@ -2,13 +2,12 @@
 .department-card {
   max-width: 800px;
   margin: 60px auto;
-  padding: 0; /* Remove default padding, use toolbar/content padding */
+  padding: 0;
 }
 
 /* Header/Toolbar Styling */
 .header-section {
   padding: 16px;
-  /* Match the Material Primary color for a cohesive look */
   background-color: var(--mat-toolbar-background-color, #3f51b5); 
   color: white;
 }
@@ -24,31 +23,30 @@
 
 /* Collapsible Add Form */
 .add-form {
-  padding: 20px 16px; /* Padding for the content inside the card */
+  padding: 20px 16px; 
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .add-form form {
   display: flex;
   gap: 15px;
-  align-items: flex-start; /* Align button to top of form field */
+  align-items: flex-start;
 }
 
 .department-input {
-  flex: 1; /* Makes the input take up most of the space */
+  flex: 1;
 }
 
 /* Material Table Styling */
 .table-responsive {
   overflow-x: auto;
-  padding: 0 16px 16px; /* Padding around the table within the card */
+  padding: 0 16px 16px;
 }
 
 .table-custom {
   width: 100%;
 }
 
-/* Center text in table headers/cells (if needed) */
 .mat-header-cell, .mat-cell {
   text-align: center;
 }
@@ -64,13 +62,10 @@
   padding: 16px;
 }
 
-/* organization-departments.css */
-
-/* Adjust the Mat Form Field inside the table cell */
 .table-custom .inline-edit-input {
-    width: 100%; /* Take up all cell space */
-    margin-bottom: -1.25em; /* Compensate for default mat-form-field bottom margin */
-    font-size: 0.95rem; /* Match font size to table text */
+    width: 100%; 
+    margin-bottom: -1.25em; 
+    font-size: 0.95rem;
 }
 
 /* Make the input itself look minimalist */
@@ -85,11 +80,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensure it is on top of everything */
+    z-index: 1000; 
 }
 
 /* 2. Style for the error card itself (centered and red) */
@@ -100,9 +95,9 @@
     padding: 16px 20px;
     width: 90%;
     max-width: 400px;
-    background-color: #ffebee; /* Light red background */
-    border: 1px solid #e57373; /* Red border */
-    color: #c62828; /* Dark red text */
+    background-color: #ffebee;
+    border: 1px solid #e57373;
+    color: #c62828;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     animation: fadeIn 0.3s ease-out;
@@ -116,7 +111,7 @@
 
 .error-content mat-icon {
     margin-right: 12px;
-    color: #c62828 !important; /* Force red icon color */
+    color: #c62828 !important;
 }
 
 .error-message {

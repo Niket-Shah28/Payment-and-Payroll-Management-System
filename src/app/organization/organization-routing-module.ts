@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { OrganizationDepartments } from './components/organization-departments/organization-departments';
 import { OrganizationLayoutComponent } from './components/organization-layout-component/organization-layout-component';
 import { HomePage } from './components/home-page/home-page';
+import { OrganizationBusinessUnits } from './components/organization-business-units/organization-business-units';
+import { OrganizationEmployeeDesignations } from './components/organization-employee-designations/organization-employee-designations';
 
 const routes: Routes = [
   {
@@ -16,6 +18,14 @@ const routes: Routes = [
       {
         path:'departments',
         component:OrganizationDepartments
+      },
+      {
+        path:'business-units',
+        component:OrganizationBusinessUnits
+      },
+      {
+        path:'roles',
+        component:OrganizationEmployeeDesignations
       }
     ]
   },
