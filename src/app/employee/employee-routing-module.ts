@@ -8,6 +8,7 @@ import { TicketList } from './components/employee-tickets/ticket-list/ticket-lis
 import { TicketDetail } from './components/employee-tickets/ticket-detail/ticket-detail';
 import { BankAccountList } from './components/employee-account-details/bank-account-list/bank-account-list';
 import { EmployeeBankInfoList } from './components/employee-bank-info-list/employee-bank-info-list';
+import { MarkAttendance } from './components/mark-attendance/mark-attendance/mark-attendance';
 
 
 const routes: Routes = [
@@ -24,7 +25,8 @@ const routes: Routes = [
       { path: 'bank-account-list', component: BankAccountList },
     { path: 'bank-account-list/:accountId', component: BankAccountList },
     { path: 'employee-bank-info-list', component: EmployeeBankInfoList },
-    { path: 'employee-bank-info-list/:bankInfoId', component: EmployeeBankInfoList } 
+    { path: 'employee-bank-info-list/:bankInfoId', component: EmployeeBankInfoList } ,
+    {path: 'mark-attendance', component: MarkAttendance}
     ]
   }
 ];

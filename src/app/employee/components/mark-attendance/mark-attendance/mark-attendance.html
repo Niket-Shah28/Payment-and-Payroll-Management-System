@@ -1,0 +1,36 @@
+<div class="container mt-4 attendance-container">
+  <h2 class="text-center mb-3">Mark Your Attendance</h2>
+
+  <p class="text-center text-primary mb-4">
+    Stay consistent! Mark your attendance daily to stay productive and track your growth.
+  </p>
+
+  <!-- Attendance Status Selector -->
+  <div class="mb-3 d-flex justify-content-center">
+    <label for="statusSelect" class="form-label me-2">Select Attendance Status:</label>
+    <select [(ngModel)]="attendanceStatus" id="statusSelect" class="form-select w-auto">
+      <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+    </select>
+  </div>
+
+  <!-- Month Navigation -->
+  <div class="d-flex justify-content-between align-items-center mb-2 calendar-header">
+    <button class="btn btn-secondary btn-sm" (click)="prevMonth()">&lt;</button>
+    <h4>{{ currentDate | date: 'MMMM yyyy' }}</h4>
+    <button class="btn btn-secondary btn-sm" (click)="nextMonth()">&gt;</button>
+  </div>
+
+  <!-- Calendar -->
+  <div class="calendar">
+    <div class="day" *ngFor="let day of monthDays"
+         (click)="toggleDate(day)"
+         [ngClass]="getDayClass(day)">
+      {{ day.getDate() }}
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="d-flex justify-content-center mt-3">
+    <button class="btn btn-success" (click)="markAttendance()">Mark Attendance</button>
+  </div>
+</div>

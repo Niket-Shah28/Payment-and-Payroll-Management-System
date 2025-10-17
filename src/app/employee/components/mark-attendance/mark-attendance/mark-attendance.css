@@ -1,0 +1,45 @@
+.attendance-container {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  background: #f8f9fa;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.day {
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  background: #e9ecef;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.day:hover {
+  background: #dee2e6;
+}
+
+/* Selected dates */
+.selected {
+  border: 2px solid #0d6efd;
+  background: #cfe2ff !important;
+}
+
+/* Attendance Status Colors */
+.present { background: #d1e7dd !important; }       /* green */
+.absent { background: #f8d7da !important; }        /* red */
+.leave { background: #fff3cd !important; }         /* yellow */
+.outdoor { background: #cff4fc !important; }       /* cyan */
+.unpaid-leave { background: #f5c6cb !important; }  /* pink */
+
+.calendar-header h4 {
+  margin: 0;
+}

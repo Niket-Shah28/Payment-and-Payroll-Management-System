@@ -14,6 +14,7 @@ import { TicketDetail } from './components/employee-tickets/ticket-detail/ticket
 import { AccountService } from './services/account-service';
 import { BankAccountList } from './components/employee-account-details/bank-account-list/bank-account-list';
 import { EmployeeBankInfoList } from './components/employee-bank-info-list/employee-bank-info-list';
+import { MarkAttendance } from './components/mark-attendance/mark-attendance/mark-attendance';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { EmployeeBankInfoList } from './components/employee-bank-info-list/emplo
     TicketList,
     TicketDetail,
     BankAccountList,
-    EmployeeBankInfoList
+    EmployeeBankInfoList,
+    MarkAttendance
     
   ],
   imports: [
