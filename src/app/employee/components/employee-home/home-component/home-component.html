@@ -1,43 +1,246 @@
-<div class="home-container container text-center mt-5">
-
-  <div class="welcome-card card p-4 shadow-sm">
-    <div class="card-body">
-      <h1 class="welcome-text mb-3">Welcome, Employee!!</h1>
-      <p class="lead text-muted mb-4">
-        We are glad to have you at <strong>{{organizationName}}</strong>.
-      </p>
-      <hr class="my-4">
-      <p>
-        Explore your dashboard to view payslips, mark attendance, raise tickets, and manage your account.
-      </p>
-     <!-- <button class="btn btn-primary btn-lg mt-3">Go to Dashboard</button>-->
+<div class="home-container">
+  
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-8 mx-auto text-center">
+          <div class="welcome-badge mb-3">
+            <span class="badge-pulse"></span>
+            <span class="badge-text">Employee Portal</span>
+          </div>
+          <h1 class="hero-title mb-4">Welcome to {{organizationName}}!</h1>
+          <p class="hero-subtitle mb-4">
+            Your gateway to seamless employee services and organizational excellence
+          </p>
+          <div class="hero-stats mt-5">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <div class="stat-item">
+                  <i class="bi bi-clock-history"></i>
+                  <h3>24/7</h3>
+                  <p>Portal Access</p>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="stat-item">
+                  <i class="bi bi-shield-check"></i>
+                  <h3>Secure</h3>
+                  <p>Data Protection</p>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="stat-item">
+                  <i class="bi bi-lightning-charge"></i>
+                  <h3>Instant</h3>
+                  <p>Updates</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="info-section mt-5">
-    <div class="row">
-      <div class="col-md-4 mb-3">
-        <div class="info-card card h-100 text-center p-3 shadow-sm">
-          <i class="bi bi-person-lines-fill display-4 text-primary mb-3"></i>
-          <h5>Employee Services</h5>
-          <p>Access your profile, account details, and manage your tasks seamlessly.</p>
-        </div>
+  <!-- Features Section -->
+  <div class="features-section">
+    <div class="container">
+      <div class="section-header text-center mb-5">
+        <h2 class="section-title">Your Employee Hub</h2>
+        <p class="section-subtitle">Everything you need in one place</p>
       </div>
-      <div class="col-md-4 mb-3">
-        <div class="info-card card h-100 text-center p-3 shadow-sm">
-          <i class="bi bi-building display-4 text-primary mb-3"></i>
-          <h5>About Organization</h5>
-          <p>Learn more about our vision, mission, and work culture at {{ organizationName }}.</p>
+      
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-person-badge"></i>
+            </div>
+            <h4>Profile Management</h4>
+            <p>Access and update your personal information, contact details, and professional details securely.</p>
+            <div class="feature-footer">
+              <span class="feature-tag">Personal</span>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="col-md-4 mb-3">
-        <div class="info-card card h-100 text-center p-3 shadow-sm">
-          <i class="bi bi-graph-up display-4 text-primary mb-3"></i>
-          <h5>Performance & Growth</h5>
-          <p>Track your performance and explore opportunities for learning and growth.</p>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <h4>Attendance Tracking & Leave Application</h4>
+            <p>Monitor your attendance records, apply and get your leaves approved from the manager.</p>
+            <div class="feature-footer">
+              <span class="feature-tag">Daily</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-file-earmark-text"></i>
+            </div>
+            <h4>Payslip Access</h4>
+            <p>Download and review your monthly payslips with detailed salary breakdowns anytime, anywhere.</p>
+            <div class="feature-footer">
+              <span class="feature-tag">Monthly</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-headset"></i>
+            </div>
+            <h4>Support Tickets</h4>
+            <p>Raise queries, report issues, and get quick resolutions from our dedicated support team.</p>
+            <div class="feature-footer">
+              <span class="feature-tag">24/7</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-bar-chart-line"></i>
+            </div>
+            <h4>Performance Insights</h4>
+            <p>Track your achievements, goals, and performance metrics to advance your career growth.</p>
+            <div class="feature-footer">
+              <span class="feature-tag">Analytics</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="bi bi-gear"></i>
+            </div>
+            <h4>Bank Account Info & Docs Management</h4>
+            <p>You can update you account details and get your documents uploaded and approved from the Organization Admin.</p>
+            <div class="feature-footer">
+              <span class="feature-tag">Account Details & Docs Management</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Organization Info Section -->
+  <div class="organization-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <div class="org-content">
+            <h2 class="org-title mb-4">About {{organizationName}}</h2>
+            <p class="org-text mb-3">
+              We believe in empowering our employees and encouraging them to excel in their roles. Our organization is committed to fostering a culture of innovation, collaboration, and continuous growth.
+            </p>
+            <p class="org-text mb-4">
+              Join us in our mission to create exceptional value while maintaining a healthy work-life balance and professional development opportunities.
+            </p>
+            <div class="org-values">
+              <div class="value-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Innovation Driven</span>
+              </div>
+              <div class="value-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Employee Focused</span>
+              </div>
+              <div class="value-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Growth Oriented</span>
+              </div>
+              <div class="value-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Integrity First</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="org-card-grid">
+            <div class="org-mini-card">
+              <i class="bi bi-bullseye"></i>
+              <h5>Our Vision</h5>
+              <p>Leading innovation and excellence in our industry</p>
+            </div>
+            <div class="org-mini-card">
+              <i class="bi bi-heart-pulse"></i>
+              <h5>Our Mission</h5>
+              <p>Empowering teams to achieve extraordinary results</p>
+            </div>
+            <div class="org-mini-card">
+              <i class="bi bi-people"></i>
+              <h5>Our Culture</h5>
+              <p>Collaborative, inclusive, and growth-focused environment</p>
+            </div>
+            <div class="org-mini-card">
+              <i class="bi bi-trophy"></i>
+              <h5>Our Values</h5>
+              <p>Integrity, excellence, and continuous improvement</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Links Section -->
+  <!-- <div class="quick-links-section">
+    <div class="container">
+      <div class="section-header text-center mb-5">
+        <h2 class="section-title">Getting Started</h2>
+        <p class="section-subtitle">Navigate through your employee portal with ease</p>
+      </div> -->
+      
+      <!-- <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="quick-link-card">
+            <div class="quick-icon">
+              <i class="bi bi-book"></i>
+            </div>
+            <h5>User Guide</h5>
+            <p>Learn how to use the portal effectively</p>
+          </div>
+        </div> -->
+        <!-- <div class="col-md-6 col-lg-3">
+          <div class="quick-link-card">
+            <div class="quick-icon">
+              <i class="bi bi-question-circle"></i>
+            </div>
+            <h5>FAQs</h5>
+            <p>Find answers to common questions</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="quick-link-card">
+            <div class="quick-icon">
+              <i class="bi bi-chat-dots"></i>
+            </div>
+            <h5>Support</h5>
+            <p>Get help from our support team</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="quick-link-card">
+            <div class="quick-icon">
+              <i class="bi bi-bell"></i>
+            </div>
+            <h5>Announcements</h5>
+            <p>Stay updated with latest news</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
 
 </div>
