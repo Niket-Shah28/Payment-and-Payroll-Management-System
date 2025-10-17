@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 public class EmployeeBankInfoUpdateDto {
 
-	@Pattern(regexp = "^[A-Z]{2}/[A-Z]{3}/\\d{7}/\\d{3}/\\d{7}$", message = "Invalid PF number format")
+	@Pattern(regexp = "^[A-Z]{2}\\d{7,8}$", message = "Invalid PF number format")
 	private String pfNumber;
 
 	@Pattern(regexp = "^\\d{12}$", message = "UAN number must be 12 digits")
