@@ -1,1 +1,1 @@
-export type Salutation = 'MR' | 'MS' | 'MRS' | 'OTHER';
+export type Salutation = 'Mr' | 'Mrs' | 'Miss' | 'Ms';

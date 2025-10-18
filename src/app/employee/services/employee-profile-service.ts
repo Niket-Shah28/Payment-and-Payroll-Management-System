@@ -8,6 +8,7 @@ import { EmployeeAddressRequestDto } from '../dto/employee-address-request-dto';
 import { EmployeeContactDetailsResponseDto } from '../dto/employee-contact-details-response-dto';
 import { EmployeeContactDetailsRequestDto } from '../dto/employee-contact-details-request-dto';
 import { LoginService } from '../../auth/service/login-service';
+import { EmployeeDesignationDto } from '../dto/EmployeeDesignation-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -28,12 +29,18 @@ export class EmployeeProfileService {
     return this.http.get<ProfileResponseDto>(`${this.baseUrl}/profile`, this.getAuthHeaders());
   }
 
-  updateProfile(patchDto: ProfileRequestDto, file?: File): Observable<ProfileResponseDto> {
-    const formData = new FormData();
-    formData.append('profileData', new Blob([JSON.stringify(patchDto)], { type: 'application/json' }));
-    if (file) formData.append('profilePhoto', file);
-    return this.http.patch<ProfileResponseDto>(`${this.baseUrl}/profile`, formData, this.getAuthHeaders());
-  }
+ updateProfile(formData: FormData): Observable<ProfileResponseDto> {
+  return this.http.patch<ProfileResponseDto>(
+    `${this.baseUrl}/profile`,
+    formData,
+    {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${this.loginService.getToken()}`,
+        // ❌ DO NOT set Content-Type manually — browser sets it automatically
+      }),
+    }
+  );
+}
 
   getAddress(): Observable<EmployeeAddressResponseDto> {
     return this.http.get<EmployeeAddressResponseDto>(`${this.baseUrl}/address`, this.getAuthHeaders());
@@ -49,5 +56,9 @@ export class EmployeeProfileService {
 
   updateContactDetails(patchDto: EmployeeContactDetailsRequestDto): Observable<EmployeeContactDetailsResponseDto> {
     return this.http.patch<EmployeeContactDetailsResponseDto>(`${this.baseUrl}/contactdetails`, patchDto, this.getAuthHeaders());
+  }
+
+   getDesignation(): Observable<EmployeeDesignationDto> {
+    return this.http.get<EmployeeDesignationDto>(`${this.baseUrl}/designation`);
   }
 }
