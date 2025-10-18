@@ -5,6 +5,8 @@ import { OrganizationLayoutComponent } from './components/organization-layout-co
 import { HomePage } from './components/home-page/home-page';
 import { OrganizationBusinessUnits } from './components/organization-business-units/organization-business-units';
 import { OrganizationEmployeeDesignations } from './components/organization-employee-designations/organization-employee-designations';
+import { BankAccount } from './components/bank-account/bank-account';
+import { OrganizationVendors } from './components/organization-vendors/organization-vendors';
 
 const routes: Routes = [
   {
@@ -26,6 +28,14 @@ const routes: Routes = [
       {
         path:'roles',
         component:OrganizationEmployeeDesignations
+      },
+      {
+        path:'bank-account',
+        component:BankAccount
+      },
+      {
+        path:'vendors',
+        component:OrganizationVendors
       }
     ]
   },

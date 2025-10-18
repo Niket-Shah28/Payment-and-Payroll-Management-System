@@ -1,0 +1,258 @@
+<mat-toolbar color="primary">
+  <span>Vendor Management System</span>
+  <span class="spacer" style="flex: 1 1 auto;"></span>
+</mat-toolbar>
+
+<div class="container">
+
+  <!-- Error Alert -->
+  <div *ngIf="errorMessage" class="error-alert">
+    <span>{{ errorMessage }}</span>
+    <button mat-icon-button (click)="clearError()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Header and Add Button -->
+  <div class="header-content">
+    <h1>
+      Vendor List
+      <mat-spinner *ngIf="isLoading" [diameter]="20" style="margin-left: 10px;"></mat-spinner>
+    </h1>
+    <button mat-raised-button color="primary" (click)="showAddModal = true">
+      <mat-icon>add</mat-icon> Add New Vendor
+    </button>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Search Vendors</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Search by name, email, GSTIN, or PAN..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <!-- Vendor Table -->
+  <mat-card class="mat-elevation-z8">
+    <div class="mat-table-container">
+      <table mat-table [dataSource]="dataSource" class="full-width">
+
+        <!-- Index -->
+        <ng-container matColumnDef="index">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+        </ng-container>
+
+        <!-- Name -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <!-- Email -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phoneNumber">
+          <th mat-header-cell *matHeaderCellDef>Phone Number</th>
+          <td mat-cell *matCellDef="let element">{{ element.phoneNumber }}</td>
+        </ng-container>
+
+        <!-- GSTIN -->
+        <ng-container matColumnDef="gstin">
+          <th mat-header-cell *matHeaderCellDef class="hidden-mobile">GSTIN</th>
+          <td mat-cell *matCellDef="let element" class="hidden-mobile">{{ element.gstin }}</td>
+        </ng-container>
+
+        <!-- PAN -->
+        <ng-container matColumnDef="pan">
+          <th mat-header-cell *matHeaderCellDef class="hidden-mobile">PAN</th>
+          <td mat-cell *matCellDef="let element" class="hidden-mobile">{{ element.pan }}</td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="viewVendor(element)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="openDeleteConfirmation(element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr class="mat-row no-data" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            {{ isLoading ? 'Fetching vendor data...' : ('No vendors found matching "' + searchControl.value + '"') }}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </mat-card>
+
+  <!-- Add Vendor Modal -->
+  <div *ngIf="showAddModal" class="modal-overlay" (click)="cancelAdd()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>{{ viewingVendor ? 'Edit Vendor' : 'Add New Vendor' }}</h2>
+
+      <form [formGroup]="vendorForm" (ngSubmit)="addVendor()">
+        <div class="form-grid">
+
+          <!-- Form Fields -->
+          <mat-form-field appearance="outline">
+            <mat-label>Vendor Name</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error *ngIf="f['name'].invalid && (f['name'].dirty || f['name'].touched)">
+              Name is required (min 2 chars).
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" />
+            <mat-error *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
+              Valid email is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input matInput type="text" formControlName="phoneNumber" />
+            <mat-error *ngIf="f['phoneNumber'].invalid && (f['phoneNumber'].dirty || f['phoneNumber'].touched)">
+              Valid 10-digit phone number is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Address</mat-label>
+            <input matInput type="text" formControlName="address" />
+            <mat-error *ngIf="f['address'].invalid && (f['address'].dirty || f['address'].touched)">
+              Address is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CIN Number</mat-label>
+            <input matInput type="text" formControlName="cinNumber" />
+            <mat-error *ngIf="f['cinNumber'].invalid && (f['cinNumber'].dirty || f['cinNumber'].touched)">
+              Valid CIN is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>GSTIN</mat-label>
+            <input matInput type="text" formControlName="gstin" />
+            <mat-error *ngIf="f['gstin'].invalid && (f['gstin'].dirty || f['gstin'].touched)">
+              Valid 15-digit GSTIN is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>PAN</mat-label>
+            <input matInput type="text" formControlName="pan" />
+            <mat-error *ngIf="f['pan'].invalid && (f['pan'].dirty || f['pan'].touched)">
+              Valid 10-digit PAN is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>TAN</mat-label>
+            <input matInput type="text" formControlName="tan" />
+            <mat-error *ngIf="f['tan'].invalid && (f['tan'].dirty || f['tan'].touched)">
+              Valid 10-digit TAN is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contract Title</mat-label>
+            <input matInput formControlName="contractTitle" />
+            <mat-error *ngIf="f['contractTitle'].invalid && (f['contractTitle'].dirty || f['contractTitle'].touched)">
+              Contract Title is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date</mat-label>
+            <input matInput type="date" formControlName="startDate" />
+            <mat-error *ngIf="f['startDate'].invalid && (f['startDate'].dirty || f['startDate'].touched)">
+              Start Date is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>End Date</mat-label>
+            <input matInput type="date" formControlName="endDate" />
+            <mat-error *ngIf="f['endDate'].invalid && (f['endDate'].dirty || f['endDate'].touched)">
+              End Date is required.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Contract PDF Upload -->
+          <div class="file-upload-section full-width">
+            <label>Contract Document (PDF Only)</label>
+            <input type="file" (change)="handleFileUpload($event)" accept="application/pdf" />
+            <small *ngIf="fileError" class="error-text">{{ fileError }}</small>
+            <p *ngIf="selectedFile" class="file-success">
+              <mat-icon style="color: #4CAF50;">check_circle</mat-icon> Selected: {{ selectedFile.name }}
+            </p>
+            <small *ngIf="!selectedFile && vendorForm.touched" class="error-text">Contract PDF is required.</small>
+          </div>
+
+        </div>
+
+        <!-- Form Actions -->
+        <div class="actions">
+          <button mat-button type="button" (click)="cancelAdd()">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isUploading || vendorForm.invalid || !selectedFile">
+            <mat-icon *ngIf="isUploading">upload</mat-icon>
+            <span *ngIf="isUploading">Uploading...</span>
+            <span *ngIf="!isUploading && !viewingVendor">Add Vendor</span>
+            <span *ngIf="!isUploading && viewingVendor">Update Vendor</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Vendor Modal -->
+  <div *ngIf="viewingVendor!=null" class="modal-overlay" (click)="closeViewModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>Vendor Details</h2>
+      <div class="details">
+        <ng-container *ngFor="let detail of vendorDetails ?? []">
+            <span>{{ detail.key }}</span>
+            <span>{{ detail.value }}</span>
+            <!-- <a *ngIf="detail.key === 'Contract Document'" [href]="detail.value" target="_blank" class="view-pdf-link">
+                View Contract <mat-icon style="font-size: 16px; height: 16px; width: 16px; vertical-align: sub;">picture_as_pdf</mat-icon>
+            </a> -->
+        </ng-container>
+
+      </div>
+      <div class="actions">
+        <button mat-raised-button (click)="closeViewModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="vendorToDelete" class="modal-overlay" (click)="cancelDeleteConfirmation()">
+    <div class="modal" (click)="$event.stopPropagation()" style="max-width: 400px;">
+      <h2>Confirm Deletion</h2>
+      <p>Are you sure you want to delete vendor <strong>{{ vendorToDelete.name }}</strong>? This action cannot be undone.</p>
+      <div class="actions">
+        <button mat-button (click)="cancelDeleteConfirmation()">Cancel</button>
+        <button mat-raised-button color="warn" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

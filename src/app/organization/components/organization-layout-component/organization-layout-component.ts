@@ -12,12 +12,12 @@ export class OrganizationLayoutComponent {
   tabs = [
     { name: 'HOME', link: '/home' },
     { name: 'MANAGE EMPLOYEES', link: '/manage-employees' },
-    { name: 'MANAGE VENDORS', link: '/manage-vendors' },
+    { name: 'MANAGE VENDORS', link: '/organization/dashboard/vendors' },
     { name: 'MANAGE DEPARTMENT', link: '/organization/dashboard/departments' },
     { name: 'MANAGE BUSINESS UNITS', link: '/organization/dashboard/business-units' },
     { name: 'MANAGE EMPLOYEE ROLES', link: '/organization/dashboard/roles' },
     { name: 'TICKETS', link: '/tickets' },
-    { name: 'MANAGE BANK ACCOUNT', link: '/manage-bank-account' },
+    { name: 'MANAGE BANK ACCOUNT', link: '/organization/dashboard/bank-account' },
     { name: 'INITIATE PAYOUT', link: '/initiate-payout' }
   ];
 

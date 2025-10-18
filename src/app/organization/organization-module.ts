@@ -16,6 +16,11 @@ import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OrganizationBusinessUnits } from './components/organization-business-units/organization-business-units';
 import { OrganizationEmployeeDesignations } from './components/organization-employee-designations/organization-employee-designations';
+import { BankAccount } from './components/bank-account/bank-account';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { OrganizationVendors } from './components/organization-vendors/organization-vendors';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -25,7 +30,9 @@ import { OrganizationEmployeeDesignations } from './components/organization-empl
     OrganizationLayoutComponent,
     HomePage,
     OrganizationBusinessUnits,
-    OrganizationEmployeeDesignations
+    OrganizationEmployeeDesignations,
+    BankAccount,
+    OrganizationVendors
   ],
   imports: [
     CommonModule,
@@ -37,7 +44,10 @@ import { OrganizationEmployeeDesignations } from './components/organization-empl
     MatToolbarModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule
+    MatOptionModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatProgressSpinnerModule
   ]
 })
 export class OrganizationModule { }

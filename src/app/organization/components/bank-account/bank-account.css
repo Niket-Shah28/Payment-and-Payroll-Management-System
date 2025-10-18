@@ -1,0 +1,123 @@
+/* Component Base */
+.bank-account-card {
+    max-width: 600px;
+    margin: 32px auto;
+    position: relative;
+}
+
+.header-section{
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+    background-color: #3f51b5;
+    color: white;
+}
+.toolbar-spacer { flex: 1 1 auto; }
+
+/* Add Form Styles */
+.add-form { padding: 16px; border: 1px dashed #ccc; border-radius: 4px; margin-bottom: 20px;}
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 20px;
+}
+.col-span-2 { grid-column: span 2; }
+.form-actions { margin-top: 20px; display: flex; gap: 8px; justify-content: flex-end;}
+
+/* Account Details View/Edit */
+.account-details-container { padding: 16px; }
+.account-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+.account-row:last-child { border-bottom: none; }
+.label {
+    font-weight: 500;
+    color: #555;
+    flex-basis: 40%;
+}
+.value {
+    flex-basis: 60%;
+    text-align: right;
+    font-weight: 400;
+}
+.card-actions { 
+    margin-top: 20px; 
+    display: flex; 
+    gap: 12px; 
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Inline Edit Styling */
+.inline-edit-input {
+    width: 100%;
+    margin-bottom: -1.25em; 
+    text-align: right;
+}
+/* Ensure input field inside mat-form-field is right-aligned */
+.inline-edit-input input {
+        text-align: right;
+}
+.inline-edit-input .mat-form-field-wrapper {
+    padding-bottom: 0.5em; 
+}
+/* Custom spinner for loading */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error Overlay Styles */
+.error-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.error-card {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; width: 90%; max-width: 400px;
+    background-color: #ffebee; border: 1px solid #e57373;
+    color: #c62828; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 8px; animation: fadeIn 0.3s ease-out;
+}
+.error-content { display: flex; align-items: center; flex-grow: 1; }
+.error-content mat-icon { margin-right: 12px; color: #c62828 !important; }
+.error-message { font-weight: 500; }
+.close-button { color: #c62828; margin-left: 10px; }
+
+.loading-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+.loading-card { padding: 20px; display: flex; align-items: center; gap: 8px;}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Deposit Form Styling */
+.deposit-form-section {
+    padding: 16px;
+    border: 1px solid #c8e6c9; /* Light green border */
+    background-color: #f1f8e9; /* Very light green background */
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.full-width-input {
+    width: 100%;
+}

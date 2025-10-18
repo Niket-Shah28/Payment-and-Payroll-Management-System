@@ -1,0 +1,159 @@
+<mat-card class="bank-account-card mat-elevation-z8">
+    <mat-toolbar class="header-section">
+        <mat-card-title>Bank Account Details</mat-card-title>
+        <span class="toolbar-spacer"></span>
+        <!-- Action Button -->
+        <button 
+            *ngIf="!bankAccount() && !showAddForm()" 
+            mat-raised-button color="primary" 
+            (click)="toggleAddForm()">
+            <mat-icon>add</mat-icon> Add Account
+        </button>
+    </mat-toolbar>
+
+    <!-- 1. ADD ACCOUNT FORM (NO ACCOUNT EXISTS) -->
+    <div *ngIf="showAddForm() && !bankAccount()" class="add-form">
+        <form [formGroup]="addForm" (ngSubmit)="addAccount()">
+            <div class="form-grid">
+                <mat-form-field appearance="outline">
+                    <mat-label>Account Holder Name</mat-label>
+                    <input matInput formControlName="accountHolderName" required>
+                    <mat-error *ngIf="addForm.get('accountHolderName')?.invalid && addForm.get('accountHolderName')?.touched">Required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Account Number</mat-label>
+                    <input matInput formControlName="accountNumber" type="text" required>
+                    <mat-error *ngIf="addForm.get('accountNumber')?.invalid && addForm.get('accountNumber')?.touched">Min 9 digits</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>IFSC Code</mat-label>
+                    <input matInput formControlName="ifscCode" required>
+                    <mat-error *ngIf="addForm.get('ifscCode')?.invalid && addForm.get('ifscCode')?.touched">Required (e.g., HDFC0001234)</mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline">
+                    <mat-label>Account Type</mat-label>
+                    <mat-select formControlName="accountType" required>
+                        <mat-option value="SAVINGS">Savings</mat-option>
+                        <mat-option value="CURRENT">Current</mat-option>
+                        <mat-option value="OD">Overdraft</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="addForm.get('accountType')?.invalid && addForm.get('accountType')?.touched">Required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="col-span-2">
+                    <mat-label>Initial Balance (INR)</mat-label>
+                    <input matInput formControlName="balance" type="number" required>
+                    <mat-error *ngIf="addForm.get('balance')?.invalid && addForm.get('balance')?.touched">Required, minimum 0</mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+                <button mat-raised-button color="accent" type="submit" [disabled]="addForm.invalid || isLoading()">
+                    <mat-icon>{{ isLoading() ? 'sync' : 'check' }}</mat-icon> Add Account
+                </button>
+                <button mat-button type="button" (click)="toggleAddForm()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 2. VIEW/EDIT ACCOUNT CARD (ACCOUNT EXISTS) -->
+    <div *ngIf="bankAccount()" class="account-details-container">
+        <form [formGroup]="editForm" class="edit-mode-form">
+            <div class="account-row" *ngFor="let field of fields">
+                <div class="label">{{ field.label }}:</div>
+                <div class="value">
+                    <ng-container *ngIf="isEditing(); else viewValue">
+                        <!-- Editable Input -->
+                        <mat-form-field appearance="fill" class="inline-edit-input">
+                            <ng-container [ngSwitch]="field.type">
+                                <input *ngSwitchCase="'number'" matInput [formControlName]="field.key" type="number" (keydown.enter)="saveEdit()">
+                                
+                                <mat-select *ngSwitchCase="'select'" [formControlName]="field.key">
+                                    <mat-option value="SAVINGS">Savings</mat-option>
+                                    <mat-option value="CURRENT">Current</mat-option>
+                                </mat-select>
+                                
+                                <input *ngSwitchDefault matInput [formControlName]="field.key" type="text" (keydown.enter)="saveEdit()">
+                            </ng-container>
+                            <mat-error *ngIf="editForm.get(field.key)?.invalid">Required</mat-error>
+                        </mat-form-field>
+                    </ng-container>
+                    
+                    <!-- Read-only View -->
+                    <ng-template #viewValue>
+                        <!-- Using CurrencyPipe for balance -->
+                        {{ field.key === 'balance' ? (bankAccount()!.balance | currency:'INR':'symbol':'1.2-2') : bankAccount()![field.key] }}
+                    </ng-template>
+                </div>
+            </div>
+        </form>
+
+        <div *ngIf="showDepositInput()" class="deposit-form-section">
+            <form [formGroup]="depositForm" (ngSubmit)="handleDeposit()">
+                <mat-form-field appearance="outline" class="full-width-input">
+                    <mat-label>Deposit Amount (INR)</mat-label>
+                    <input matInput formControlName="amount" type="number" required placeholder="Enter amount">
+                    <mat-error *ngIf="depositForm.get('amount')?.invalid && depositForm.get('amount')?.touched">
+                        Must be a positive amount greater than 0.
+                    </mat-error>
+                </mat-form-field>
+                <div class="form-actions deposit-actions">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="depositForm.invalid || isLoading()">
+                        <mat-icon>payment</mat-icon> {{ isLoading() ? 'Processing...' : 'Confirm Deposit' }}
+                    </button>
+                    <button mat-button type="button" (click)="cancelDeposit()" [disabled]="isLoading()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-actions">
+            <ng-container *ngIf="!isEditing()">
+                <button mat-raised-button color="primary" (click)="startDeposit()">
+                    <mat-icon>account_balance_wallet</mat-icon> Deposit Money
+                </button>
+                <button mat-raised-button color="accent" (click)="startEdit()">
+                    <mat-icon>edit</mat-icon> Edit
+                </button>
+                <button mat-raised-button color="warn" (click)="deleteAccount(bankAccount()!.accountId)">
+                    <mat-icon>delete</mat-icon> Delete
+                </button>
+            </ng-container>
+            <ng-container *ngIf="isEditing()">
+                <!-- Edit Actions -->
+                <button mat-raised-button color="primary" 
+                    (click)="saveEdit()" 
+                    [disabled]="editForm.invalid || isLoading()">
+                    <mat-icon>{{ isLoading() ? 'sync' : 'save' }}</mat-icon> Save
+                </button>
+                <button mat-button (click)="cancelEdit()" [disabled]="isLoading()">
+                    Cancel
+                </button>
+            </ng-container>
+        </div>
+    </div>
+
+    
+    
+    <!-- 3. LOADING AND ERROR DISPLAY -->
+    <div *ngIf="isLoading()" class="loading-overlay">
+        <mat-card class="loading-card">
+            <mat-icon class="spinner">autorenew</mat-icon> Processing...
+        </mat-card>
+    </div>
+
+    <div *ngIf="errorMessage()" class="error-overlay">
+        <mat-card class="error-card mat-elevation-z20">
+            <div class="error-content">
+                <mat-icon color="warn">error_outline</mat-icon>
+                <span class="error-message">{{ errorMessage() }}</span>
+            </div>
+            <!-- Using custom error message box instead of native confirm() -->
+            <button mat-icon-button class="close-button" (click)="clearError(true)" aria-label="Close error message">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-card>
+    </div>
+</mat-card>

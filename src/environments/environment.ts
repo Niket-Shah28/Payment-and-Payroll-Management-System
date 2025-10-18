@@ -4,5 +4,7 @@
 export const environment = {
   production: false,
   // Add all variables from .env here
-  CAPATCHA_SITE_KEY: '6Lf-UOsrAAAAAC44Yt-kaQJJO113yclaA86wHBEs'
+  CAPATCHA_SITE_KEY: '6Lf-UOsrAAAAAC44Yt-kaQJJO113yclaA86wHBEs',
+  CLOUDINARY_PRESET_ID: 'frontend-upload',
+  CLOUD_NAME:'dds9c9a2z'
 };
