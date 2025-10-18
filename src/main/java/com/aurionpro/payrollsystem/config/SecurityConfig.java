@@ -193,7 +193,7 @@ public class SecurityConfig {
 	        .requestMatchers(HttpMethod.GET, "/banks/organizations/*/documents/*/view").hasAuthority("ROLE_ADMIN")
 	        .requestMatchers(HttpMethod.GET, "/banks/organizations/*/documents/*/download").hasAuthority("ROLE_ADMIN")
 	        
-
+	        .requestMatchers("/organization/vendors/*").authenticated()
 	        // LOGOUT
 	        .requestMatchers("/logout").authenticated()
 

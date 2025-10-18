@@ -31,6 +31,8 @@ import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
+import com.aurionpro.payrollsystem.dto.vendor.VendorDto;
+import com.aurionpro.payrollsystem.dto.vendor.VendorResponseDto;
 import com.aurionpro.payrollsystem.entity.employee.Status;
 import com.aurionpro.payrollsystem.service.organization.OrganizationService;
 
@@ -152,7 +154,6 @@ public class OrganizationController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                             .body(Map.of("message", "No bank account found for this organization"));
 	    }
-
 	    return ResponseEntity.ok(account);
 	}
 	
@@ -220,6 +221,37 @@ public class OrganizationController {
 	@PreAuthorize("hasRole('ORGANIZATION')")
 	public ResponseEntity<Void> deleteEmployee(@PathVariable Long employeeId){
 		organizationService.removeEmployee(employeeId);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@PostMapping("/vendors")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Void> addVendor(@RequestBody @Valid VendorDto dto, Authentication authentication){
+		organizationService.addVendor(dto, (Long) authentication.getDetails());
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@GetMapping("/vendors")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Map<String, List<VendorResponseDto>>> getVendors(Authentication authentication){
+		Long organizationId = (Long) authentication.getDetails();
+		System.out.println(organizationService.getVendors(organizationId));
+		return new ResponseEntity<>(Map.of("vendors", organizationService.getVendors(organizationId)), HttpStatus.OK);	
+	}
+	
+	@DeleteMapping("/vendors/{vendorId}")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Void> removeVendor(@PathVariable Long vendorId){
+		System.out.println("HELLOOO");
+		organizationService.removeVendor(vendorId);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	
+	@GetMapping("/vendors/{vendorId}")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Void> getVendor(@PathVariable Long vendorId){
+		System.out.println("HELLOOO");
+		organizationService.removeVendor(vendorId);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

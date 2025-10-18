@@ -12,16 +12,19 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "vendor")
+@ToString
 public class Vendor {
 
 	@Id
@@ -53,16 +56,19 @@ public class Vendor {
 	@Column(name = "tan", nullable = false, unique = true)
 	private String tan;
 	
-	@Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(name = "created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp createdAt;
 	
-	@Column(name = "updated_at", columnDefinition = "TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	@Column(name = "updated_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
 	private Timestamp updatedAt;
 	
-	@Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
+	@Column(name = "is_active", insertable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
 	private Boolean isActive;
 	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "organization_id")
 	private Organization organization;
+	
+	@OneToOne(mappedBy = "vendorId", cascade = CascadeType.PERSIST)
+	private VendorContract contract;
 }

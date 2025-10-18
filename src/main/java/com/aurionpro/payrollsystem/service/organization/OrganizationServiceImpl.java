@@ -24,6 +24,8 @@ import com.aurionpro.payrollsystem.dto.employee.EmployeeUploadDataDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
+import com.aurionpro.payrollsystem.dto.vendor.VendorDto;
+import com.aurionpro.payrollsystem.dto.vendor.VendorResponseDto;
 import com.aurionpro.payrollsystem.entity.bankAccount.OrganizationBankAccount;
 import com.aurionpro.payrollsystem.entity.employee.Employee;
 import com.aurionpro.payrollsystem.entity.employee.EmployeeSalary;
@@ -31,6 +33,8 @@ import com.aurionpro.payrollsystem.entity.employee.Status;
 import com.aurionpro.payrollsystem.entity.organization.Organization;
 import com.aurionpro.payrollsystem.entity.transaction.PaymentMode;
 import com.aurionpro.payrollsystem.entity.transaction.PaymentRequest;
+import com.aurionpro.payrollsystem.entity.vendor.Vendor;
+import com.aurionpro.payrollsystem.entity.vendor.VendorContract;
 import com.aurionpro.payrollsystem.exception.BatchProcessingException;
 import com.aurionpro.payrollsystem.exception.OrganizationException;
 import com.aurionpro.payrollsystem.repository.BusinessUnitRepository;
@@ -40,6 +44,8 @@ import com.aurionpro.payrollsystem.repository.EmployeeRoleRepository;
 import com.aurionpro.payrollsystem.repository.EmployeeSalaryRepository;
 import com.aurionpro.payrollsystem.repository.OrganizationBankAccountRepository;
 import com.aurionpro.payrollsystem.repository.PaymentRequestRepository;
+import com.aurionpro.payrollsystem.repository.VendorContractRepository;
+import com.aurionpro.payrollsystem.repository.VendorRepository;
 import com.aurionpro.payrollsystem.service.email.EmailService;
 import com.aurionpro.payrollsystem.service.payment.BulkPaymentJob;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -71,6 +77,12 @@ public class OrganizationServiceImpl implements OrganizationService{
 	
 	@Autowired
 	private EmployeeSalaryRepository employeeSalaryRepository;
+	
+	@Autowired
+	private VendorRepository vendorRepository;
+	
+	@Autowired
+	private VendorContractRepository vendorContractRepository;
 	
 	@Autowired
     private BulkPaymentJob bulkPaymentJob;
@@ -366,7 +378,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	public void updateBankAccount(Long accountId, OrganizationUpdateBankAccountDto dto) {
 		OrganizationBankAccount bankAccount = organizationBankAccountRepository.findByAccountIdAndIsActiveTrue(accountId)
 				.orElseThrow(()->new OrganizationException("NO ACCOUNT FOUND WITH ID: "+accountId, HttpStatus.BAD_REQUEST));
-		
+		System.out.println(dto);
 		modelMapper.getConfiguration()
 	    .setSkipNullEnabled(true);
 		
@@ -510,5 +522,41 @@ public class OrganizationServiceImpl implements OrganizationService{
         if(!success) {
         	throw new OrganizationException(message, HttpStatus.BAD_REQUEST);
         }
+	}
+
+	@Override
+	public void addVendor(VendorDto dto, Long organizationId) {
+	    Organization organizationRef = entityManager.getReference(Organization.class, organizationId);
+
+	    Vendor vendor = modelMapper.map(dto, Vendor.class);
+	    vendor.setOrganization(organizationRef);
+
+	    VendorContract contract = modelMapper.map(dto, VendorContract.class);
+	    contract.setVendorId(vendor); // set the back-reference
+
+	    vendor.setContract(contract);
+
+	    vendorRepository.save(vendor); // cascading saves contract too
+	}
+
+	@Override
+	public List<VendorResponseDto> getVendors(Long organizationId) {
+		List<VendorResponseDto> vendors = vendorRepository.getVendors(organizationId);		
+		return vendors;
+	}
+
+	@Override
+	public void removeVendor(Long vendorId) {
+		Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(()->new OrganizationException("Vendor not found", HttpStatus.BAD_REQUEST));
+		vendor.setIsActive(false);
+		vendor.getContract().setIsActive(false);
+		System.out.println(vendor.getIsActive());
+		vendorRepository.save(vendor);
+	}
+
+	@Override
+	public void getVendor() {
+		// TODO Auto-generated method stub
+		
 	}
 }
