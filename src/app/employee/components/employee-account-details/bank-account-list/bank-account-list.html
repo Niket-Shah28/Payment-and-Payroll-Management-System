@@ -1,43 +1,246 @@
-<div class="container mt-3">
-  <h3>Bank Accounts</h3>
+<div class="bank-container">
+  <div class="container mt-4">
+    
+    <!-- Page Header -->
+    <div class="page-header mb-5">
+      <div class="header-content">
+        <i class="bi bi-bank2"></i>
+        <div class="header-text">
+          <h2>Bank & Financial Information</h2>
+          <p>Manage your bank accounts and employment financial details</p>
+        </div>
+      </div>
+    </div>
 
-  <div class="mb-3 text-end">
-    <button class="btn btn-primary" (click)="goToEmployeeBankInfo()">
-      View Bank Info
-    </button>
+    <!-- Info Cards Row -->
+    <div class="info-cards-row mb-5">
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="bi bi-credit-card"></i>
+        </div>
+        <div class="info-content">
+          <h5>Bank Accounts</h5>
+          <p class="info-count">{{accounts.length}}</p>
+          <small>Active accounts registered</small>
+        </div>
+      </div>
+      
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="bi bi-shield-check"></i>
+        </div>
+        <div class="info-content">
+          <h5>Secure Data</h5>
+          <p class="info-count">100%</p>
+          <small>Encrypted information</small>
+        </div>
+      </div>
+      
+      <div class="info-card">
+        <div class="info-icon">
+          <i class="bi bi-person-badge"></i>
+        </div>
+        <div class="info-content">
+          <h5>PF/UAN Records</h5>
+          <p class="info-count">{{bankInfos.length}}</p>
+          <small>Employee records maintained</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank Accounts Section -->
+    <div class="section-card mb-4">
+      <div class="section-header">
+        <div class="header-left">
+          <i class="bi bi-bank"></i>
+          <h4>Bank Account Details</h4>
+        </div>
+        <span class="record-count">{{accounts.length}} Account(s)</span>
+      </div>
+      
+      <div class="section-body">
+        <div class="info-banner">
+          <i class="bi bi-info-circle"></i>
+          <span>Your bank account information is used for salary processing and direct deposits. Keep your details updated for seamless transactions.</span>
+        </div>
+        
+        <div class="table-wrapper">
+          <table class="table-gradient">
+            <thead>
+              <tr>
+                <th><i class="bi bi-hash"></i> ID</th>
+                <th><i class="bi bi-card-heading"></i> Account Number</th>
+                <th><i class="bi bi-bank"></i> Bank Name</th>
+                <th><i class="bi bi-upc"></i> IFSC Code</th>
+                <th><i class="bi bi-tag"></i> Account Type</th>
+                <th><i class="bi bi-person"></i> Holder Name</th>
+                <th><i class="bi bi-check-circle"></i> Status</th>
+                <th><i class="bi bi-gear"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let acc of accounts" class="table-row-hover">
+                <td class="account-id">{{ acc.accountId }}</td>
+                <td class="account-number">
+                  <span class="masked-number">XXXX XXXX {{ acc.accountNumber.slice(-4) }}</span>
+                </td>
+                <td class="bank-name">
+                  <i class="bi bi-building"></i>
+                  {{ acc.bankName }}
+                </td>
+                <td class="ifsc-code">{{ acc.ifscCode }}</td>
+                <td>
+                  <span class="account-type-badge" [ngClass]="{
+                    'type-savings': acc.accountType === 'SAVINGS',
+                    'type-current': acc.accountType === 'CURRENT'
+                  }">
+                    <i class="bi" [ngClass]="{
+                      'bi-piggy-bank': acc.accountType === 'SAVINGS',
+                      'bi-briefcase': acc.accountType === 'CURRENT'
+                    }"></i>
+                    {{ acc.accountType }}
+                  </span>
+                </td>
+                <td class="holder-name">{{ acc.accountHolderName }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="{
+                    'status-active': acc.isActive,
+                    'status-inactive': !acc.isActive
+                  }">
+                    <i class="bi" [ngClass]="{
+                      'bi-check-circle-fill': acc.isActive,
+                      'bi-x-circle-fill': !acc.isActive
+                    }"></i>
+                    {{ acc.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn-edit" (click)="editAccount(acc)">
+                    <i class="bi bi-pencil-square"></i>
+                    Edit
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="accounts.length === 0">
+                <td colspan="8" class="no-data">
+                  <i class="bi bi-inbox"></i>
+                  <p>No bank accounts found</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employee Bank Info Section -->
+    <div class="section-card mb-4">
+      <div class="section-header">
+        <div class="header-left">
+          <i class="bi bi-person-vcard"></i>
+          <h4>Employee Financial Information</h4>
+        </div>
+        <span class="record-count">{{bankInfos.length}} Record(s)</span>
+      </div>
+      
+      <div class="section-body">
+        <div class="info-banner info-banner-secondary">
+          <i class="bi bi-shield-lock"></i>
+          <span>PF (Provident Fund) and UAN (Universal Account Number) details are maintained for statutory compliance and retirement benefits.</span>
+        </div>
+        
+        <div class="table-wrapper">
+          <table class="table-gradient">
+            <thead>
+              <tr>
+                <th><i class="bi bi-hash"></i> Info ID</th>
+                <th><i class="bi bi-person-badge"></i> Employee ID</th>
+                <th><i class="bi bi-shield"></i> PF Number</th>
+                <th><i class="bi bi-upc-scan"></i> UAN Number</th>
+                <th><i class="bi bi-card-heading"></i> Account Number</th>
+                <th><i class="bi bi-bank"></i> Bank Name</th>
+                <th><i class="bi bi-check-circle"></i> Status</th>
+                <th><i class="bi bi-gear"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let info of bankInfos" class="table-row-hover">
+                <td class="info-id">{{ info.employeeBankInfoId }}</td>
+                <td class="employee-id">
+                  <span class="id-badge">EMP-{{ info.employeeId }}</span>
+                </td>
+                <td class="pf-number">{{ info.pfNumber }}</td>
+                <td class="uan-number">{{ info.uanNumber }}</td>
+                <td class="account-number">
+                  <span class="masked-number">XXXX {{ info.accountDetails.accountNumber.slice(-4) }}</span>
+                </td>
+                <td class="bank-name">
+                  <i class="bi bi-building"></i>
+                  {{ info.accountDetails.bankName }}
+                </td>
+                <td>
+                  <span class="status-badge" [ngClass]="{
+                    'status-active': info.isActive,
+                    'status-inactive': !info.isActive
+                  }">
+                    <i class="bi" [ngClass]="{
+                      'bi-check-circle-fill': info.isActive,
+                      'bi-x-circle-fill': !info.isActive
+                    }"></i>
+                    {{ info.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn-edit" (click)="editBankInfo(info)">
+                    <i class="bi bi-pencil-square"></i>
+                    Edit
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="bankInfos.length === 0">
+                <td colspan="8" class="no-data">
+                  <i class="bi bi-inbox"></i>
+                  <p>No employee bank information found</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Important Notes Section -->
+    <div class="notes-section">
+      <div class="note-card">
+        <div class="note-icon">
+          <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="note-content">
+          <h6>Important Information</h6>
+          <ul>
+            <li>Ensure your bank account details are accurate for timely salary credits</li>
+            <li>IFSC code must match your bank branch exactly</li>
+            <li>Contact HR immediately if you notice any discrepancies</li>
+            <li>PF and UAN numbers are provided by EPFO and should not be modified without authorization</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="note-card">
+        <div class="note-icon note-icon-success">
+          <i class="bi bi-shield-check"></i>
+        </div>
+        <div class="note-content">
+          <h6>Data Security</h6>
+          <ul>
+            <li>All financial information is encrypted and stored securely</li>
+            <li>Only authorized personnel can access your banking details</li>
+            <li>Regular audits ensure data integrity and compliance</li>
+            <li>Your privacy is our priority</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
   </div>
-
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Account Number</th>
-        <th>Bank Name</th>
-        <th>IFSC</th>
-        <th>Account Type</th>
-        <th>Holder Name</th>
-        <th>Active</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let acc of accounts">
-        <td>{{ acc.accountId }}</td>
-        <td>{{ acc.accountNumber }}</td>
-        <td>{{ acc.bankName }}</td>
-        <td>{{ acc.ifscCode }}</td>
-        <td>{{ acc.accountType }}</td>
-        <td>{{ acc.accountHolderName }}</td>
-        <td>{{ acc.isActive ? 'Yes' : 'No' }}</td>
-        <td>
-          <!-- <button class="btn btn-sm btn-info me-1" (click)="viewAccount(acc.accountId)">
-            View
-          </button> -->
-          <button class="btn btn-sm btn-warning me-1" (click)="editAccount(acc)">
-            Edit
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </div>

@@ -1,102 +1,307 @@
-<div class="container py-4 payslip-container">
-  <h2 class="text-center mb-4 text-gradient fw-bold">Payslip Portal</h2>
-
-  <!-- Input Card -->
-  <div class="card shadow-sm input-card mb-4">
-    <div class="card-body d-flex flex-wrap gap-3 justify-content-center">
-      <div>
-        <label class="form-label fw-semibold">Select Month</label>
-        <select class="form-select" [(ngModel)]="selectedMonth">
-          <option value="">-- Select Month --</option>
-          <option *ngFor="let m of months" [value]="m">{{ m }}</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="form-label fw-semibold">Select Year</label>
-        <input type="number" class="form-control" [(ngModel)]="selectedYear" min="2000" max="2100" placeholder="e.g. 2025">
-      </div>
-
-      <div class="align-self-end">
-        <button class="btn btn-gradient" (click)="viewPayslip()">
-          <i class="bi bi-search"></i> View Payslip
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Payslip Display -->
-  <div *ngIf="payslip" class="card shadow-lg payslip-card">
-    <div class="card-header bg-gradient text-white text-center fw-bold">
-      Payslip for {{ payslip.payslipMonth }} {{ payslip.year }}
-    </div>
-    <div class="card-body">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <p><strong>Name:</strong> {{ payslip.employeeName }}</p>
-          <p><strong>Department:</strong> {{ payslip.department }}</p>
-          <p><strong>Role:</strong> {{ payslip.role }}</p>
-        </div>
-        <div class="col-md-6">
-          <p><strong>Bank:</strong> {{ payslip.bankName }}</p>
-          <p><strong>Account No:</strong> {{ payslip.accountNumber }}</p>
-          <p><strong>IFSC:</strong> {{ payslip.ifscCode }}</p>
+<div class="payslip-container">
+  <div class="container py-4">
+    
+    <!-- Page Header -->
+    <div class="page-header mb-5">
+      <div class="header-content">
+        <i class="bi bi-receipt"></i>
+        <div class="header-text">
+          <h2>Payslip Portal</h2>
+          <p>View and download your monthly salary statements</p>
         </div>
       </div>
+    </div>
 
-      <table class="table table-bordered align-middle text-center">
-        <thead class="table-primary">
-          <tr>
-            <th>Earnings</th>
-            <th>Amount</th>
-            <th>Deductions</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Basic Salary</td>
-            <td>{{ payslip.basicSalary | currency:'INR' }}</td>
-            <td>Provident Fund</td>
-            <td>{{ payslip.providentFund | currency:'INR' }}</td>
-          </tr>
-          <tr>
-            <td>HRA</td>
-            <td>{{ payslip.houseRentAllowance | currency:'INR' }}</td>
-            <td></td><td></td>
-          </tr>
-          <tr>
-            <td>DA</td>
-            <td>{{ payslip.dearnessAllowance | currency:'INR' }}</td>
-            <td></td><td></td>
-          </tr>
-          <tr>
-            <td>Other Allowances</td>
-            <td>{{ payslip.otherAllowances | currency:'INR' }}</td>
-            <td></td><td></td>
-          </tr>
-          <tr class="table-info fw-bold">
-            <td>Total Earnings</td>
-            <td>{{ payslip.actualSalary | currency:'INR' }}</td>
-            <td>Total Deductions</td>
-            <td>{{ payslip.providentFund | currency:'INR' }}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="text-end mt-3">
-        <h5 class="fw-bold text-primary">Net Salary: {{ payslip.finalSalary | currency:'INR' }}</h5>
-      </div>
-
-      <div class="text-center mt-4">
-        <button class="btn btn-gradient" (click)="downloadPayslip()">
-          <i class="bi bi-download"></i> Download PDF
-        </button>
+    <!-- Info Banner -->
+    <div class="info-banner mb-4">
+      <i class="bi bi-info-circle"></i>
+      <div class="banner-content">
+        <strong>Important:</strong> Your payslip contains detailed information about your earnings, deductions, and net salary. 
+        Download and save your payslips for future reference and tax filing purposes.
       </div>
     </div>
-  </div>
 
-  <div *ngIf="isLoading" class="text-center mt-3 text-primary fw-semibold">
-    <div class="spinner-border text-primary me-2" role="status"></div> Loading Payslip...
+    <!-- Input Card -->
+    <div class="input-card mb-4">
+      <div class="card-header-gradient">
+        <i class="bi bi-calendar3"></i>
+        <h5>Select Period</h5>
+      </div>
+      <div class="card-body-custom">
+        <div class="input-row">
+          <div class="input-group-custom">
+            <label class="form-label-custom">
+              <i class="bi bi-calendar-month"></i>
+              Select Month
+            </label>
+            <select class="form-control-gradient" [(ngModel)]="selectedMonth">
+              <option value="">-- Choose Month --</option>
+              <option *ngFor="let m of months" [value]="m">{{ m | titlecase }}</option>
+            </select>
+          </div>
+
+          <div class="input-group-custom">
+            <label class="form-label-custom">
+              <i class="bi bi-calendar-year"></i>
+              Select Year
+            </label>
+            <input 
+              type="number" 
+              class="form-control-gradient" 
+              [(ngModel)]="selectedYear" 
+              min="2000" 
+              max="2100" 
+              placeholder="e.g., 2025">
+          </div>
+
+          <div class="button-group">
+            <button class="btn-view-payslip" (click)="viewPayslip()">
+              <i class="bi bi-search"></i>
+              View Payslip
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats (shown when payslip is loaded) -->
+    <div *ngIf="payslip" class="stats-row mb-4">
+      <div class="stat-card">
+        <div class="stat-icon earnings-icon">
+          <i class="bi bi-cash-coin"></i>
+        </div>
+        <div class="stat-content">
+          <h6>Total Earnings</h6>
+          <p class="stat-value">{{ payslip.actualSalary | currency:'INR':'symbol':'1.0-0' }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon deductions-icon">
+          <i class="bi bi-dash-circle"></i>
+        </div>
+        <div class="stat-content">
+          <h6>Total Deductions</h6>
+          <p class="stat-value">{{ payslip.providentFund | currency:'INR':'symbol':'1.0-0' }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card highlight-card">
+        <div class="stat-icon net-icon">
+          <i class="bi bi-wallet2"></i>
+        </div>
+        <div class="stat-content">
+          <h6>Net Salary</h6>
+          <p class="stat-value highlight">{{ payslip.finalSalary | currency:'INR':'symbol':'1.0-0' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payslip Display -->
+    <div *ngIf="payslip" class="payslip-card">
+      <div class="payslip-header">
+        <div class="company-info">
+          <i class="bi bi-building"></i>
+          <div>
+            <h4>Salary Statement</h4>
+            <p>{{ payslip.payslipMonth | titlecase }} {{ payslip.year }}</p>
+          </div>
+        </div>
+        <div class="payslip-badge">
+          <i class="bi bi-patch-check-fill"></i>
+          Official Document
+        </div>
+      </div>
+      
+      <div class="payslip-body">
+        <!-- Employee Information Section -->
+        <div class="employee-section">
+          <h5 class="section-title">
+            <i class="bi bi-person-badge"></i>
+            Employee Information
+          </h5>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Employee Name</span>
+              <span class="info-value">{{ payslip.employeeName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Department</span>
+              <span class="info-value">{{ payslip.department }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Role/Designation</span>
+              <span class="info-value">{{ payslip.role }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bank Information Section -->
+        <div class="bank-section">
+          <h5 class="section-title">
+            <i class="bi bi-bank"></i>
+            Bank Details
+          </h5>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Bank Name</span>
+              <span class="info-value">{{ payslip.bankName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Account Number</span>
+              <span class="info-value masked-account">XXXX XXXX {{ payslip.accountNumber.slice(-4) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">IFSC Code</span>
+              <span class="info-value">{{ payslip.ifscCode }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Salary Breakdown Table -->
+        <div class="salary-section">
+          <h5 class="section-title">
+            <i class="bi bi-currency-rupee"></i>
+            Salary Breakdown
+          </h5>
+          
+          <div class="table-wrapper">
+            <table class="salary-table">
+              <thead>
+                <tr>
+                  <th class="earnings-header">
+                    <i class="bi bi-plus-circle"></i> Earnings
+                  </th>
+                  <th class="amount-header">Amount</th>
+                  <th class="deductions-header">
+                    <i class="bi bi-dash-circle"></i> Deductions
+                  </th>
+                  <th class="amount-header">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="component-name">
+                    <i class="bi bi-circle-fill component-dot earnings-dot"></i>
+                    Basic Salary
+                  </td>
+                  <td class="amount-value">{{ payslip.basicSalary | currency:'INR':'symbol':'1.2-2' }}</td>
+                  <td class="component-name">
+                    <i class="bi bi-circle-fill component-dot deductions-dot"></i>
+                    Provident Fund (PF)
+                  </td>
+                  <td class="amount-value">{{ payslip.providentFund | currency:'INR':'symbol':'1.2-2' }}</td>
+                </tr>
+                <tr>
+                  <td class="component-name">
+                    <i class="bi bi-circle-fill component-dot earnings-dot"></i>
+                    House Rent Allowance (HRA)
+                  </td>
+                  <td class="amount-value">{{ payslip.houseRentAllowance | currency:'INR':'symbol':'1.2-2' }}</td>
+                  <td class="empty-cell"></td>
+                  <td class="empty-cell"></td>
+                </tr>
+                <tr>
+                  <td class="component-name">
+                    <i class="bi bi-circle-fill component-dot earnings-dot"></i>
+                    Dearness Allowance (DA)
+                  </td>
+                  <td class="amount-value">{{ payslip.dearnessAllowance | currency:'INR':'symbol':'1.2-2' }}</td>
+                  <td class="empty-cell"></td>
+                  <td class="empty-cell"></td>
+                </tr>
+                <tr>
+                  <td class="component-name">
+                    <i class="bi bi-circle-fill component-dot earnings-dot"></i>
+                    Other Allowances
+                  </td>
+                  <td class="amount-value">{{ payslip.otherAllowances | currency:'INR':'symbol':'1.2-2' }}</td>
+                  <td class="empty-cell"></td>
+                  <td class="empty-cell"></td>
+                </tr>
+                <tr class="total-row">
+                  <td class="total-label">
+                    <i class="bi bi-calculator"></i>
+                    Total Earnings
+                  </td>
+                  <td class="total-value">{{ payslip.actualSalary | currency:'INR':'symbol':'1.2-2' }}</td>
+                  <td class="total-label">
+                    <i class="bi bi-calculator"></i>
+                    Total Deductions
+                  </td>
+                  <td class="total-value">{{ payslip.providentFund | currency:'INR':'symbol':'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Net Salary Section -->
+        <div class="net-salary-section">
+          <div class="net-salary-card">
+            <i class="bi bi-wallet2"></i>
+            <div class="net-content">
+              <h6>Net Salary (Take Home)</h6>
+              <p class="net-amount">{{ payslip.finalSalary | currency:'INR':'symbol':'1.2-2' }}</p>
+              <small>Amount credited to your bank account</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-section">
+          <button class="btn-download" (click)="downloadPayslip()">
+            <i class="bi bi-download"></i>
+            Download PDF
+          </button>
+          <button class="btn-print" onclick="window.print()">
+            <i class="bi bi-printer"></i>
+            Print Payslip
+          </button>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="payslip-footer">
+          <i class="bi bi-shield-check"></i>
+          <p>This is a computer-generated payslip and does not require a signature. 
+          Keep this document safe for tax filing and future reference.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner-wrapper">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+      <p>Loading your payslip...</p>
+    </div>
+
+    <!-- No Data State -->
+    <div *ngIf="!payslip && !isLoading && (selectedMonth || selectedYear)" class="no-data-state">
+      <i class="bi bi-file-earmark-x"></i>
+      <h5>No Payslip Found</h5>
+      <p>We couldn't find a payslip for the selected period. Please try a different month or year.</p>
+    </div>
+
+    <!-- Help Section -->
+    <div class="help-section mt-5">
+      <div class="help-card">
+        <div class="help-icon">
+          <i class="bi bi-question-circle"></i>
+        </div>
+        <div class="help-content">
+          <h6>Understanding Your Payslip</h6>
+          <ul>
+            <li><strong>Basic Salary:</strong> Your fixed monthly salary component</li>
+            <li><strong>HRA:</strong> House Rent Allowance for accommodation expenses</li>
+            <li><strong>DA:</strong> Dearness Allowance to offset inflation</li>
+            <li><strong>PF:</strong> Provident Fund contribution for retirement savings</li>
+            <li><strong>Net Salary:</strong> Final amount after all deductions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

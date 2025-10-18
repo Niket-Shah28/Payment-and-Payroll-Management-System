@@ -17,14 +17,11 @@ export class EmployeeDashboard implements OnInit {
     { name: 'HOME', link: 'home' },
     { name: 'PROFILE', link: 'profile' },
     { name: 'RAISE TICKETS', link: 'raise-tickets' },
-    { name: 'MY TICKETS', link: 'tickets' }, 
     { name: 'ACCOUNT DETAILS', link: 'bank-account-list' },
     { name: 'PAYSLIP', link: 'payslip' },
     { name: 'MARK ATTENDANCE', link: 'mark-attendance' },
     { name: 'APPLY LEAVE', link: 'apply-leave' },
-    { name: 'DESIGNATION', link: 'designation' },
-    {name: 'DOCUMENTS', link:'documents'},
-    { name: 'EMPLOYEE GROWTH', link: 'employee-growth' }
+    {name: 'DOCUMENTS', link:'documents'}
   ];
 
   constructor(private employeeService: EmployeeService) { }
