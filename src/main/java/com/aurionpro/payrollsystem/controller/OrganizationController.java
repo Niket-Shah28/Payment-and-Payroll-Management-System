@@ -40,7 +40,8 @@ import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/organization")
-@CrossOrigin(origins="http://localhost:4200")
+
+@CrossOrigin(origins="*")
 public class OrganizationController {
 	
 	@Autowired
