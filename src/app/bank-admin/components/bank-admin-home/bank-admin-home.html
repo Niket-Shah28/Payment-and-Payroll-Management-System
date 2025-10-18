@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Admin - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f0ff 0%, #ffffff 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 24px;
+            color: #ffffff !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 50px;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .hero-section h1 {
+            font-weight: 700;
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .feature-card {
+            background: white;
+            border: none;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(42, 82, 152, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid #2a5298;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(42, 82, 152, 0.2);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 30px;
+        }
+
+        .feature-card h3 {
+            color: #1e3c72;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .badge-custom {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 5px 20px rgba(42, 82, 152, 0.1);
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(42, 82, 152, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: #2a5298;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .section-title {
+            color: #1e3c72;
+            font-weight: 700;
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-university"></i>
+                Bank Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1>Welcome to Bank Administration</h1>
+                    <p class="lead">Centralized management platform for vendors, organizations, and financial operations</p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fas fa-cog" style="font-size: 80px; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Overview Section -->
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-md-3 stat-box">
+                    <div class="stat-number">350+</div>
+                    <div class="stat-label">Organizations Managed</div>
+                </div>
+                <div class="col-md-3 stat-box">
+                    <div class="stat-number">2.5K</div>
+                    <div class="stat-label">Vendors Registered</div>
+                </div>
+                <div class="col-md-3 stat-box">
+                    <div class="stat-number">$45M</div>
+                    <div class="stat-label">Monthly Disbursements</div>
+                </div>
+                <div class="col-md-3 stat-box">
+                    <div class="stat-number">99.8%</div>
+                    <div class="stat-label">Transaction Success Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features Section -->
+        <h2 class="section-title">Core Features</h2>
+        <p class="section-subtitle">Comprehensive tools to manage your banking operations efficiently</p>
+
+        <div class="module-grid">
+            <!-- Vendor Management -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3>Vendor Management</h3>
+                <p>Register, monitor, and manage vendor relationships with comprehensive profiles and performance tracking.</p>
+                <ul class="feature-list">
+                    <li>Vendor registration & verification</li>
+                    <li>Performance metrics tracking</li>
+                    <li>Document management</li>
+                    <li>Vendor communications</li>
+                </ul>
+                <span class="badge-custom">Essential</span>
+            </div>
+
+            <!-- Organization Management -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h3>Organization Management</h3>
+                <p>Manage multiple organizations with centralized controls, user access, and compliance tracking.</p>
+                <ul class="feature-list">
+                    <li>Multi-organization support</li>
+                    <li>Role-based access control</li>
+                    <li>Branch management</li>
+                    <li>Compliance reporting</li>
+                </ul>
+                <span class="badge-custom">Core</span>
+            </div>
+
+            <!-- Salary Disbursement -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h3>Monthly Salary Disbursement</h3>
+                <p>Automated salary processing and direct fund transfers to employee accounts with detailed reconciliation.</p>
+                <ul class="feature-list">
+                    <li>Bulk salary processing</li>
+                    <li>Automated fund transfers</li>
+                    <li>Payroll reconciliation</li>
+                    <li>Tax calculations & compliance</li>
+                </ul>
+                <span class="badge-custom">Critical</span>
+            </div>
+
+            <!-- Vendor Payments -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3>Vendor Payment Processing</h3>
+                <p>Streamlined payment execution to vendors with invoice tracking, approvals, and audit trails.</p>
+                <ul class="feature-list">
+                    <li>Invoice management</li>
+                    <li>Payment approval workflows</li>
+                    <li>Multi-currency support</li>
+                    <li>Automated reconciliation</li>
+                </ul>
+                <span class="badge-custom">Critical</span>
+            </div>
+
+            <!-- Financial Analytics -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Financial Analytics</h3>
+                <p>Real-time dashboards and comprehensive reports for transaction monitoring and financial insights.</p>
+                <ul class="feature-list">
+                    <li>Real-time dashboards</li>
+                    <li>Transaction analytics</li>
+                    <li>Custom reports</li>
+                    <li>Trend analysis</li>
+                </ul>
+                <span class="badge-custom">Advanced</span>
+            </div>
+
+            <!-- Security & Compliance -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Security & Compliance</h3>
+                <p>Enterprise-grade security with encryption, audit logs, and regulatory compliance management.</p>
+                <ul class="feature-list">
+                    <li>End-to-end encryption</li>
+                    <li>Audit trail logging</li>
+                    <li>Two-factor authentication</li>
+                    <li>Compliance reports</li>
+                </ul>
+                <span class="badge-custom">Essential</span>
+            </div>
+        </div>
+
+        <!-- Call to Action Section -->
+        <div class="stats-section" style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); border-top: 5px solid #2a5298;">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h3 style="color: #1e3c72; margin-bottom: 15px;">Ready to Get Started?</h3>
+                    <p style="color: #666; margin: 0;">Access the admin dashboard to manage your vendors, organizations, and process payments efficiently.</p>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <a href="#" class="cta-button me-2">
+                        <i class="fas fa-sign-in-alt"></i> Open Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Access -->
+        <div style="background: white; border-radius: 15px; padding: 40px; margin: 40px 0; box-shadow: 0 5px 20px rgba(42, 82, 152, 0.1);">
+            <h3 style="color: #1e3c72; margin-bottom: 30px; font-weight: 700;">Quick Access</h3>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <a href="#" class="btn btn-outline-primary w-100" style="border-color: #2a5298; color: #2a5298;">
+                        <i class="fas fa-list me-2"></i>View Vendors
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="#" class="btn btn-outline-primary w-100" style="border-color: #2a5298; color: #2a5298;">
+                        <i class="fas fa-sitemap me-2"></i>Organizations
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="#" class="btn btn-outline-primary w-100" style="border-color: #2a5298; color: #2a5298;">
+                        <i class="fas fa-wallet me-2"></i>Process Salaries
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="#" class="btn btn-outline-primary w-100" style="border-color: #2a5298; color: #2a5298;">
+                        <i class="fas fa-file-invoice me-2"></i>Payments
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="mb-0">&copy; 2025 Bank Administration System. All rights reserved.</p>
+            <small style="opacity: 0.9; margin-top: 10px; display: block;">Secure • Reliable • Compliant</small>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!-- approve-organizations.html -->
+
+<div class="main-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <i class="fas fa-building"></i> Organization Requests
+      </h1>
+      <p class="page-subtitle">Review and manage pending organization registration requests</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loadingRequests" class="alert alert-info d-flex align-items-center" role="alert">
+    <div class="spinner-border spinner-border-sm me-3" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span>Loading pending organization requests...</span>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="errorMsg" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>
+    <strong>Error:</strong> {{ errorMsg }}
+    <button type="button" class="btn-close" (click)="errorMsg = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Pending Requests Table -->
+  <div *ngIf="!loadingRequests && pendingRequests.length > 0" class="requests-section">
+    <div class="table-responsive table-card">
+      <table class="table table-hover mb-0">
+        <thead class="table-header">
+          <tr>
+            <th scope="col">
+              <i class="fas fa-hashtag me-2"></i>ID
+            </th>
+            <th scope="col">
+              <i class="fas fa-briefcase me-2"></i>Organization Name
+            </th>
+            <th scope="col">
+              <i class="fas fa-envelope me-2"></i>Email
+            </th>
+            <th scope="col">
+              <i class="fas fa-phone me-2"></i>Phone
+            </th>
+            <th scope="col">
+              <i class="fas fa-map-marker-alt me-2"></i>Address
+            </th>
+            <th scope="col" class="text-center">
+              <i class="fas fa-cog me-2"></i>Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of pendingRequests" class="request-row">
+            <td>
+              <span class="badge badge-request">{{ r.requestId }}</span>
+            </td>
+            <td class="fw-500">{{ r.organizationName }}</td>
+            <td>{{ r.email }}</td>
+            <td>{{ r.phoneNumber }}</td>
+            <td class="text-truncate" [title]="r.address">{{ r.address }}</td>
+            <td class="actions-cell">
+              <button 
+                class="btn btn-sm btn-info-outline me-2"
+                (click)="openDocuments(r.requestId)"
+                title="View documents for this request">
+                <i class="fas fa-file-alt me-1"></i>Documents
+              </button>
+              <button 
+                class="btn btn-sm btn-success-outline"
+                (click)="processRequest(r.requestId, 'APPROVED')"
+                title="Approve this request">
+                <i class="fas fa-check me-1"></i>Approve
+              </button>
+              <button 
+                class="btn btn-sm btn-danger-outline"
+                (click)="processRequest(r.requestId, 'REJECTED')"
+                title="Reject this request">
+                <i class="fas fa-times me-1"></i>Reject
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loadingRequests && pendingRequests.length === 0" class="empty-state">
+    <div class="empty-state-icon">
+      <i class="fas fa-inbox"></i>
+    </div>
+    <h3>No Pending Requests</h3>
+    <p>All organization requests have been processed</p>
+  </div>
+
+  <!-- Documents Panel Modal -->
+  <div class="documents-panel-overlay" *ngIf="selectedRequestId !== null" [@fadeInOut]>
+    <div class="documents-panel">
+      <!-- Panel Header -->
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">
+            <i class="fas fa-folder-open me-2"></i>Documents
+          </h2>
+          <p class="panel-subtitle">Request ID: <span class="badge badge-request">{{ selectedRequestId }}</span></p>
+        </div>
+        <button 
+          class="btn btn-close-panel"
+          (click)="closeDocumentsPanel()"
+          title="Close panel">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Panel Loading -->
+      <div *ngIf="loadingDocuments" class="panel-loading">
+        <div class="spinner-border spinner-border-sm" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="ms-2">Loading documents...</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div *ngIf="!loadingDocuments" class="doc-actions">
+        <button 
+          class="btn btn-success"
+          (click)="processRequestFromDocuments('APPROVED')">
+          <i class="fas fa-check-circle me-2"></i>Approve Request
+        </button>
+        <button 
+          class="btn btn-danger"
+          (click)="processRequestFromDocuments('REJECTED')">
+          <i class="fas fa-times-circle me-2"></i>Reject Request
+        </button>
+      </div>
+
+      <!-- Documents Table -->
+      <div *ngIf="documents.length > 0 && !loadingDocuments" class="documents-table-section">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-header">
+              <tr>
+                <th scope="col">
+                  <i class="fas fa-id-card me-2"></i>Document ID
+                </th>
+                <th scope="col">
+                  <i class="fas fa-tag me-2"></i>Document Type
+                </th>
+                <th scope="col" class="text-center">
+                  <i class="fas fa-cog me-2"></i>Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of documents" class="document-row">
+                <td>
+                  <span class="badge badge-doc">{{ d.requestDocumentId }}</span>
+                </td>
+                <td class="fw-500">{{ d.documentTypeName }}</td>
+                <td class="actions-cell">
+                  <button 
+                    class="btn btn-sm btn-info-outline me-1"
+                    (click)="viewDocument(selectedRequestId!, d.requestDocumentId)"
+                    title="View this document">
+                    <i class="fas fa-eye me-1"></i>View
+                  </button>
+                  <button 
+                    class="btn btn-sm btn-primary-outline"
+                    (click)="downloadDocument(selectedRequestId!, d.requestDocumentId, d.documentTypeName)"
+                    title="Download this document">
+                    <i class="fas fa-download me-1"></i>Download
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- No Documents State -->
+      <div *ngIf="documents.length === 0 && !loadingDocuments" class="empty-docs-state">
+        <i class="fas fa-file-slash"></i>
+        <p>No documents found for this request</p>
+      </div>
+
+      <!-- Document Viewer -->
+      <div class="document-viewer" *ngIf="viewingBlobUrl">
+        <div class="viewer-header">
+          <h4 class="viewer-title">
+            <i class="fas fa-file-alt me-2"></i>Document Preview
+          </h4>
+        </div>
+
+        <!-- PDF Viewer -->
+        <div *ngIf="viewingMimeType === 'application/pdf'" class="viewer-content">
+          <iframe 
+            [src]="viewingBlobUrl" 
+            class="pdf-iframe"
+            title="PDF Document Preview">
+          </iframe>
+        </div>
+
+        <!-- Image Viewer -->
+        <div *ngIf="viewingMimeType && viewingMimeType.startsWith('image/')" class="viewer-content">
+          <img 
+            [src]="viewingBlobUrl" 
+            alt="Document Image"
+            class="document-image" />
+        </div>
+
+        <!-- Unknown Format Viewer -->
+        <div *ngIf="viewingMimeType === 'application/octet-stream'" class="viewer-content">
+          <div class="unknown-format-viewer">
+            <i class="fas fa-file"></i>
+            <p>This document format cannot be previewed in browser</p>
+            <a [href]="viewingBlobUrl" target="_blank" class="btn btn-primary btn-sm">
+              <i class="fas fa-external-link-alt me-2"></i>Open in New Tab
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay Backdrop -->
+  <div 
+    class="overlay-backdrop"
+    *ngIf="selectedRequestId !== null"
+    (click)="closeDocumentsPanel()">
+  </div>
+</div>

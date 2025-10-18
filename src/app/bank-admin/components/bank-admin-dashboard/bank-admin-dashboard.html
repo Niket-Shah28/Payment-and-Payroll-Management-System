@@ -1,1 +1,44 @@
-<p>bank-admin-dashboard works!</p>
+<nav class="navbar">
+  <div class="navbar-left">
+    <button class="toggle-btn" (click)="toggleNavbar()">
+      <span class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+    <div class="brand">Aurionpro Ltd.</div>
+  </div>
+
+  <!-- <div class="navbar-right">
+    <div class="profile-section">
+      <img [src]="profilePhotoUrl" alt="Profile" class="profile-pic">
+      <div class="profile-status"></div>
+    </div>
+  </div> -->
+</nav>
+
+<!-- Slide-in Collapsible Navbar -->
+<div class="side-menu" [class.open]="isNavbarOpen">
+  <div class="sidebar-header">
+    <h3>Navigation</h3>
+  </div>
+  <ul>
+    <li *ngFor="let tab of tabs">
+      <a [routerLink]="tab?.link"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeNavbar()">
+        <!-- <span class="nav-icon">→</span> -->
+        <span class="nav-text">{{ tab?.name }}</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Optional Overlay for closing on click outside -->
+<div class="overlay" *ngIf="isNavbarOpen" (click)="closeNavbar()"></div>
+
+<div class="main-content">
+  <router-outlet></router-outlet>
+</div>
