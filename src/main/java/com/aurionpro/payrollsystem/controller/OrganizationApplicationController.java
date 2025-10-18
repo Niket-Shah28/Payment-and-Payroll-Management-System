@@ -35,6 +35,7 @@ public class OrganizationApplicationController {
 	private OrganizationApplicationService organizationApplicationService;
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Map<String, Long>> organizationApplicationRequest(@RequestBody @Valid OrganizationApplicationRequestDto dto){
 		Long requestId = organizationApplicationService.addOrganizationApplication(dto);
 		return new ResponseEntity<>(Map.of("requestId", requestId), HttpStatus.OK);
@@ -48,7 +49,7 @@ public class OrganizationApplicationController {
 	}
 	
 	@GetMapping("/pending")
-	//@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<OrganizationApplicationRequestDetailsDto>> getPendingRequests(){
 		return new ResponseEntity<>(organizationApplicationService.getPendingRequests(), HttpStatus.OK);
 	}
