@@ -7,10 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token-interceptor';
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 
 @NgModule({
   declarations: [
@@ -25,17 +22,11 @@ import { TokenInterceptor } from './interceptors/token-interceptor';
   ],
   providers: [
     provideBrowserGlobalErrorListeners(), 
-<<<<<<< Updated upstream
-    {provide: HTTP_INTERCEPTORS,
-    useClass: TokenInterceptor,
-    multi: true}
-=======
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
     }
->>>>>>> Stashed changes
   ],
   bootstrap: [App]
 })
