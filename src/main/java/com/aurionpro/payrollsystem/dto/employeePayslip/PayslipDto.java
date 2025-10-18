@@ -13,7 +13,7 @@ public class PayslipDto {
   
     private Month month;
     private Integer year;
-    private String payslipUrl;
     private String employeeName;
+    private Long employeeId;
 
 }

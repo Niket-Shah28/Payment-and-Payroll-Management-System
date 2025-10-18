@@ -4,14 +4,10 @@
     <meta charset="UTF-8" />
     <title>Payslip</title>
     <style>
-		
-		@page {
-		    /* Changes A4 from 210x297mm to 297x210mm */
-		    size: A4 landscape; 
-		    margin: 5mm; /* Keep margins small */
-		}
-		
-		
+        @page {
+            size: A4 landscape;
+            margin: 5mm;
+        }
         body { font-family: 'Arial', sans-serif; font-size: 10pt; }
         .payslip-container { width: 100%; max-width: 800px; margin: 0 auto; border: 1px solid #333; padding: 20px; }
         h1 { text-align: center; color: #1e3a8a; font-size: 16pt; margin-bottom: 5px; }
@@ -24,22 +20,19 @@
     </style>
 </head>
 <body>
-
 <div class="payslip-container">
-    
-    <h1>ABC COMPANY PAYROLL SYSTEM</h1>
-    <h2 th:text="'Payslip for ' + ${payslip.month} + ' ' + ${payslip.year}">
+    <h1>AURIONPRO Ltd. COMPANY PAYROLL SYSTEM</h1>
+    <h2 th:text="'Payslip for ' + ${payslip.payslipMonth} + ' ' + ${payslip.year}">
         Payslip for Month Year
     </h2>
 
-    <!-- Employee Details -->
     <div class="section-header">Employee Details</div>
     <table>
         <tr>
             <th width="20%">Employee ID</th>
             <td width="30%" th:text="${payslip.employeeId}">12345</td>
             <th width="20%">Employee Name</th>
-            <td width="30%" th:text="${payslip.name}">John Doe</td>
+            <td width="30%" th:text="${payslip.employeeName}">John Doe</td>
         </tr>
         <tr>
             <th>Department</th>
@@ -61,7 +54,6 @@
         </tr>
     </table>
 
-    <!-- Salary Details -->
     <div class="section-header">Earnings and Deductions</div>
     <table>
         <thead>
@@ -82,7 +74,8 @@
             <tr>
                 <td>House Rent Allowance (HRA)</td>
                 <td th:text="${payslip.houseRentAllowance}">4000.00</td>
-                
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td>Dearness Allowance (DA)</td>
@@ -92,11 +85,10 @@
             </tr>
             <tr>
                 <td>Other Allowances</td>
-                <td th:text="${payslip.otherAllowance}">500.00</td>
+                <td th:text="${payslip.otherAllowances}">500.00</td>
                 <td></td>
                 <td></td>
             </tr>
-            <!-- Summary Row -->
             <tr class="total-row">
                 <th colspan="1">Actual Salary (Total Earnings)</th>
                 <td th:text="${payslip.actualSalary}">15500.00</td>
@@ -105,12 +97,11 @@
             </tr>
         </tbody>
     </table>
-    
-    <!-- Final Salary -->
+
     <div class="section-header" style="text-align: right; background-color: #0d9488;">
-        Net Pay (In Hand): <span th:text="${payslip.finalSalary}" style="font-size: 14pt;">13700.00</span>
+        Net Pay (In Hand): 
+        <span th:text="${payslip.finalSalary}" style="font-size: 14pt;">13700.00</span>
     </div>
 </div>
-
 </body>
 </html>

@@ -12,5 +12,7 @@ import com.aurionpro.payrollsystem.entity.employee.EmployeeDesignationRole;
 public interface EmployeeDesignationRoleRepository extends JpaRepository<EmployeeDesignationRole, Long>{
 	
 	Optional<EmployeeDesignationRole> findByEmployeeId(Employee employeeId);
+	
+	Optional<EmployeeDesignationRole> findByEmployeeId_EmployeeIdAndIsActiveTrue(Long employeeId);
 
 }

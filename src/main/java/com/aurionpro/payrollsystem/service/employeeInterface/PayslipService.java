@@ -1,9 +1,11 @@
 package com.aurionpro.payrollsystem.service.employeeInterface;
 
+import java.io.IOException;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
+import com.aurionpro.payrollsystem.dto.employeePayslip.PayslipDetailDto;
 import com.aurionpro.payrollsystem.dto.employeePayslip.PayslipDto;
 import com.aurionpro.payrollsystem.dto.employeePayslip.PayslipSummaryDto;
 import com.aurionpro.payrollsystem.entity.employee.Employee;
@@ -18,19 +20,23 @@ public interface PayslipService {
 	//
 	
 	
-	List<PayslipDto> getAllPayslipsByEmployeeId(Long employeeId);
+	//List<PayslipDto> getAllPayslipsByEmployeeId(Long employeeId);
 
-	PayslipDto getPayslipById(Long payslipId);
+//	PayslipDto getPayslipById(Long payslipId);
 
-	PayslipDto getPayslipByEmployeeIdMonthYear(Long employeeId, Month month, Integer year);
+	//PayslipDto getPayslipByEmployeeIdMonthYear(Long employeeId, Month month, Integer year);
 
-	List<PayslipDto> getPayslipsByEmployeeIdAndYear(Long employeeId, Integer year);
+	//List<PayslipDto> getPayslipsByEmployeeIdAndYear(Long employeeId, Integer year);
 
-	PayslipDto getLatestPayslipByEmployeeId(Long employeeId);
+//	PayslipDto getLatestPayslipByEmployeeId(Long employeeId);
+//
+//	List<PayslipSummaryDto> getPayslipSummariesByEmployeeId(Long employeeId);
+//
+//	//byte[] downloadPayslipPdf(Long payslipId);
+//
+//	String getPayslipFilename(Long payslipId);
 
-	List<PayslipSummaryDto> getPayslipSummariesByEmployeeId(Long employeeId);
+	byte[] generatePayslipPdf(PayslipDetailDto payslipDto) throws IOException;
 
-	//byte[] downloadPayslipPdf(Long payslipId);
-
-	String getPayslipFilename(Long payslipId);
+	PayslipDetailDto getPayslipByEmployeeIdMonthYear(Long employeeId, Month month, Integer year);
 }

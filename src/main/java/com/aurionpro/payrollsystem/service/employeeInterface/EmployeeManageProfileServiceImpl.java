@@ -1,5 +1,7 @@
 package com.aurionpro.payrollsystem.service.employeeInterface;
 
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;	
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,14 +13,17 @@ import com.aurionpro.payrollsystem.dto.manageEmployeeProfile.EmployeeAddressRequ
 import com.aurionpro.payrollsystem.dto.manageEmployeeProfile.EmployeeAddressResponseDto;
 import com.aurionpro.payrollsystem.dto.manageEmployeeProfile.EmployeeContactDetailsRequestDto;
 import com.aurionpro.payrollsystem.dto.manageEmployeeProfile.EmployeeContactDetailsResponseDto;
+import com.aurionpro.payrollsystem.dto.manageEmployeeProfile.EmployeeDesignationRoleResponseDto;
 import com.aurionpro.payrollsystem.dto.manageEmployeeProfile.ProfileRequestDto;
 import com.aurionpro.payrollsystem.dto.manageEmployeeProfile.ProfileResponseDto;
 import com.aurionpro.payrollsystem.entity.employee.Employee;
 import com.aurionpro.payrollsystem.entity.employee.EmployeeAddress;
 import com.aurionpro.payrollsystem.entity.employee.EmployeeContactDetails;
+import com.aurionpro.payrollsystem.entity.employee.EmployeeDesignationRole;
 import com.aurionpro.payrollsystem.exception.ResourceNotFoundException;
 import com.aurionpro.payrollsystem.repository.EmployeeAddressRepository;
 import com.aurionpro.payrollsystem.repository.EmployeeContactDetailsRepository;
+import com.aurionpro.payrollsystem.repository.EmployeeDesignationRoleRepository;
 import com.aurionpro.payrollsystem.repository.EmployeeRepository;
 import com.aurionpro.payrollsystem.service.authentication.AuthServiceImpl;
 
@@ -39,6 +44,9 @@ public class EmployeeManageProfileServiceImpl implements EmployeeManageProfileSe
 	
 	@Autowired
 	private CloudinaryService cloudinaryService;
+	
+	@Autowired
+	private EmployeeDesignationRoleRepository designationRoleRepository;
 
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
@@ -272,5 +280,25 @@ public class EmployeeManageProfileServiceImpl implements EmployeeManageProfileSe
 		Employee savedProfile = employeeRepository.save(employee);
 		return mapper.map(savedProfile, ProfileResponseDto.class);
 	}
+	
+	@Override
+	public EmployeeDesignationRoleResponseDto getDesignationAndRoleByEmployeeId(Long employeeId) {
+	    Optional<EmployeeDesignationRole> optional =
+	            designationRoleRepository.findByEmployeeId_EmployeeIdAndIsActiveTrue(employeeId);
+
+	    if (optional.isEmpty()) {
+	        throw new RuntimeException("No active designation/role found for employee ID: " + employeeId);
+	    }
+
+	    EmployeeDesignationRole entity = optional.get();
+
+	    EmployeeDesignationRoleResponseDto dto = new EmployeeDesignationRoleResponseDto();
+	    dto.setDepartmentName(entity.getDepartmentId().getDepartmentName());
+	    dto.setBusinessUnitName(entity.getBusinessUnitId().getBusinessUnitName());
+	    dto.setRoleName(entity.getEmployeeRoleId().getRoleName());
+	    dto.setGrade(entity.getGrade());
+	    return dto;
+	}
+
 
 }
