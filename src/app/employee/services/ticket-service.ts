@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TicketCreateDto } from '../dto/ticket-create-dto'; 
-import { TicketDto } from '../dto/ticket-dto'; 
-import { TicketSummaryDto } from '../dto/ticket-summary-dto'; 
+import { TicketCreateDto } from '../dto/ticket-create-dto';
+import { TicketDto } from '../dto/ticket-dto';
+import { TicketSummaryDto } from '../dto/ticket-summary-dto';
 import { TicketResponseDto } from '../dto/ticket-response-dto';
-import { LoginService } from '../../auth/service/login-service'; 
+import { LoginService } from '../../auth/service/login-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TicketService {
 
-private baseUrl = 'http://localhost:8080/employee/tickets';
+  private baseUrl = 'http://localhost:8080/tickets'; 
 
   constructor(private http: HttpClient, private loginService: LoginService) {}
 
@@ -24,24 +24,24 @@ private baseUrl = 'http://localhost:8080/employee/tickets';
     });
   }
 
-  // Create a new ticket
+  // Employee side
   createTicket(ticketCreateDto: TicketCreateDto): Observable<TicketDto> {
     return this.http.post<TicketDto>(
-      this.baseUrl,
+      `${this.baseUrl}/raise`,
       ticketCreateDto,
       { headers: this.getHeaders() }
     );
   }
 
-  // Get all tickets for logged-in employee
+ 
   getAllTickets(): Observable<TicketSummaryDto[]> {
     return this.http.get<TicketSummaryDto[]>(
-      this.baseUrl,
+      `${this.baseUrl}/all`,
       { headers: this.getHeaders() }
     );
   }
 
-  // Get open tickets
+  
   getOpenTickets(): Observable<TicketSummaryDto[]> {
     return this.http.get<TicketSummaryDto[]>(
       `${this.baseUrl}/open`,
@@ -49,38 +49,55 @@ private baseUrl = 'http://localhost:8080/employee/tickets';
     );
   }
 
-  // Get closed tickets
+
   getClosedTickets(): Observable<TicketSummaryDto[]> {
     return this.http.get<TicketSummaryDto[]>(
-      `${this.baseUrl}/close`,
+      `${this.baseUrl}/closed`,
       { headers: this.getHeaders() }
     );
   }
 
-  // Get ticket details with responses
+
   getTicketWithResponses(ticketId: number): Observable<TicketDto> {
     return this.http.get<TicketDto>(
-      `${this.baseUrl}/${ticketId}`,
+      `${this.baseUrl}/response/${ticketId}`,
       { headers: this.getHeaders() }
     );
   }
 
-  // Reply to a ticket response
+  // Reply to a ticket (POST /tickets/emp/respond)
   giveReplyToTicketResponse(responseDto: TicketResponseDto): Observable<TicketResponseDto> {
     return this.http.post<TicketResponseDto>(
-      `${this.baseUrl}/response`,
+      `${this.baseUrl}/emp/respond`,
       responseDto,
       { headers: this.getHeaders() }
     );
   }
 
-  // Update ticket query
-  updateTicket(ticketId: number, newQuery: string): Observable<TicketDto> {
+  // Organization admin endpoints 
+  
+  closeTicket(closeDto: any): Observable<TicketDto> {
     return this.http.patch<TicketDto>(
-      `${this.baseUrl}/${ticketId}`,
-      { query: newQuery },
+      `${this.baseUrl}/close`,
+      closeDto,
       { headers: this.getHeaders() }
     );
   }
-  
+
+  // Respond to ticket as organization admin (POST /tickets/org/respond)
+  respondToTicketAsOrg(responseDto: any): Observable<TicketDto> {
+    return this.http.post<TicketDto>(
+      `${this.baseUrl}/org/respond`,
+      responseDto,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  // Filter tickets as organization admin (GET /tickets/filter)
+  getTicketsWithFilters(filter: any): Observable<TicketDto[]> {
+    return this.http.get<TicketDto[]>(
+      `${this.baseUrl}/filter`,
+      { params: filter, headers: this.getHeaders() }
+    );
+  }
 }

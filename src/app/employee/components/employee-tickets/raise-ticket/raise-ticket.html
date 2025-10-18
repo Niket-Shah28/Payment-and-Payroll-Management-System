@@ -1,13 +1,180 @@
-<div class="container mt-3">
-  <h3>Raise a Ticket</h3>
-  <form [formGroup]="ticketForm" (ngSubmit)="submitTicket()">
-    <div class="mb-3">
-      <label for="query" class="form-label">Your Query</label>
-      <textarea id="query" formControlName="query" rows="5" class="form-control"></textarea>
-      <div *ngIf="ticketForm.get('query')?.invalid && ticketForm.get('query')?.touched" class="text-danger">
-        Query must be at least 10 characters.
+<div class="ticket-container">
+  <div class="container mt-4">
+
+    <!-- RAISE NEW TICKET SECTION -->
+    <div class="ticket-form-card mb-5">
+      <div class="card-header-gradient">
+        <div class="header-content">
+          <i class="bi bi-ticket-detailed"></i>
+          <h3>Raise a New Ticket</h3>
+        </div>
+      </div>
+      
+      <div class="card-body-content">
+        <form [formGroup]="ticketForm" (ngSubmit)="submitTicket()">
+          <div class="form-group-custom">
+            <label for="query" class="form-label-custom">
+              <i class="bi bi-chat-square-text"></i>
+              Describe Your Query
+            </label>
+            <textarea 
+              id="query" 
+              formControlName="query" 
+              rows="5" 
+              class="form-control-gradient"
+              placeholder="Please provide detailed information about your query or issue..."></textarea>
+            <div *ngIf="ticketForm.get('query')?.invalid && ticketForm.get('query')?.touched" class="error-message">
+              <i class="bi bi-exclamation-circle"></i>
+              Query must be at least 10 characters.
+            </div>
+          </div>
+          <button class="btn-submit-gradient" [disabled]="ticketForm.invalid">
+            <i class="bi bi-send"></i>
+            Submit Ticket
+          </button>
+        </form>
       </div>
     </div>
-    <button class="btn btn-primary" [disabled]="ticketForm.invalid">Submit Ticket</button>
-  </form>
+
+    <!-- MY TICKETS SECTION -->
+    <div class="tickets-list-card">
+      <div class="section-header mb-4">
+        <div class="header-left">
+          <i class="bi bi-folder2-open"></i>
+          <h3>My Tickets</h3>
+        </div>
+
+        <!-- TICKET FILTERS -->
+        <div class="filter-buttons">
+          <button class="filter-btn" [class.active]="filter==='ALL'" (click)="setFilter('ALL')">
+            <i class="bi bi-grid"></i> All
+          </button>
+          <button class="filter-btn filter-open" [class.active]="filter==='OPEN'" (click)="setFilter('OPEN')">
+            <i class="bi bi-check-circle"></i> Open
+          </button>
+          <button class="filter-btn filter-close" [class.active]="filter==='CLOSE'" (click)="setFilter('CLOSE')">
+            <i class="bi bi-x-circle"></i> Closed
+          </button>
+        </div>
+      </div>
+
+      <!-- TICKET TABLE -->
+      <div class="table-wrapper">
+        <table class="table-gradient">
+          <thead>
+            <tr>
+              <th><i class="bi bi-hash"></i> ID</th>
+              <th><i class="bi bi-chat-left-text"></i> Query</th>
+              <th><i class="bi bi-info-circle"></i> Status</th>
+              <th><i class="bi bi-calendar-event"></i> Created At</th>
+              <th><i class="bi bi-chat-dots"></i> Responses</th>
+              <th><i class="bi bi-gear"></i> Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ticket of tickets" class="table-row-hover">
+              <td>{{ ticket.ticketId }}</td>
+              <td>{{ ticket.query }}</td>
+              <td>
+                <span class="status-badge"
+                  [ngClass]="{
+                    'status-open': ticket.status === 'OPEN',
+                    'status-closed': ticket.status === 'CLOSE'
+                  }">
+                  {{ ticket.status }}
+                </span>
+              </td>
+              <td>{{ ticket.createdAt | date:'short' }}</td>
+              <td>{{ ticket.responseCount }}</td>
+              <td>
+                <button class="btn-view" (click)="viewTicket(ticket)">
+                  <i class="bi bi-eye"></i> View
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="tickets.length === 0">
+              <td colspan="6" class="no-tickets">
+                <i class="bi bi-inbox"></i> No tickets found
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TICKET DETAIL MODAL -->
+    <div *ngIf="selectedTicket" class="ticket-detail-modal">
+      <div class="modal-header-gradient">
+        <div class="modal-title">
+          <i class="bi bi-ticket-detailed-fill"></i>
+          <h4>Ticket #{{selectedTicket.ticketId}}</h4>
+        </div>
+        <button class="btn-close-modal" (click)="closeTicketDetail()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body-content">
+        <div class="ticket-info-section">
+          <div class="info-row">
+            <span class="info-label"><i class="bi bi-chat-square-text"></i> Query:</span>
+            <span class="info-value">{{selectedTicket.query}}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label"><i class="bi bi-info-circle"></i> Status:</span>
+            <span class="status-badge"
+              [ngClass]="{
+                'status-open': selectedTicket.status === 'OPEN',
+                'status-closed': selectedTicket.status === 'CLOSE'
+              }">
+              {{selectedTicket.status}}
+            </span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- RESPONSES -->
+        <div class="responses-section">
+          <h5><i class="bi bi-chat-left-dots"></i> Conversation History</h5>
+          <div class="responses-list">
+            <div *ngFor="let r of selectedTicket.responses" 
+                 [ngClass]="{'response-employee': r.employeeId, 'response-admin': r.organizationId}"
+                 class="response-item">
+              <strong>{{ r.organizationId ? 'Admin' : 'You' }}</strong>
+              <small>{{ r.createdAt | date:'medium' }}</small>
+              <p>{{ r.response }}</p>
+            </div>
+            <div *ngIf="selectedTicket.responses.length === 0" class="no-responses">
+              <i class="bi bi-chat-quote"></i> No responses yet
+            </div>
+          </div>
+        </div>
+
+        <!-- SEND REPLY -->
+        <div class="reply-section">
+          <h5><i class="bi bi-reply"></i> Send Reply</h5>
+          <form (ngSubmit)="sendReply()">
+            <textarea 
+              [(ngModel)]="replyText"
+              name="replyText"
+              rows="3"
+              class="form-control-gradient reply-textarea"
+              placeholder="Type your reply here..."></textarea>
+            <div class="reply-actions">
+              <button type="submit" class="btn-send-reply">
+                <i class="bi bi-send"></i> Send
+              </button>
+              <button type="button" class="btn-close-detail" (click)="closeTicketDetail()">
+                <i class="bi bi-x-circle"></i> Close
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedTicket" class="modal-overlay" (click)="closeTicketDetail()"></div>
+
+  </div>
 </div>

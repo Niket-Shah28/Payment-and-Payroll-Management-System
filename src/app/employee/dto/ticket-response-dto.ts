@@ -3,6 +3,6 @@ export interface TicketResponseDto {
   response: string;
   createdAt?: string;
   employeeId: number;
-  organizationId: number;
+  organizationId: null;
   ticketId: number;
 }

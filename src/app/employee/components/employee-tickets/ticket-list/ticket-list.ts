@@ -44,17 +44,17 @@ export class TicketList {
   this.router.navigate(['/employee/dashboard/tickets/', ticketId]);
 }
 
- editTicketQuery(ticket: TicketSummaryDto): void {
-    const newQuery = prompt('Enter new query:', ticket.query);
-    if (!newQuery || newQuery.trim() === '') return;
+//  editTicketQuery(ticket: TicketSummaryDto): void {
+//     const newQuery = prompt('Enter new query:', ticket.query);
+//     if (!newQuery || newQuery.trim() === '') return;
 
-    this.ticketService.updateTicket(ticket.ticketId, newQuery).subscribe({
-      next: updatedTicket => {
-        alert('Query updated successfully!');
-        ticket.query = updatedTicket.query; // update the UI immediately
-      },
-      error: err => console.error(err)
-    });
-  }
+//     this.ticketService.updateTicket(ticket.ticketId, newQuery).subscribe({
+//       next: updatedTicket => {
+//         alert('Query updated successfully!');
+//         ticket.query = updatedTicket.query; // update the UI immediately
+//       },
+//       error: (err:any) => console.error(err)
+//     });
+//   }
 
 }
