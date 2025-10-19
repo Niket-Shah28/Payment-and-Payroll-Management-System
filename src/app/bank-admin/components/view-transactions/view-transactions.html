@@ -1,0 +1,298 @@
+<!-- view-transactions.html -->
+
+<div class="main-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-exchange-alt"></i> Transactions
+        </h1>
+        <p class="page-subtitle">Monitor and analyze all bank transactions</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-card">
+          <span class="stat-value">{{ filteredTransactions.length }}</span>
+          <span class="stat-label">Total</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>
+    <strong>Error:</strong> {{ error }}
+    <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="alert alert-info alert-loading">
+    <div class="spinner-border spinner-border-sm me-2" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span>Loading transactions...</span>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-header">
+      <h2 class="filters-title">
+        <i class="fas fa-filter me-2"></i>Filter Transactions
+      </h2>
+      <p class="filters-subtitle">Refine your search results</p>
+    </div>
+
+    <div class="filter-card">
+      <!-- Search Filter -->
+      <div class="filter-group search-filter">
+        <label class="filter-label">
+          <i class="fas fa-search me-2"></i>Search
+        </label>
+        <input
+          type="text"
+          class="form-control filter-input search-input"
+          placeholder="Search by account number or receiver name"
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+        />
+      </div>
+
+      <!-- Status Filter -->
+      <div class="filter-group">
+        <label class="filter-label">
+          <i class="fas fa-check-circle me-2"></i>Status
+        </label>
+        <select class="form-control filter-select" [(ngModel)]="filterStatus" (change)="onFilterChange()">
+          <option value="">All Status</option>
+          <option value="PASS">
+            <i class="fas fa-check me-1"></i>PASS
+          </option>
+          <option value="FAIL">
+            <i class="fas fa-times me-1"></i>FAIL
+          </option>
+        </select>
+      </div>
+
+      <!-- Payment Mode Filter -->
+      <div class="filter-group">
+        <label class="filter-label">
+          <i class="fas fa-credit-card me-2"></i>Payment Mode
+        </label>
+        <select class="form-control filter-select" [(ngModel)]="filterPaymentMode" (change)="onFilterChange()">
+          <option value="">All Modes</option>
+          <option value="NEFT">NEFT</option>
+          <option value="RTGS">RTGS</option>
+          <option value="IMPS">IMPS</option>
+        </select>
+      </div>
+
+      <!-- Payment Type Filter -->
+      <div class="filter-group">
+        <label class="filter-label">
+          <i class="fas fa-exchange-alt me-2"></i>Payment Type
+        </label>
+        <select class="form-control filter-select" [(ngModel)]="filterPaymentType" (change)="onFilterChange()">
+          <option value="">All Types</option>
+          <option value="CREDIT">
+            <i class="fas fa-arrow-down me-1"></i>CREDIT
+          </option>
+          <option value="DEBIT">
+            <i class="fas fa-arrow-up me-1"></i>DEBIT
+          </option>
+        </select>
+      </div>
+
+      <!-- Date From Filter -->
+      <div class="filter-group">
+        <label class="filter-label">
+          <i class="fas fa-calendar me-2"></i>From Date
+        </label>
+        <input
+          type="date"
+          class="form-control filter-input date-input"
+          [(ngModel)]="dateFrom"
+          (change)="loadTransactions()"
+        />
+      </div>
+
+      <!-- Date To Filter -->
+      <div class="filter-group">
+        <label class="filter-label">
+          <i class="fas fa-calendar me-2"></i>To Date
+        </label>
+        <input
+          type="date"
+          class="form-control filter-input date-input"
+          [(ngModel)]="dateTo"
+          (change)="loadTransactions()"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions Section -->
+  <div class="transactions-section" *ngIf="!loading">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-list-ul me-2"></i>Transaction List
+      </h2>
+      <p class="section-subtitle">{{ filteredTransactions.length }} transaction(s) found</p>
+    </div>
+
+    <!-- Transactions Table Card -->
+    <div *ngIf="filteredTransactions.length > 0" class="table-card">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-header">
+            <tr>
+              <th scope="col" class="col-id">
+                <i class="fas fa-hashtag me-1"></i>ID
+              </th>
+              <th scope="col" class="col-holder">
+                <i class="fas fa-user me-1"></i>Receiver
+              </th>
+              <th scope="col" class="col-source">
+                <i class="fas fa-university me-1"></i>Source Acc
+              </th>
+              <th scope="col" class="col-destination">
+                <i class="fas fa-university me-1"></i>Destination Acc
+              </th>
+              <th scope="col" class="col-mode">
+                <i class="fas fa-credit-card me-1"></i>Mode
+              </th>
+              <th scope="col" class="col-type">
+                <i class="fas fa-exchange-alt me-1"></i>Type
+              </th>
+              <th scope="col" class="col-status">
+                <i class="fas fa-check-circle me-1"></i>Status
+              </th>
+              <th scope="col" class="col-amount">
+                <i class="fas fa-rupee-sign me-1"></i>Amount
+              </th>
+              <th scope="col" class="col-date">
+                <i class="fas fa-calendar me-1"></i>Date
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of filteredTransactions" class="tx-row" [ngClass]="'status-' + t.transactionStatus.toLowerCase()">
+              <td class="col-id">
+                <span class="badge badge-tx">{{ t.transactionId }}</span>
+              </td>
+              <td class="col-holder">
+                <div class="holder-info">
+                  <strong>{{ t.receiverHolderName }}</strong>
+                </div>
+              </td>
+              <td class="col-source">
+                <span class="account-badge source-badge" [title]="t.sourceAccountNumber">
+                  {{ t.sourceAccountNumber | slice:0:4 }}...{{ t.sourceAccountNumber | slice:-4 }}
+                </span>
+              </td>
+              <td class="col-destination">
+                <span class="account-badge dest-badge" [title]="t.destinationAccountNumber">
+                  {{ t.destinationAccountNumber | slice:0:4 }}...{{ t.destinationAccountNumber | slice:-4 }}
+                </span>
+              </td>
+              <td class="col-mode">
+                <span class="mode-badge" [ngClass]="'mode-' + t.paymentMode.toLowerCase()">
+                  {{ t.paymentMode }}
+                </span>
+              </td>
+              <td class="col-type">
+                <span class="type-badge" [ngClass]="t.paymentType === 'CREDIT' ? 'type-credit' : 'type-debit'">
+                  <i [ngClass]="t.paymentType === 'CREDIT' ? 'fas fa-arrow-down' : 'fas fa-arrow-up'" class="me-1"></i>
+                  {{ t.paymentType }}
+                </span>
+              </td>
+              <td class="col-status">
+                <span class="status-badge" [ngClass]="t.transactionStatus === 'PASS' ? 'status-pass' : 'status-fail'">
+                  <i [ngClass]="t.transactionStatus === 'PASS' ? 'fas fa-check-circle' : 'fas fa-times-circle'" class="me-1"></i>
+                  {{ t.transactionStatus }}
+                </span>
+              </td>
+              <td class="col-amount">
+                <span class="amount-badge">
+                  <i class="fas fa-rupee-sign me-1"></i>{{ t.amount | number:'1.2-2' }}
+                </span>
+              </td>
+              <td class="col-date">
+                <span class="date-badge">{{ t.createdAt | date:'short' }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredTransactions.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-inbox"></i>
+      </div>
+      <h3>No Transactions Found</h3>
+      <p>Try adjusting your filters or search criteria</p>
+    </div>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination-controls" *ngIf="!loading && filteredTransactions.length > 0">
+    <button
+      class="btn btn-pagination"
+      (click)="prevPage()"
+      [disabled]="currentPage === 0"
+      title="Go to previous page"
+    >
+      <i class="fas fa-chevron-left me-1"></i>Previous
+    </button>
+
+    <div class="pagination-info">
+      <span class="page-number">Page <strong>{{ currentPage + 1 }}</strong> of <strong>{{ totalPages }}</strong></span>
+      <span class="total-count">Total: {{ transactions.length }} transaction(s)</span>
+    </div>
+
+    <button
+      class="btn btn-pagination"
+      (click)="nextPage()"
+      [disabled]="currentPage >= totalPages - 1"
+      title="Go to next page"
+    >
+      Next <i class="fas fa-chevron-right ms-1"></i>
+    </button>
+  </div>
+
+  <!-- Info Cards Section -->
+  <div class="info-cards-section">
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <div class="info-content">
+        <h4>Transaction Status</h4>
+        <p><strong>PASS:</strong> Transaction completed successfully. <strong>FAIL:</strong> Transaction failed or rejected.</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-credit-card"></i>
+      </div>
+      <div class="info-content">
+        <h4>Payment Modes</h4>
+        <p><strong>NEFT:</strong> Batch processing. <strong>RTGS:</strong> Large amount transfers. <strong>IMPS:</strong> Instant transfer.</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-filter"></i>
+      </div>
+      <div class="info-content">
+        <h4>Filter Tips</h4>
+        <p>Use multiple filters together to narrow down results. All filters are applied cumulatively for precise searches.</p>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -5,6 +5,7 @@ import { BankAdminHome } from './components/bank-admin-home/bank-admin-home';
 import { ApproveOrganizations } from './components/approve-organizations/approve-organizations';
 import { ViewOrganizationDocs } from './components/view-organization-docs/view-organization-docs';
 import { ApprovePayments } from './components/approve-payments/approve-payments';
+import { ViewTransactions } from './components/view-transactions/view-transactions';
 
 const routes: Routes = [
   {
@@ -15,7 +16,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'approve-organizations', component: ApproveOrganizations },
       { path: 'view-organization-docs', component: ViewOrganizationDocs },
-      {path: 'approve-payments', component: ApprovePayments}
+      {path: 'approve-payments', component: ApprovePayments},
+      {path: 'view-transactions', component: ViewTransactions}
 
 
     ]

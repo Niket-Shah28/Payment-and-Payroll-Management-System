@@ -17,7 +17,7 @@ export class BankAdminDashboard {
       { name: 'APPROVE ORGANIZATIONS', link: 'approve-organizations' },
       { name: 'VIEW ORGANIZATION DOCS', link: 'view-organization-docs' },
       { name: 'APPROVE PAYMENTS REQUESTS', link: 'approve-payments' },
-      { name: 'TRANSACTIONS', link: 'transactions' }
+      { name: 'TRANSACTIONS', link: 'view-transactions' }
     ];
   
     constructor(private bankAdminService: BankAdminService) { }

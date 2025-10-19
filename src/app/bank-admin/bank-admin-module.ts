@@ -9,6 +9,7 @@ import { ViewOrganizationDocs } from './components/view-organization-docs/view-o
 import { ApprovePayments } from './components/approve-payments/approve-payments';
 import { Transactions } from './components/transactions/transactions';
 import { FormsModule } from '@angular/forms';
+import { ViewTransactions } from './components/view-transactions/view-transactions';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { FormsModule } from '@angular/forms';
     ApproveOrganizations,
     ViewOrganizationDocs,
     Transactions,
-    ApprovePayments
+    ApprovePayments,
+    ViewTransactions
   ],
   imports: [
     CommonModule,
