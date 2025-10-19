@@ -22,13 +22,13 @@ export class MarkAttendance {
 
   // ✅ List of national holidays (YYYY-MM-DD format)
   nationalHolidays: string[] = [
-    '2025-01-26', // Republic Day
-    '2025-08-15', // Independence Day
-    '2025-10-02', // Gandhi Jayanti
-    '2025-12-25', // Christmas
-    '2025-10-23', // Diwali
-    '2025-10-24', // Diwali
-    '2025-10-25'  // Diwali
+    '2025-01-25', // Republic Day
+    '2025-08-14', // Independence Day
+    '2025-10-01', // Gandhi Jayanti
+    '2025-12-24', // Christmas
+    '2025-10-21', // Diwali
+    '2025-10-22', // Diwali
+    '2025-10-23'  // Diwali
   ];
 
   constructor(private attendanceService: AttendanceService) {}
@@ -199,4 +199,49 @@ export class MarkAttendance {
   get year(): number {
     return this.currentDate.getFullYear();
   }
+
+  // Add these methods to your MarkAttendance component class
+
+getTooltip(date: Date): string {
+  const key = date.toISOString().split('T')[0];
+  const status = this.attendanceMap.get(key);
+  
+  if (this.isWeekend(date)) return 'Weekend';
+  if (this.isNationalHoliday(date)) return 'National Holiday';
+  if (this.isOlderThanOneWeek(date)) return 'Locked (Older than 7 days)';
+  if (this.isFutureDate(date)) return 'Future Date';
+  if (status) return `Marked as ${status}`;
+  
+  return 'Click to select';
+}
+
+getPresentCount(): number {
+  let count = 0;
+  this.attendanceMap.forEach((status) => {
+    if (status === AttendanceStatus.PRESENT) count++;
+  });
+  return count;
+}
+
+getAbsentCount(): number {
+  let count = 0;
+  this.attendanceMap.forEach((status) => {
+    if (status === AttendanceStatus.ABSENT) count++;
+  });
+  return count;
+}
+
+getOutdoorCount(): number {
+  let count = 0;
+  this.attendanceMap.forEach((status) => {
+    if (status === AttendanceStatus.OUTDOOR) count++;
+  });
+  return count;
+}
+
+getWorkingDaysCount(): number {
+  return this.monthDays.filter(day => 
+    !this.isWeekend(day) && !this.isNationalHoliday(day)
+  ).length;
+}
 }

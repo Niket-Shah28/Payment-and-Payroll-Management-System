@@ -1,63 +1,268 @@
-<div class="container mt-4 attendance-container shadow-lg p-4 rounded-4">
-  <h2 class="text-center fw-bold mb-3 text-gradient">Mark Your Attendance</h2>
-
-  <p class="text-center text-secondary mb-4">
-    Stay consistent! Mark your attendance daily to stay productive and track your growth.
-  </p>
-
-  <!-- Attendance Status Selector -->
-  <div class="mb-4 d-flex justify-content-center align-items-center">
-    <label for="statusSelect" class="form-label fw-semibold me-2">Select Attendance Status:</label>
-    <select [(ngModel)]="attendanceStatus" id="statusSelect" class="form-select w-auto shadow-sm">
-      <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
-    </select>
-  </div>
-
-  <!-- Month Navigation -->
-  <div class="d-flex justify-content-between align-items-center mb-3 calendar-header">
-    <button class="btn btn-outline-primary btn-sm" (click)="prevMonth()">
-      <i class="bi bi-chevron-left"></i>
-    </button>
-    <h4 class="fw-bold mb-0">{{ currentDate | date: 'MMMM yyyy' }}</h4>
-    <button class="btn btn-outline-primary btn-sm" (click)="nextMonth()">
-      <i class="bi bi-chevron-right"></i>
-    </button>
-  </div>
-
-  <!-- Weekday Labels -->
-  <div class="calendar-weekdays mb-1">
-    <div class="weekday">Sun</div>
-    <div class="weekday">Mon</div>
-    <div class="weekday">Tue</div>
-    <div class="weekday">Wed</div>
-    <div class="weekday">Thu</div>
-    <div class="weekday">Fri</div>
-    <div class="weekday">Sat</div>
-  </div>
-
-  <!-- Calendar Dates -->
-  <div class="calendar-grid">
-    <!-- Blank spaces before first day -->
-    <div
-      class="blank-day"
-      *ngFor="let i of [].constructor(monthDays[0]?.getDay())"
-    ></div>
-
-    <!-- Actual Dates -->
-    <div
-      class="day shadow-sm"
-      *ngFor="let day of monthDays"
-      (click)="toggleDate(day)"
-      [ngClass]="getDayClass(day)"
-    >
-      {{ day.getDate() }}
+<div class="attendance-container">
+  <div class="container mt-4">
+    
+    <!-- Page Header -->
+    <div class="page-header mb-5">
+      <div class="header-content">
+        <i class="bi bi-calendar-check"></i>
+        <div class="header-text">
+          <h2>Mark Your Attendance</h2>
+          <p>Track your presence and maintain consistency</p>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- Submit -->
-  <div class="d-flex justify-content-center mt-4">
-    <button class="btn btn-gradient px-4 py-2 fw-semibold shadow" (click)="markAttendance()">
-      ✅ Mark Attendance
-    </button>
+    <!-- Motivational Banner -->
+    <div class="motivational-banner mb-4">
+      <i class="bi bi-star-fill"></i>
+      <div class="banner-text">
+        <strong>Stay Consistent!</strong> Mark your attendance daily to track your productivity and maintain a strong work record.
+      </div>
+    </div>
+
+    <!-- Legend Section -->
+    <div class="legend-section mb-4">
+      <h5 class="legend-title">
+        <i class="bi bi-info-circle"></i>
+        Attendance Color Guide
+      </h5>
+      <div class="legend-grid">
+        <div class="legend-item">
+          <span class="legend-color present-color"></span>
+          <span class="legend-label">Present</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color absent-color"></span>
+          <span class="legend-label">Absent</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color outdoor-color"></span>
+          <span class="legend-label">Outdoor Duty</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color weekend-color"></span>
+          <span class="legend-label">Weekend</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color holiday-color"></span>
+          <span class="legend-label">Holiday</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color selected-color"></span>
+          <span class="legend-label">Selected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Status Card -->
+    <div class="status-card mb-4">
+      <div class="status-header">
+        <i class="bi bi-clipboard-check"></i>
+        <h5>Select Attendance Status</h5>
+      </div>
+      <div class="status-body">
+        <label for="statusSelect" class="form-label-custom">
+          <i class="bi bi-toggles"></i>
+          Choose Status
+        </label>
+        <div class="status-selector">
+          <select [(ngModel)]="attendanceStatus" id="statusSelect" class="form-control-gradient">
+            <option *ngFor="let status of statusOptions" [value]="status">
+              {{ status === 'PRESENT' ? '✅ Present' : 
+                 status === 'ABSENT' ? '❌ Absent' : 
+                 '🏢 Outdoor Duty' }}
+            </option>
+          </select>
+          <div class="status-preview" [ngClass]="{
+            'preview-present': attendanceStatus === 'PRESENT',
+            'preview-absent': attendanceStatus === 'ABSENT',
+            'preview-outdoor': attendanceStatus === 'OUTDOOR'
+          }">
+            <i class="bi" [ngClass]="{
+              'bi-check-circle-fill': attendanceStatus === 'PRESENT',
+              'bi-x-circle-fill': attendanceStatus === 'ABSENT',
+              'bi-briefcase-fill': attendanceStatus === 'OUTDOOR'
+            }"></i>
+            {{ attendanceStatus }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar Card -->
+    <div class="calendar-card mb-4">
+      <!-- Month Navigation -->
+      <div class="calendar-header">
+        <button class="btn-nav" (click)="prevMonth()">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <div class="month-display">
+          <h4>{{ monthName }} {{ year }}</h4>
+          <span class="month-badge">{{ monthDays.length }} days</span>
+        </div>
+        <button class="btn-nav" (click)="nextMonth()">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- Weekday Labels -->
+      <div class="calendar-weekdays">
+        <div class="weekday-label">
+          <i class="bi bi-brightness-high"></i>
+          <span>Sun</span>
+        </div>
+        <div class="weekday-label">Mon</div>
+        <div class="weekday-label">Tue</div>
+        <div class="weekday-label">Wed</div>
+        <div class="weekday-label">Thu</div>
+        <div class="weekday-label">Fri</div>
+        <div class="weekday-label">
+          <i class="bi bi-brightness-high"></i>
+          <span>Sat</span>
+        </div>
+      </div>
+
+      <!-- Calendar Grid -->
+      <div class="calendar-body">
+        <div class="calendar-grid">
+          <!-- Blank spaces before first day -->
+          <div class="blank-day" *ngFor="let i of [].constructor(monthDays[0]?.getDay())"></div>
+
+          <!-- Actual Dates -->
+          <div
+            class="day-cell"
+            *ngFor="let day of monthDays"
+            (click)="toggleDate(day)"
+            [ngClass]="getDayClass(day)"
+            [attr.data-tooltip]="getTooltip(day)">
+            <span class="day-number">{{ day.getDate() }}</span>
+            <span class="day-indicator" *ngIf="attendanceMap.get(day.toISOString().split('T')[0])">
+              <i class="bi" [ngClass]="{
+                'bi-check-circle-fill': attendanceMap.get(day.toISOString().split('T')[0]) === 'PRESENT',
+                'bi-x-circle-fill': attendanceMap.get(day.toISOString().split('T')[0]) === 'ABSENT',
+                'bi-briefcase-fill': attendanceMap.get(day.toISOString().split('T')[0]) === 'OUTDOOR'
+              }"></i>
+            </span>
+            <span class="weekend-badge" *ngIf="isWeekend(day)">
+              <i class="bi bi-moon-stars"></i>
+            </span>
+            <span class="holiday-badge" *ngIf="isNationalHoliday(day)">
+              <i class="bi bi-balloon"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selection Summary -->
+    <div class="selection-summary mb-4" *ngIf="selectedDates.length > 0">
+      <div class="summary-header">
+        <i class="bi bi-list-check"></i>
+        <h6>Selected Dates ({{ selectedDates.length }})</h6>
+      </div>
+      <div class="summary-body">
+        <div class="selected-date-chip" *ngFor="let date of selectedDates">
+          <i class="bi bi-calendar-date"></i>
+          {{ date | date: 'dd MMM yyyy' }}
+          <button class="chip-remove" (click)="toggleDate(date)">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="action-section">
+      <button class="btn-mark-attendance" (click)="markAttendance()" [disabled]="selectedDates.length === 0">
+        <i class="bi bi-check-circle"></i>
+        Mark Attendance
+        <span class="btn-count" *ngIf="selectedDates.length > 0">({{ selectedDates.length }})</span>
+      </button>
+    </div>
+
+    <!-- Important Notes Section -->
+    <div class="notes-section mt-5">
+      <div class="note-card">
+        <div class="note-icon">
+          <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="note-content">
+          <h6>Important Guidelines</h6>
+          <ul>
+            <li>Attendance can only be marked for the past 7 days</li>
+            <li>Weekends (Saturday & Sunday) are automatically marked</li>
+            <li>National holidays cannot be marked for attendance</li>
+            <li>Future dates are locked and cannot be selected</li>
+            <li>Select multiple dates to mark attendance in bulk</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="note-card">
+        <div class="note-icon note-icon-success">
+          <i class="bi bi-lightbulb"></i>
+        </div>
+        <div class="note-content">
+          <h6>Pro Tips</h6>
+          <ul>
+            <li>Mark attendance daily for accurate records</li>
+            <li>Use "Outdoor Duty" for field work assignments</li>
+            <li>Check your attendance history regularly</li>
+            <li>Contact HR for attendance corrections beyond 7 days</li>
+            <li>Maintain consistency for performance evaluations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="stats-section mt-5">
+      <h5 class="stats-title">
+        <i class="bi bi-graph-up"></i>
+        Quick Stats
+      </h5>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-green">
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <h6>Present Days</h6>
+            <p class="stat-number">{{ getPresentCount() }}</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-red">
+            <i class="bi bi-x-circle"></i>
+          </div>
+          <div class="stat-content">
+            <h6>Absent Days</h6>
+            <p class="stat-number">{{ getAbsentCount() }}</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-teal">
+            <i class="bi bi-briefcase"></i>
+          </div>
+          <div class="stat-content">
+            <h6>Outdoor Duty</h6>
+            <p class="stat-number">{{ getOutdoorCount() }}</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-blue">
+            <i class="bi bi-calendar-week"></i>
+          </div>
+          <div class="stat-content">
+            <h6>Working Days</h6>
+            <p class="stat-number">{{ getWorkingDaysCount() }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
