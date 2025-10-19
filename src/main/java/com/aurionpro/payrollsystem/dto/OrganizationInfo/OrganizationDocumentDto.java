@@ -15,5 +15,6 @@ public class OrganizationDocumentDto {
     private long documentId;
     private Timestamp createdAt;
     private String documentTypeName; 
+    private String cloudinaryUrl;
 }
 

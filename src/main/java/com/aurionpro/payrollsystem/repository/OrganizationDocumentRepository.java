@@ -19,14 +19,16 @@ public interface OrganizationDocumentRepository extends JpaRepository<Documents,
     @Query(value = """
         SELECT d.document_id AS documentId,
                d.created_at AS createdAt,
-               dt.document_type_name AS documentTypeName
+               dt.document_type_name AS documentTypeName,
+               d.cloudinary_url AS cloudinaryUrl
         FROM documents d
         LEFT JOIN document_type dt ON d.document_type_id = dt.document_type_id
         WHERE d.organization_id = :organizationId
     """, nativeQuery = true)
     List<OrganizationDocumentDto> findDocumentsByOrganizationId(@Param("organizationId") Long organizationId);
-    
+
     Optional<Documents> findByOrganization_OrganizationIdAndDocumentId(Long organizationId, Long documentId);
 }
+
 
 

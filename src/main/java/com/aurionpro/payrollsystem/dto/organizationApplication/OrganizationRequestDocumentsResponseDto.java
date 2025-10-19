@@ -10,4 +10,5 @@ import lombok.RequiredArgsConstructor;
 public class OrganizationRequestDocumentsResponseDto {
 	  private Long requestDocumentId;
 	    private String documentTypeName;
+	    private String cloudinaryUrl;
 }

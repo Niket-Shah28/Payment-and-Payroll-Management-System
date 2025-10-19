@@ -1,6 +1,6 @@
 package com.aurionpro.payrollsystem.service.organizationApplication;
 
-import java.io.IOException;
+import java.io.IOException;	
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -119,6 +119,7 @@ public class OrganizationApplicationServiceImpl implements OrganizationApplicati
 
 	@Override
 	public List<OrganizationRequestDocumentsResponseDto> getRequestDocuments(Long requestId) {
+		System.out.println("Hello");
 		return organizationApplicationRepository.getDocumentsList(requestId);
 	}
 
@@ -155,39 +156,39 @@ public class OrganizationApplicationServiceImpl implements OrganizationApplicati
 	    OrganizationRequestDocuments document = organizationApplicationDocuments
 	            .findByRequest_RequestIdAndRequestDocumentId(requestId, documentId)
 	            .orElseThrow(() -> new OrganizationApplicationRequestException("Document not found", HttpStatus.NOT_FOUND));
-
+ 
 	    String fileUrl = document.getCloudinaryUrl();
 	    String fileType = document.getFileFormat().name();
-
+ 
 	    try (InputStream inputStream = new URL(fileUrl).openStream();
 	         OutputStream outputStream = response.getOutputStream()) {
-
+ 
 	      
 	        switch (fileType.toLowerCase()) {
 	            case "pdf" -> response.setContentType("application/pdf");
 	            case "jpg", "jpeg", "png" -> response.setContentType("image/" + fileType.toLowerCase());
 	            default -> response.setContentType("application/octet-stream");
 	        }
-
-	        
+ 
+	        System.out.println("Hello2");
 	        String fileName = "document_" + documentId + "." + fileType.toLowerCase();
 	        if (isDownload) {
 	            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 	        } else {
 	            response.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"");
 	        }
-
+ 
 	        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
-
-	        
+ 
+	        System.out.println("Hello3");
 	        byte[] buffer = new byte[8192];
 	        int bytesRead;
 	        while ((bytesRead = inputStream.read(buffer)) != -1) {
-	            outputStream.write(buffer, 0, bytesRead); 
+	            outputStream.write(buffer, 0, bytesRead);
 	        }
-
+ 
 	        outputStream.flush();
-
+ 
 	    } catch (IOException e) {
 	        throw new RuntimeException("Error streaming document", e);
 	    }

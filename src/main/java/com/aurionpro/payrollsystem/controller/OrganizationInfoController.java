@@ -50,6 +50,7 @@ public class OrganizationInfoController {
     }
     
     @GetMapping("/{orgId}/documents/{docId}/view")
+    @PreAuthorize("hasRole('ADMIN')")
     public void viewDocument(@PathVariable Long orgId,
                              @PathVariable Long docId,
                              HttpServletResponse response) {
@@ -57,6 +58,7 @@ public class OrganizationInfoController {
     }
 
     @GetMapping("/{orgId}/documents/{docId}/download")
+    @PreAuthorize("hasRole('ADMIN')")
     public void downloadDocument(@PathVariable Long orgId,
                                  @PathVariable Long docId,
                                  HttpServletResponse response) {

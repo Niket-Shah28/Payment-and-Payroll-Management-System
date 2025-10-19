@@ -36,7 +36,7 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
 			if (payment.getOrganizationId() != null)
 				dto.setOrganizationName(payment.getOrganizationId().getOrganizationName());
 
-			dto.setStatus(payment.getStatus() != null ? payment.getStatus().name() : null);
+			dto.setStatus(payment.getStatus() != null ? payment.getStatus() : null);
 
 			return dto;
 		});

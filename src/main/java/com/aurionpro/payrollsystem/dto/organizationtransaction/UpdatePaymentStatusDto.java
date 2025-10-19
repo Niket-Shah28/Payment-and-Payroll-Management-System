@@ -10,7 +10,7 @@ import lombok.Data;
 public class UpdatePaymentStatusDto {
 
 	
-    @NotBlank(message = "Status is required")
+    @NotNull(message = "Status is required")
     private Status status;  
 }
 
