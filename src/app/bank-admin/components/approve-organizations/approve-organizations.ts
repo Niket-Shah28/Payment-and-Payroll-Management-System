@@ -1,36 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { ApproveOrganizationService } from '../../services/approve-organization-service'; 
-import { OrganizationRequestDetailsDto } from '../../dto/organization-request-details-dto'; 
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ApproveOrganizationService } from '../../services/approve-organization-service';
+import { OrganizationRequestDetailsDto } from '../../dto/organization-request-details-dto';
 import { OrganizationRequestDocumentsResponseDto } from '../../dto/organization-request-documents-response-dto';
 
 @Component({
   selector: 'app-approve-organizations',
   standalone: false,
   templateUrl: './approve-organizations.html',
-  styleUrl: './approve-organizations.css'
+  styleUrls: ['./approve-organizations.css']
 })
-export class ApproveOrganizations {
+export class ApproveOrganizations implements OnInit, OnDestroy {
 
   pendingRequests: OrganizationRequestDetailsDto[] = [];
   loadingRequests = false;
   errorMsg = '';
 
-  // documents panel
   selectedRequestId: number | null = null;
   documents: OrganizationRequestDocumentsResponseDto[] = [];
   loadingDocuments = false;
 
-  // viewing a document
   viewingBlobUrl: string | null = null;
   viewingMimeType: string | null = null;
   viewingDocumentId: number | null = null;
 
-  constructor(private orgService: ApproveOrganizationService) {}
+  constructor(
+    private orgService: ApproveOrganizationService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.loadPendingRequests();
   }
 
+  // Load pending organization requests
   loadPendingRequests(): void {
     this.loadingRequests = true;
     this.orgService.getPendingRequests().subscribe({
@@ -46,10 +49,12 @@ export class ApproveOrganizations {
     });
   }
 
+  // Load documents for selected request
   openDocuments(requestId: number): void {
     this.selectedRequestId = requestId;
     this.documents = [];
     this.loadingDocuments = true;
+
     this.orgService.getDocumentsList(requestId).subscribe({
       next: (list) => {
         this.documents = list;
@@ -63,14 +68,13 @@ export class ApproveOrganizations {
     });
   }
 
-  // Approve or Reject from the list/table
+  // Approve or reject an organization request
   processRequest(requestId: number, status: 'APPROVED' | 'REJECTED') {
     if (!confirm(`${status} organization request ${requestId}?`)) return;
+
     this.orgService.processOrganizationRequest(requestId, status).subscribe({
       next: () => {
-        // refresh
         this.loadPendingRequests();
-        // if user was viewing this request's documents, update state
         if (this.selectedRequestId === requestId) {
           this.selectedRequestId = null;
           this.documents = [];
@@ -83,73 +87,63 @@ export class ApproveOrganizations {
     });
   }
 
-  // Approve or Reject while viewing documents
   processRequestFromDocuments(status: 'APPROVED' | 'REJECTED') {
     if (!this.selectedRequestId) return;
     this.processRequest(this.selectedRequestId, status);
   }
 
-  // View document in-browser using blob -> objectURL
-  viewDocument(requestId: number, documentId: number) {
-    // clear previous view
-    this.revokeViewingUrl();
-    this.viewingDocumentId = documentId;
-    this.orgService.viewDocument(requestId, documentId).subscribe({
-      next: (blob) => {
-        const mime = blob.type || this.inferMimeFromDocumentName(this.documents.find(d => d.requestDocumentId === documentId)?.documentTypeName);
-        this.viewingMimeType = mime;
-        this.viewingBlobUrl = URL.createObjectURL(blob);
-        // For PDFs and images the iframe/img will render using viewingBlobUrl
-      },
-      error: (err) => {
-        this.errorMsg = 'Failed to fetch document for viewing';
-        console.error(err);
-      }
+  // View document in a new tab (Cloudinary URL)
+  onView(document: OrganizationRequestDocumentsResponseDto) {
+    const fileUrl = document.cloudinaryUrl;
+    if (!fileUrl) {
+      console.error('Document URL missing!');
+      return;
+    }
+    window.open(fileUrl, '_blank'); // opens Cloudinary file directly
+  }
+
+  // Download document using HttpClient + Blob
+  onDownload(document: OrganizationRequestDocumentsResponseDto) {
+    const fileUrl = document.cloudinaryUrl;
+    if (!fileUrl) {
+      console.error('Document URL missing!');
+      return;
+    }
+
+    const ext = this.getFileExtension(fileUrl);
+    const filename = `${document.documentTypeName || 'document'}.${ext}`;
+
+    // Fetch the file as a Blob
+    this.http.get(fileUrl, { responseType: 'blob' }).subscribe({
+      next: (blob) => this.downloadBlob(blob, filename),
+      error: (err) => console.error('Failed to download document', err)
     });
   }
 
-  // Download document
-  downloadDocument(requestId: number, documentId: number, documentName?: string) {
-    this.orgService.downloadDocument(requestId, documentId).subscribe({
-      next: (blob) => {
-        const filename = documentName ? `${documentName}_${documentId}` : `document_${documentId}`;
-        this.downloadBlob(blob, filename);
-      },
-      error: (err) => {
-        this.errorMsg = 'Failed to download document';
-        console.error(err);
-      }
-    });
-  }
-
-  // utility to create anchor and download blob
+  // Utility to trigger browser download from Blob
   private downloadBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    // try to use Content-Type to decide extension if none provided
     a.download = filename;
-    document.body.appendChild(a);
     a.click();
-    a.remove();
     URL.revokeObjectURL(url);
   }
 
-  private inferMimeFromDocumentName(name?: string): string {
-    if (!name) return 'application/octet-stream';
-    const n = name.toLowerCase();
-    if (n.endsWith('.pdf') || n.includes('pdf')) return 'application/pdf';
-    if (n.includes('jpg') || n.includes('jpeg')) return 'image/jpeg';
-    if (n.includes('png')) return 'image/png';
-    return 'application/octet-stream';
+  // Extract file extension from URL
+  private getFileExtension(url: string): string {
+    const match = url.split('.').pop();
+    return match ? match.split('?')[0] : 'pdf';
   }
 
+  // Close document viewer panel
   closeDocumentsPanel() {
     this.selectedRequestId = null;
     this.documents = [];
     this.revokeViewingUrl();
   }
 
+  // Clean up Blob URLs
   private revokeViewingUrl() {
     if (this.viewingBlobUrl) {
       URL.revokeObjectURL(this.viewingBlobUrl);
@@ -159,9 +153,7 @@ export class ApproveOrganizations {
     }
   }
 
-  // cleanup on destroy
   ngOnDestroy(): void {
     this.revokeViewingUrl();
   }
-
 }

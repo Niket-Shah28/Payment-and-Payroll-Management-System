@@ -1,0 +1,245 @@
+<!-- approve-payments.html -->
+
+<div class="main-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-money-bill-wave"></i> Payment Approvals
+        </h1>
+        <p class="page-subtitle">Review and manage payment requests from organizations and vendors</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-card">
+          <span class="stat-value">{{ paymentRequests.length }}</span>
+          <span class="stat-label">Requests</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message Alert -->
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert-content">
+      <i class="fas fa-check-circle me-2"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+    <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Error Message Alert -->
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert-content">
+      <i class="fas fa-exclamation-circle me-2"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Payment Requests Section -->
+  <div class="payments-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-list-check me-2"></i>Pending Payment Requests
+      </h2>
+      <p class="section-subtitle">{{ paymentRequests.length }} requests found</p>
+    </div>
+
+    <!-- Responsive Table Card -->
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-header">
+            <tr>
+              <th scope="col" class="col-id">
+                <i class="fas fa-hashtag me-2"></i>ID
+              </th>
+              <th scope="col" class="col-recipient">
+                <i class="fas fa-user me-2"></i>Recipient
+              </th>
+              <th scope="col" class="col-org">
+                <i class="fas fa-building me-2"></i>Organization
+              </th>
+              <th scope="col" class="col-amount">
+                <i class="fas fa-dollar-sign me-2"></i>Amount
+              </th>
+              <th scope="col" class="col-mode">
+                <i class="fas fa-credit-card me-2"></i>Payment Mode
+              </th>
+              <th scope="col" class="col-month">
+                <i class="fas fa-calendar me-2"></i>Period
+              </th>
+              <th scope="col" class="col-account">
+                <i class="fas fa-university me-2"></i>Bank Details
+              </th>
+              <th scope="col" class="col-status">
+                <i class="fas fa-info-circle me-2"></i>Status
+              </th>
+              <th scope="col" class="col-actions">
+                <i class="fas fa-cog me-2"></i>Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let request of paymentRequests" class="payment-row" [ngClass]="'status-' + request.status.toLowerCase()">
+              <!-- ID -->
+              <td class="col-id">
+                <span class="badge badge-id">{{ request.paymentRequestId }}</span>
+              </td>
+
+              <!-- Recipient Name -->
+              <td class="col-recipient">
+                <div class="recipient-info">
+                  <div class="recipient-name">{{ request.recipientName }}</div>
+                </div>
+              </td>
+
+              <!-- Organization -->
+              <td class="col-org">
+                <div class="org-badge">
+                  <i class="fas fa-briefcase me-1"></i>
+                  {{ request.organizationName }}
+                </div>
+              </td>
+
+              <!-- Amount -->
+              <td class="col-amount">
+                <span class="amount-badge">
+                  <i class="fas fa-rupee-sign"></i> {{ request.amount | number:'1.2-2' }}
+                </span>
+              </td>
+
+              <!-- Payment Mode -->
+              <td class="col-mode">
+                <span class="mode-badge" [ngClass]="'mode-' + request.paymentMode.toLowerCase()">
+                  <i class="fas fa-arrow-right me-1"></i>{{ request.paymentMode }}
+                </span>
+              </td>
+
+              <!-- Month/Year -->
+              <td class="col-month">
+                <span class="period-badge">{{ request.month }}/{{ request.year }}</span>
+              </td>
+
+              <!-- Account Information -->
+              <td class="col-account">
+                <div class="account-details">
+                  <div class="account-number" title="{{ request.recipientAccountNumber }}">
+                    <strong>Acc:</strong> {{ request.recipientAccountNumber | slice:0:4 }}...{{ request.recipientAccountNumber | slice:-4 }}
+                  </div>
+                  <div class="bank-name" title="{{ request.recipientBankName }}">
+                    <strong>Bank:</strong> {{ request.recipientBankName }}
+                  </div>
+                  <div class="ifsc-code" title="{{ request.recipientIfscCode }}">
+                    <strong>IFSC:</strong> {{ request.recipientIfscCode }}
+                  </div>
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td class="col-status">
+                <span class="status-badge" [ngClass]="'status-badge-' + request.status.toLowerCase()">
+                  <i [ngClass]="request.status === 'PENDING' ? 'fas fa-hourglass-half' : 
+                                  request.status === 'APPROVED' ? 'fas fa-check-circle' : 
+                                  'fas fa-times-circle'" class="me-1"></i>
+                  {{ request.status }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="col-actions">
+                <div class="action-buttons">
+                  <button
+                    class="btn btn-sm btn-approve"
+                    [disabled]="request.status !== 'PENDING'"
+                    (click)="updateStatus(request.paymentRequestId, 'APPROVED')"
+                    [title]="request.status === 'PENDING' ? 'Approve this payment request' : 'Request already processed'"
+                  >
+                    <i class="fas fa-check me-1"></i>Approve
+                  </button>
+                  <button
+                    class="btn btn-sm btn-reject"
+                    [disabled]="request.status !== 'PENDING'"
+                    (click)="updateStatus(request.paymentRequestId, 'REJECTED')"
+                    [title]="request.status === 'PENDING' ? 'Reject this payment request' : 'Request already processed'"
+                  >
+                    <i class="fas fa-times me-1"></i>Reject
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="paymentRequests.length === 0" class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-inbox"></i>
+        </div>
+        <h3>No Payment Requests</h3>
+        <p>All payment requests have been processed</p>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <button
+        class="btn btn-pagination"
+        (click)="prevPage()"
+        [disabled]="pageNumber === 0"
+        title="Go to previous page"
+      >
+        <i class="fas fa-chevron-left me-1"></i>Previous
+      </button>
+
+      <div class="pagination-info">
+        <span class="page-number">Page <strong>{{ pageNumber + 1 }}</strong> of <strong>{{ totalPages }}</strong></span>
+        <span class="total-info">Total Requests: {{ paymentRequests.length }}</span>
+      </div>
+
+      <button
+        class="btn btn-pagination"
+        (click)="nextPage()"
+        [disabled]="pageNumber + 1 >= totalPages"
+        title="Go to next page"
+      >
+        Next <i class="fas fa-chevron-right ms-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Info Cards Section -->
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <div class="info-content">
+        <h4>How Payment Approval Works</h4>
+        <p>As a bank admin, you review payment requests submitted by organizations and vendors. Approve requests to process payments or reject to return them for revision.</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <div class="info-content">
+        <h4>Security Measures</h4>
+        <p>All payment transactions are encrypted and logged. Only approved payments are processed through the banking system with complete audit trails.</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="info-content">
+        <h4>Processing Timeline</h4>
+        <p>Approved payments are processed within 24 hours. Monthly salary disbursements are prioritized during the salary period.</p>
+      </div>
+    </div>
+  </div>
+</div>

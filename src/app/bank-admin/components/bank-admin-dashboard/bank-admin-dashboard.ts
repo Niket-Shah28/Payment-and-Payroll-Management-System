@@ -14,11 +14,10 @@ export class BankAdminDashboard {
   
     tabs = [
       { name: 'HOME', link: 'home' },
-     // { name: 'MANAGE ORGANIZATIONS', link: 'manage-organizations' },
       { name: 'APPROVE ORGANIZATIONS', link: 'approve-organizations' },
       { name: 'VIEW ORGANIZATION DOCS', link: 'view-organization-docs' },
-      { name: 'APPROVE PAYMENT REQUESTS', link: 'approve-payment-requests' },
-      //{ name: 'REGISTER ORGANIZATION', link: 'register-organization' }
+      { name: 'APPROVE PAYMENTS REQUESTS', link: 'approve-payments' },
+      { name: 'TRANSACTIONS', link: 'transactions' }
     ];
   
     constructor(private bankAdminService: BankAdminService) { }

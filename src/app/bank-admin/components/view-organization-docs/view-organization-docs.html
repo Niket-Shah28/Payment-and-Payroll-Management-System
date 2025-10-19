@@ -1,0 +1,264 @@
+<!-- view-organization-docs.html -->
+
+<div class="main-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-building"></i> Organizations
+        </h1>
+        <p class="page-subtitle">View all registered organizations and their documents</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-card">
+          <span class="stat-value">{{ organizations.length }}</span>
+          <span class="stat-label">Organizations</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="alert alert-info alert-loading">
+    <div class="spinner-border spinner-border-sm me-2" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span>Loading organizations...</span>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="errorMsg" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>
+    <strong>Error:</strong> {{ errorMsg }}
+    <button type="button" class="btn-close" (click)="errorMsg = ''" aria-label="Close"></button>
+  </div>
+
+  <!-- Organizations Section -->
+  <div *ngIf="organizations.length > 0" class="organizations-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-list-check me-2"></i>All Organizations
+      </h2>
+      <p class="section-subtitle">{{ organizations.length }} organization(s) found</p>
+    </div>
+
+    <!-- Organizations Table Card -->
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-header">
+            <tr>
+              <th scope="col" class="col-id">
+                <i class="fas fa-hashtag me-1"></i>ID
+              </th>
+              <th scope="col" class="col-name">
+                <i class="fas fa-briefcase me-1"></i>Organization
+              </th>
+              <th scope="col" class="col-email">
+                <i class="fas fa-envelope me-1"></i>Email
+              </th>
+              <th scope="col" class="col-phone">
+                <i class="fas fa-phone me-1"></i>Phone
+              </th>
+              <th scope="col" class="col-address">
+                <i class="fas fa-map-marker-alt me-1"></i>Address
+              </th>
+              <th scope="col" class="col-gstin">
+                <i class="fas fa-file-alt me-1"></i>GSTIN
+              </th>
+              <th scope="col" class="col-pan">
+                <i class="fas fa-file-alt me-1"></i>PAN
+              </th>
+              <th scope="col" class="col-tan">
+                <i class="fas fa-file-alt me-1"></i>TAN
+              </th>
+              <th scope="col" class="col-nic">
+                <i class="fas fa-id-card me-1"></i>NIC
+              </th>
+              <th scope="col" class="col-date">
+                <i class="fas fa-calendar me-1"></i>Created
+              </th>
+              <th scope="col" class="col-action">
+                <i class="fas fa-cog me-1"></i>Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let org of organizations" class="org-row">
+              <td class="col-id">
+                <span class="badge badge-org">{{ org.organizationId }}</span>
+              </td>
+              <td class="col-name">
+                <div class="org-name">
+                  <strong>{{ org.organizationName }}</strong>
+                </div>
+              </td>
+              <td class="col-email">
+                <span class="email-text" [title]="org.email">{{ org.email }}</span>
+              </td>
+              <td class="col-phone">
+                <span class="phone-text">{{ org.phoneNumber }}</span>
+              </td>
+              <td class="col-address">
+                <span class="address-text text-truncate" [title]="org.address">{{ org.address }}</span>
+              </td>
+              <td class="col-gstin">
+                <span class="doc-badge gstin-badge">{{ org.gstin }}</span>
+              </td>
+              <td class="col-pan">
+                <span class="doc-badge pan-badge">{{ org.pan }}</span>
+              </td>
+              <td class="col-tan">
+                <span class="doc-badge tan-badge">{{ org.tan }}</span>
+              </td>
+              <td class="col-nic">
+                <span class="doc-badge nic-badge">{{ org.nicCode }}</span>
+              </td>
+              <td class="col-date">
+                <span class="date-text">{{ org.createdAt | date:'short' }}</span>
+              </td>
+              <td class="col-action">
+                <button 
+                  class="btn btn-sm btn-view-docs"
+                  (click)="viewDocuments(org.organizationId)"
+                  [title]="'View documents for ' + org.organizationName"
+                >
+                  <i class="fas fa-folder-open me-1"></i>Documents
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && organizations.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="fas fa-inbox"></i>
+    </div>
+    <h3>No Organizations Found</h3>
+    <p>No organizations are currently registered in the system</p>
+  </div>
+
+  <!-- Documents Section -->
+  <div *ngIf="documents.length > 0" class="documents-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-folder-open me-2"></i>Organization Documents
+      </h2>
+      <p class="section-subtitle">{{ documents.length }} document(s) found</p>
+    </div>
+
+    <!-- Loading Documents -->
+    <div *ngIf="loadingDocuments" class="alert alert-info alert-loading">
+      <div class="spinner-border spinner-border-sm me-2" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span>Loading documents...</span>
+    </div>
+
+    <!-- Documents Table Card -->
+    <div *ngIf="!loadingDocuments" class="table-card documents-table">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-header">
+            <tr>
+              <th scope="col" class="col-doc-id">
+                <i class="fas fa-hashtag me-1"></i>ID
+              </th>
+              <th scope="col" class="col-doc-type">
+                <i class="fas fa-file-alt me-1"></i>Document Type
+              </th>
+              <th scope="col" class="col-doc-date">
+                <i class="fas fa-calendar me-1"></i>Created At
+              </th>
+              <th scope="col" class="col-doc-action">
+                <i class="fas fa-cog me-1"></i>Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doc of documents" class="doc-row">
+              <td class="col-doc-id">
+                <span class="badge badge-doc">{{ doc.documentId }}</span>
+              </td>
+              <td class="col-doc-type">
+                <div class="doc-type-info">
+                  <i class="fas fa-file-pdf me-2" style="color: #dc3545;"></i>
+                  <span class="doc-type-name">{{ doc.documentTypeName }}</span>
+                </div>
+              </td>
+              <td class="col-doc-date">
+                <span class="date-badge">{{ doc.createdAt | date:'short' }}</span>
+              </td>
+              <td class="col-doc-action">
+                <div class="action-buttons">
+                  <button 
+                    class="btn btn-sm btn-view"
+                    (click)="onViewDocument(doc)"
+                    title="View this document"
+                  >
+                    <i class="fas fa-eye me-1"></i>View
+                  </button>
+                  <button 
+                    class="btn btn-sm btn-download"
+                    (click)="onDownloadDocument(doc.cloudinaryUrl, doc.documentTypeName)"
+                    title="Download this document"
+                  >
+                    <i class="fas fa-download me-1"></i>Download
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Documents State -->
+  <div *ngIf="!loadingDocuments && selectedOrgId && documents.length === 0" class="empty-docs-state">
+    <div class="empty-icon">
+      <i class="fas fa-file-slash"></i>
+    </div>
+    <h3>No Documents Found</h3>
+    <p>This organization has no documents yet</p>
+  </div>
+
+  <!-- Info Cards Section -->
+  <div class="info-cards-section" *ngIf="organizations.length > 0">
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <div class="info-content">
+        <h4>Organization Details</h4>
+        <p>View complete information about registered organizations including tax identification numbers and contact details.</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-file-alt"></i>
+      </div>
+      <div class="info-content">
+        <h4>Document Management</h4>
+        <p>Access and download organization documents. Click on any organization to view and manage their documents.</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <div class="info-content">
+        <h4>Secure Access</h4>
+        <p>All documents are securely stored and can only be accessed by authorized bank administrators.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
