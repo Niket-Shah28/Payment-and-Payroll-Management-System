@@ -25,7 +25,7 @@ export class OrganizationVendors {
   // --- State ---
   isLoading = false;
   showAddModal = false;
-  viewingVendor: VendorResponseDto | null = null;
+  viewingVendor: VendorRequestDto | null = null;
   vendorToDelete: VendorResponseDto | null = null;
   errorMessage: string | null = null;
   selectedFile: File | null = null;
@@ -111,11 +111,11 @@ export class OrganizationVendors {
     this.fileError = null;
 
     if (!file) return;
-    if (file.type !== 'application/pdf') {
-      this.fileError = 'Only PDF files are allowed.';
-      element.value = '';
-      return;
-    }
+    // if (file.type !== 'application/pdf') {
+    //   this.fileError = 'Only PDF files are allowed.';
+    //   element.value = '';
+    //   return;
+    // }
 
     this.selectedFile = file;
   }
@@ -160,15 +160,22 @@ export class OrganizationVendors {
   cancelDeleteConfirmation() { this.vendorToDelete = null; }
   confirmDelete() { 
     if (!this.vendorToDelete) return;
-    // this.vendorService.deleteVendor(this.vendorToDelete.vendorId).subscribe({
-    //   next: () => { this.loadVendors(); this.vendorToDelete = null; },
-    //   error: (err) => this.handleError(`Delete failed: ${err.message}`)
-    // });
+    console.log("Hello")
+    this.vendorService.deleteVendor(this.vendorToDelete.vendorId).subscribe({
+    next: () => { this.loadVendors(); this.vendorToDelete = null; },
+    error: (err) => this.handleError(`Delete failed: ${err.message}`)
+    });
   }
 
   // --- View / Modal ---
-  viewVendor(vendor: VendorResponseDto) { 
-    this.viewingVendor = vendor; this.clearError();
+  viewVendor(vendorId:Number) { 
+    this.vendorService.getVendorFullProfile(vendorId).subscribe({
+      next: (vendor:VendorRequestDto) => {
+        this.viewingVendor = vendor;
+        this.clearError();  
+      },
+      error: (err) => this.handleError(`Failed to load vendor details: ${err.message}`)
+    });
   }
   closeViewModal() { this.viewingVendor = null; }
 
@@ -181,22 +188,32 @@ export class OrganizationVendors {
   }
 
   get vendorDetails() {
-    console.log("GET DETAILS")
     if (!this.viewingVendor) return [];
-    console.log(this.viewingVendor.name);
-    console.log(this.viewingVendor.email);
-    console.log(this.viewingVendor.phoneNumber);
-    console.log(this.viewingVendor.gstin);
-    console.log(this.viewingVendor.pan);
     return [
       { key: 'Vendor Name', value: this.viewingVendor.name },
       { key: 'Email', value: this.viewingVendor.email },
       { key: 'Phone', value: this.viewingVendor.phoneNumber },
+      { key: 'Address', value: this.viewingVendor.address },
       { key: 'GSTIN', value: this.viewingVendor.gstin },
       { key: 'PAN', value: this.viewingVendor.pan },
-      //{ key: 'Contract Document', value: this.viewingVendor.contractDocumentUrl },
+      { key: 'CIN Number', value: this.viewingVendor.cinNumber },
+      { key: 'TAN', value: this.viewingVendor.tan },
+      { key: 'Contract Title', value: this.viewingVendor.contractTitle },
+      { key: 'Contract Start Date', value: this.viewingVendor.startDate },
+      { key: 'Contract End Date', value: this.viewingVendor.endDate },
+      { key: 'Contract Document', value: this.viewingVendor.contractDocumentUrl },
     ];
-}
+  }
+
+  openPdf() {
+    const url = this.viewingVendor?.contractDocumentUrl;
+    console.log(this.viewingVendor)
+    if (url) {
+      this.vendorService.openPdf(url);
+    } else {
+      console.warn('No contract document URL found.');
+    }
+  }
 
 
   // --- Error Handling ---

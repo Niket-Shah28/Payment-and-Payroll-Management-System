@@ -5,6 +5,9 @@ export const environment = {
   production: false,
   // Add all variables from .env here
   CAPATCHA_SITE_KEY: '6Lf-UOsrAAAAAC44Yt-kaQJJO113yclaA86wHBEs',
-  CLOUDINARY_PRESET_ID: 'frontend-upload',
-  CLOUD_NAME:'dds9c9a2z'
+  CLOUDINARY_PRESET_ID: 'unsigned_capstone',
+  CLOUD_NAME:'drxdxao8z',
+  //CLOUD_PUBLIC_ID: '634b6c03-b531-4ba8-9c24-90b9e2c98130',
+  CLOUD_API_KEY: '177387133778123',
+  //CLOUD_API_SECRET: '8AwZHGjZUOpkVn2b8Kg7GZ2G2Q4'
 };

@@ -21,6 +21,9 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { OrganizationVendors } from './components/organization-vendors/organization-vendors';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { OrganizationPayoutComponent } from './components/organization-payout-component/organization-payout-component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatRadioButton, MatRadioModule } from '@angular/material/radio';
 
 
 @NgModule({
@@ -32,7 +35,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     OrganizationBusinessUnits,
     OrganizationEmployeeDesignations,
     BankAccount,
-    OrganizationVendors
+    OrganizationVendors,
+    OrganizationPayoutComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +51,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatOptionModule,
     ReactiveFormsModule,
     MatSelectModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatDividerModule,
+    MatRadioModule
   ]
 })
 export class OrganizationModule { }

@@ -1,0 +1,9 @@
+:host {
+      display: block;
+    }
+    .mat-card-title {
+      font-size: 1.8rem;
+    }
+    .mat-card-header {
+      padding-bottom: 0;
+    }

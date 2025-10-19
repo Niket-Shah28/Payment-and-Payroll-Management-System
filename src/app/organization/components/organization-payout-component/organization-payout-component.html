@@ -1,0 +1,122 @@
+<mat-card class="max-w-4xl mx-auto mt-8 p-6">
+  <mat-card-header>
+    <mat-card-title class="text-2xl">Initiate Payout Request</mat-card-title>
+    <mat-card-subtitle>Configure single or bulk payments</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <form [formGroup]="payoutForm" (ngSubmit)="onSubmit()" class="mt-6 space-y-6">
+
+    <!-- Recipient Type -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Recipient Type</mat-label>
+      <mat-select formControlName="paymentRecipientType">
+        <mat-option *ngFor="let type of recipientTypes" [value]="type">{{ type }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="payoutForm.get('paymentRecipientType')?.invalid && payoutForm.get('paymentRecipientType')?.touched">
+        Recipient Type is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Payment Type -->
+    <mat-radio-group formControlName="singlePayment" class="flex gap-4">
+      <mat-radio-button [value]="true">Single Payment</mat-radio-button>
+      <mat-radio-button [value]="false">Bulk Payment</mat-radio-button>
+    </mat-radio-group>
+
+    <!-- SINGLE PAYMENT -->
+    <div *ngIf="isSinglePayment()" class="space-y-4 p-4 border rounded-md bg-indigo-50">
+      <h3 class="font-semibold text-indigo-800">Single Payment Details</h3>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Amount</mat-label>
+        <input matInput type="number" formControlName="amount" placeholder="5000.00">
+        <mat-error *ngIf="payoutForm.get('amount')?.invalid && payoutForm.get('amount')?.touched">
+          Amount is required and must be positive
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Account Holder Name</mat-label>
+        <input matInput formControlName="recipientAccountHolderName" placeholder="John Doe">
+        <mat-error *ngIf="payoutForm.get('recipientAccountHolderName')?.invalid && payoutForm.get('recipientAccountHolderName')?.touched">
+          Account Holder Name is required
+        </mat-error>
+      </mat-form-field>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Account Number</mat-label>
+          <input matInput formControlName="recipientAccountNumber">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>IFSC Code</mat-label>
+          <input matInput formControlName="recipientIfscCode">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Bank Name</mat-label>
+        <input matInput formControlName="recipientBankName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Payment Mode</mat-label>
+        <mat-select formControlName="paymentMode">
+          <mat-option *ngFor="let mode of paymentModes" [value]="mode">{{ mode }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Scheduled Time</mat-label>
+        <input matInput type="datetime-local" formControlName="scheduledTime">
+      </mat-form-field>
+    </div>
+
+    <!-- BULK PAYMENT -->
+    <div *ngIf="!isSinglePayment()" class="space-y-4 p-4 border rounded-md bg-green-50">
+      <h3 class="font-semibold text-green-800">Bulk Payment Details</h3>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Upload Payment File</mat-label>
+        <input type="file" (change)="onFileSelected($event)" matInput>
+      </mat-form-field>
+      <p *ngIf="uploadedFileUrl">Uploaded File URL: {{ uploadedFileUrl }}</p>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Payment Mode</mat-label>
+        <mat-select formControlName="paymentMode">
+          <mat-option *ngFor="let mode of paymentModes" [value]="mode">{{ mode }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Scheduled Time</mat-label>
+        <input matInput type="datetime-local" formControlName="scheduledTime">
+      </mat-form-field>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Month (Optional)</mat-label>
+          <mat-select formControlName="month">
+            <mat-option *ngFor="let m of months" [value]="m">{{ m }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Year (Optional)</mat-label>
+          <input matInput type="number" formControlName="year" [max]="currentYear">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="flex gap-4">
+      <button mat-raised-button color="primary" type="submit" [disabled]="payoutForm.invalid">Submit</button>
+      <button mat-stroked-button color="accent" type="button" (click)="downloadTemplate()">Download Template</button>
+      <button mat-stroked-button color="warn" type="button" (click)="downloadData()">Download Data</button>
+    </div>
+
+  </form>
+</mat-card>

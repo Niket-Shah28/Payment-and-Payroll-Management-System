@@ -7,6 +7,7 @@ import { OrganizationBusinessUnits } from './components/organization-business-un
 import { OrganizationEmployeeDesignations } from './components/organization-employee-designations/organization-employee-designations';
 import { BankAccount } from './components/bank-account/bank-account';
 import { OrganizationVendors } from './components/organization-vendors/organization-vendors';
+import { OrganizationPayoutComponent } from './components/organization-payout-component/organization-payout-component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
       {
         path:'vendors',
         component:OrganizationVendors
+      },
+      {
+        path:'initiate-payout',
+        component:OrganizationPayoutComponent
       }
     ]
   },
