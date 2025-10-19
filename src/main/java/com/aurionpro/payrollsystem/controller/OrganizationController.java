@@ -31,6 +31,7 @@ import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
+import com.aurionpro.payrollsystem.dto.payment.PaymentRequestDto;
 import com.aurionpro.payrollsystem.dto.vendor.VendorDto;
 import com.aurionpro.payrollsystem.dto.vendor.VendorResponseDto;
 import com.aurionpro.payrollsystem.entity.employee.Status;
@@ -39,6 +40,7 @@ import com.aurionpro.payrollsystem.service.organization.OrganizationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import okhttp3.OkHttpClient;
 
 @RestController
 @RequestMapping("/organization")
@@ -48,6 +50,8 @@ public class OrganizationController {
 	
 	@Autowired
 	private OrganizationService organizationService;
+	
+	private final OkHttpClient client = new OkHttpClient();
 	
 	@PostMapping("/departments")
 	@PreAuthorize("hasRole('ORGANIZATION')")
@@ -242,16 +246,20 @@ public class OrganizationController {
 	@DeleteMapping("/vendors/{vendorId}")
 	@PreAuthorize("hasRole('ORGANIZATION')")
 	public ResponseEntity<Void> removeVendor(@PathVariable Long vendorId){
-		System.out.println("HELLOOO");
-		organizationService.removeVendor(vendorId);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
 	@GetMapping("/vendors/{vendorId}")
 	@PreAuthorize("hasRole('ORGANIZATION')")
-	public ResponseEntity<Void> getVendor(@PathVariable Long vendorId){
-		System.out.println("HELLOOO");
-		organizationService.removeVendor(vendorId);
-		return ResponseEntity.status(HttpStatus.OK).build();
+	public ResponseEntity<VendorDto> getVendor(@PathVariable Long vendorId){
+		VendorDto vendor = organizationService.getVendor(vendorId);
+		return new ResponseEntity<>(vendor, HttpStatus.OK);
+	}
+	
+	@PostMapping("/payment/requests")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<Void> addPaymentRequest(@RequestBody @Valid PaymentRequestDto dto, Authentication authentication){
+		organizationService.addPaymentRequest((Long) authentication.getDetails(), dto);
+		return ResponseEntity.ok().build();
 	}
 }

@@ -21,21 +21,13 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class PaymentRequestDto {
-	@NotBlank
 	private PaymentRecipientType paymentRecipientType;
-	@Min(1)
 	private Double amount;
-	@URL
-	@Nullable
 	private String paymentFileUrl;
 	private Timestamp scheduledTime;
-	@NotBlank
-	private Organization organizationId;
-	@NotBlank
 	private Boolean singlePayment;
-	private Employee employeeId;
-	private Vendor vendorId;
 	private String recipientAccountNumber;
+	private String recipientAccountHolderName;
 	private String recipientBankName;
 	private String recipientIfscCode;
 	private Status status;

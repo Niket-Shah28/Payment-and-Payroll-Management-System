@@ -44,18 +44,18 @@ public class PaymentRequest {
 	@Column(name = "amount")
 	private Double amount;
 	
-	@Column(name = "payment_file_url", nullable = false)
+	@Column(name = "payment_file_url")
 	@URL
 	private String paymentFileUrl;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name = "month", nullable = false)
+	@Column(name = "month")
 	private Month month;
 	
 	private Integer year;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name = "payment_mode", nullable = false)
+	@Column(name = "payment_mode")
 	private PaymentMode paymentMode;
 	
 	@Column(name = "schedule_time")
@@ -67,14 +67,6 @@ public class PaymentRequest {
 	
 	@Column(name = "single_payment")
 	private Boolean singlePayment;
-	
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinColumn(name = "employee_id")
-	private Employee employeeId;
-	
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinColumn(name = "vendor_id")
-	private Vendor vendorId;
 	 
 	@Column(name = "recipient_account_number")
 	private String recipientAccountNumber;
@@ -90,6 +82,6 @@ public class PaymentRequest {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	private Status status;
+	private Status status=Status.PENDING;
 
 }

@@ -13,6 +13,7 @@ import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
+import com.aurionpro.payrollsystem.dto.payment.PaymentRequestDto;
 import com.aurionpro.payrollsystem.dto.vendor.VendorDto;
 import com.aurionpro.payrollsystem.dto.vendor.VendorResponseDto;
 import com.aurionpro.payrollsystem.entity.employee.Status;
@@ -44,5 +45,6 @@ public interface OrganizationService {
 	void addVendor(VendorDto dto, Long organizationId);
 	List<VendorResponseDto> getVendors(Long organizationId);
 	void removeVendor(Long vendorId);
-	void getVendor();
+	VendorDto getVendor(Long vendorId);
+	void addPaymentRequest(Long organizationId, PaymentRequestDto dto);
 }

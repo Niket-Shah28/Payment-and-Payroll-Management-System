@@ -43,7 +43,7 @@ public class VendorContract {
 	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
 	
-	@Column(name = "conmtract_document_url", nullable = false)
+	@Column(name = "contract_document_url", nullable = false)
 	@URL
 	private String contractDocumentUrl;
 	

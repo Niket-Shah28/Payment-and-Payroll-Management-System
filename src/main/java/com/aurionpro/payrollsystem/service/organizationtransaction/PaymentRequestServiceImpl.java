@@ -31,21 +31,7 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
 			PaymentReqestDto dto = modelMapper.map(payment, PaymentReqestDto.class);
 
 			// Handle dynamic recipient name
-			if (payment.getPaymentRecipientType() != null) {
-				switch (payment.getPaymentRecipientType()) {
-				case EMPLOYEE -> {
-					if (payment.getEmployeeId() != null) {
-						dto.setRecipientName(
-								payment.getEmployeeId().getFirstName() + " " + payment.getEmployeeId().getLastName());
-					}
-				}
-				case VENDOR -> {
-					if (payment.getVendorId() != null) {
-						dto.setRecipientName(payment.getVendorId().getName());
-					}
-				}
-				}
-			}
+			dto.setRecipientName(payment.getRecipientAccountHolderName());
 
 			if (payment.getOrganizationId() != null)
 				dto.setOrganizationName(payment.getOrganizationId().getOrganizationName());

@@ -24,6 +24,7 @@ import com.aurionpro.payrollsystem.dto.employee.EmployeeUploadDataDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
+import com.aurionpro.payrollsystem.dto.payment.PaymentRequestDto;
 import com.aurionpro.payrollsystem.dto.vendor.VendorDto;
 import com.aurionpro.payrollsystem.dto.vendor.VendorResponseDto;
 import com.aurionpro.payrollsystem.entity.bankAccount.OrganizationBankAccount;
@@ -333,7 +334,6 @@ public class OrganizationServiceImpl implements OrganizationService{
 				SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
 		                .withProcedureName("processs_single_payment");
 				Map<String, Object> inParams = new HashMap<>();
-				inParams.put("p_recipient_id", ((request.getEmployeeId()!=null)?request.getEmployeeId():request.getVendorId()));
 				inParams.put("p_recipient_account_number", request.getRecipientAccountNumber());
 				inParams.put("p_recipient_ifsc", request.getRecipientIfscCode());
 				inParams.put("p_recipient_bank_name", request.getRecipientBankName());
@@ -352,7 +352,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 		        
 		        String final_email_message = "Dear "+request.getOrganizationId().getOrganizationName()+"\n"
 		        							 +"Your Payment Request for "+paymentRecipientType+
-		        							 ": "+((paymentRecipientType == "Vendor")?request.getVendorId().getName():(request.getEmployeeId().getFirstName()+" "+request.getEmployeeId().getLastName()))+
+		        							 ": "+request.getRecipientAccountHolderName()+
 		        							 " "+((success)?"is completed successfully.":" has failed due to "+message.toLowerCase());
 		        emailService.sendSingleTransactionEmail(request.getOrganizationId().getEmail(), final_email_message, "Payment Request Status");			}
 		}
@@ -555,8 +555,34 @@ public class OrganizationServiceImpl implements OrganizationService{
 	}
 
 	@Override
-	public void getVendor() {
-		// TODO Auto-generated method stub
-		
+	public VendorDto getVendor(Long vendorId) {
+		Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(()->new OrganizationException("Vendor not found", HttpStatus.BAD_REQUEST));
+		VendorContract contract = vendor.getContract();
+		System.out.println(contract.getContractDocumentUrl());
+		VendorDto vendorDto = new VendorDto(
+					vendor.getName(),
+					vendor.getCinNumber(),
+					vendor.getEmail(),
+					vendor.getPhoneNumber(),
+					vendor.getAddress(),
+					vendor.getGstin(),
+					vendor.getPan(),
+					vendor.getTan(),
+					contract.getContractTitle(),
+					contract.getStartDate(),
+					contract.getEndDate(),
+					contract.getContractDocumentUrl()
+				);
+		return vendorDto;
+	}
+
+	@Override
+	public void addPaymentRequest(Long organizationId, PaymentRequestDto dto) {
+		Organization organization = entityManager.getReference(Organization.class, organizationId);
+		PaymentRequest request = modelMapper.map(dto, PaymentRequest.class);
+		request.setOrganizationId(organization);
+		request.setStatus(Status.PENDING);		
+		paymentRequestRepository.save(request);
+		return;
 	}
 }
