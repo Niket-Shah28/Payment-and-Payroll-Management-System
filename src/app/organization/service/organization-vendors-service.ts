@@ -20,9 +20,9 @@ export class OrganizationVendorsService {
   getVendors():Observable<VendorResponseDto[]>{
     return this.http.get<VendorResponseDto[]>(this.vendorRequestUri);
   }
-  updateVendor(){}
 
-  deleteVendor(vendorId:Number){
+  deleteVendor(vendorId:Number):Observable<void>{
+    console.log("DELETING")
     console.log(vendorId)
     return this.http.delete<void>(this.vendorRequestUri+"/"+vendorId);
   }

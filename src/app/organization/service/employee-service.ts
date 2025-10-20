@@ -22,4 +22,10 @@ export class EmployeeService {
 
     return this.http.get<EmployeePageResponse>(this.apiBaseUrl+"/page", { params });
   }
+
+  uploadFile(file:File):Observable<void>{
+    const payload = new FormData();
+    payload.append("file", file);
+    return this.http.post<void>("http://localhost:8080/organization/employees", payload);
+  }
 }

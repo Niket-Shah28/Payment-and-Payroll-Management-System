@@ -27,6 +27,7 @@ export class OrganizationEmployees {
   isUploading = false;
   selectedFileName = '';
   isSearching = false;
+  hasNextPage = false;
 
   // Pagination variables
   pageIndex = 0;
@@ -66,47 +67,58 @@ export class OrganizationEmployees {
   }
 
   private loadEmployees(): void {
-    this.isLoading = true;
-    const searchTerm = this.searchControl.value.toLowerCase().trim();
-    
-    // Simulate API call delay
-    this.employeeService.getEmployees(this.pageIndex, this.pageSize, '').subscribe({
-      next: (response: EmployeePageResponse) => {
-        this.allEmployees = response.content;
-        this.filteredEmployees = response.content;
-        this.dataSource.data = response.content;
-        this.totalElements = response.totalElements;
-        this.totalPages = response.totalPages;
-        this.pageIndex = response.currentPage;
-        this.pageSize = response.pageSize;
-        this.isLoading = false;
+  this.isLoading = true;
+  const searchTerm = this.searchControl.value.toLowerCase().trim();
 
-        if (this.dataSource.data.length > 0) {
-          this.showSnackBar(`Loaded ${response.totalElements} employees`, 'success');
-        }
-      },
-      error: (error) => {
-        this.showSnackBar('Failed to load employees: ' + error.message, 'error');
-        this.isLoading = false;
+  this.employeeService.getEmployees(this.pageIndex, this.pageSize, searchTerm).subscribe({
+    next: (response: EmployeePageResponse) => {
+      this.allEmployees = response.content;
+      this.filteredEmployees = response.content;
+
+      // IMPORTANT: MatPaginator expects zero-based index
+      this.pageIndex = response.currentPage; // use as-is if backend is 0-based
+      this.dataSource.data = response.content;
+      this.totalElements = response.totalElements;
+      this.totalPages = response.totalPages;
+      this.pageSize = response.pageSize;
+
+      // Force paginator refresh
+      if (this.paginator) {
+        this.paginator.length = this.totalElements;
+        this.paginator.pageIndex = this.pageIndex;
+        this.paginator.pageSize = this.pageSize;
       }
-    });
-  }
+
+      this.isLoading = false;
+
+      if (this.dataSource.data.length > 0) {
+        this.showSnackBar(`Loaded ${response.totalElements} employees`, 'success');
+      }
+    },
+    error: (error) => {
+      this.showSnackBar('Failed to load employees: ' + error.message, 'error');
+      this.isLoading = false;
+    }
+  });
+}
+
 
   /**
    * Triggers a new search operation.
    */
   onSearchClick(): void {
-    const searchTerm = this.searchControl.value;
+  const searchTerm = this.searchControl.value;
 
-    if (!searchTerm.trim() && this.allEmployees.length > 0) {
-      this.onResetSearch();
-      return;
-    }
-
-    // Always reset to the first page on a new search term
-    this.pageIndex = 0; 
-    this.loadEmployees();
+  if (!searchTerm.trim() && this.allEmployees.length > 0) {
+    this.onResetSearch();
+    return;
   }
+
+  // Reset to first page when searching
+  this.pageIndex = 0; 
+  this.loadEmployees();
+}
+
 
   /**
    * Clears the search field and reloads the full employee list.
@@ -122,10 +134,18 @@ export class OrganizationEmployees {
    * Handles pagination changes and reloads the data.
    */
   onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadEmployees(); 
+  // Keep pageIndex within valid range
+  this.pageIndex = event.pageIndex;
+  this.pageSize = event.pageSize;
+
+  // If pageIndex exceeds totalPages (after pageSize change), reset to last page
+  if (this.pageIndex >= this.totalPages) {
+    this.pageIndex = this.totalPages - 1;
   }
+
+  this.loadEmployees();
+}
+
 
   /**
    * Handles file selection for bulk upload.
@@ -148,26 +168,26 @@ export class OrganizationEmployees {
     this.isUploading = true;
 
     // Simulate upload process
-    setTimeout(() => {
-      // In a real app, you would parse the CSV here and push data to allEmployees
-      // For now, we mock adding 10 employees to show a change.
-      const mockAddedEmployees: Employee[] = Array.from({ length: 10 }, (_, i) => ({
-        id: `m${this.allEmployees.length + i + 1}`,
-        employeeId: `MOCK-${100 + i}`,
-        name: `Uploaded User ${i + 1}`,
-        role: 'New Hire',
-        department: 'HR',
-        businessUnit: 'Support',
-      }));
+    // setTimeout(() => {
+    //   // In a real app, you would parse the CSV here and push data to allEmployees
+    //   // For now, we mock adding 10 employees to show a change.
+    //   const mockAddedEmployees: Employee[] = Array.from({ length: 10 }, (_, i) => ({
+    //     id: `m${this.allEmployees.length + i + 1}`,
+    //     employeeId: `MOCK-${100 + i}`,
+    //     name: `Uploaded User ${i + 1}`,
+    //     role: 'New Hire',
+    //     department: 'HR',
+    //     businessUnit: 'Support',
+    //   }));
 
-      this.allEmployees.push(...mockAddedEmployees);
+    //   this.allEmployees.push(...mockAddedEmployees);
 
-      this.showSnackBar(`File processed. ${mockAddedEmployees.length} employees uploaded successfully (Mock).`, 'success');
-      this.clearSelectedFile();
-      this.isUploading = false;
-      this.loadEmployees();
-      input.value = '';
-    }, 2000);
+    //   this.showSnackBar(`File processed. ${mockAddedEmployees.length} employees uploaded successfully (Mock).`, 'success');
+    //   this.clearSelectedFile();
+    //   this.isUploading = false;
+    //   this.loadEmployees();
+    //   input.value = '';
+    // }, 2000);
   }
 
   /**

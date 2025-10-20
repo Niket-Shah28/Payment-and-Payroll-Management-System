@@ -169,10 +169,12 @@ export class OrganizationVendors {
 
     // --- Delete Vendor ---
     openDeleteConfirmation(vendor: VendorResponseDto) { this.vendorToDelete = vendor; this.clearError(); }
-    cancelDeleteConfirmation() { this.vendorToDelete = null; }
+    cancelDeleteConfirmation() {console.log("Cancel Delete"); this.vendorToDelete = null; }
     confirmDelete() {
-        if (!this.vendorToDelete) return;
-        
+        console.log("Confierm Delete");
+        console.log(this.vendorToDelete)
+        if (this.vendorToDelete == null) return;
+        console.log("HELLOOO")
         const idToDelete = this.vendorToDelete.vendorId;
         this.vendorToDelete = null; // Close modal immediately
         this.handleError(`Deleting vendor with ID: ${idToDelete}...`);

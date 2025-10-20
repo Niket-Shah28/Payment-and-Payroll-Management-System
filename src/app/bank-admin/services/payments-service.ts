@@ -21,7 +21,7 @@ export class PaymentsService {
     return this.http.get(`${this.baseUrl}/requests`, { params });
   }
 
- updatePaymentStatus(paymentRequestId: number, status: Status): Observable<any> {
+  updatePaymentStatus(paymentRequestId: number, status: Status): Observable<any> {
     return this.http.post("http://localhost:8080/organization/paymentRequest/"+paymentRequestId,null, {
       params: new HttpParams().set('status', status)
     });
