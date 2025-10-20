@@ -16,7 +16,7 @@ export class OrganizationLayoutComponent {
     { name: 'MANAGE DEPARTMENT', link: '/organization/dashboard/departments' },
     { name: 'MANAGE BUSINESS UNITS', link: '/organization/dashboard/business-units' },
     { name: 'MANAGE EMPLOYEE ROLES', link: '/organization/dashboard/roles' },
-    { name: 'TICKETS', link: '/tickets' },
+    { name: 'TICKETS', link: '/organization/dashboard/organization-tickets' },
     { name: 'MANAGE BANK ACCOUNT', link: '/organization/dashboard/bank-account' },
     { name: 'INITIATE PAYOUT', link: '/organization/dashboard/initiate-payout' }
   ];

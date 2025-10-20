@@ -9,6 +9,7 @@ import { BankAccountList } from './components/employee-account-details/bank-acco
 import { EmployeeBankInfoList } from './components/employee-bank-info-list/employee-bank-info-list';
 import { MarkAttendance } from './components/mark-attendance/mark-attendance/mark-attendance';
 import { Payslip } from './components/payslip/payslip';
+import { EmployeeDocuments } from './components/employee-documents/employee-documents';
 
 
 const routes: Routes = [
@@ -26,7 +27,8 @@ const routes: Routes = [
     { path: 'employee-bank-info-list', component: EmployeeBankInfoList },
     { path: 'employee-bank-info-list/:bankInfoId', component: EmployeeBankInfoList } ,
     {path: 'mark-attendance', component: MarkAttendance},
-    {path: 'payslip', component:Payslip}
+    {path: 'payslip', component:Payslip},
+    {path: 'employee-documents', component:EmployeeDocuments}
     ]
   }
 ];

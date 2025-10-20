@@ -29,6 +29,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { OrganizationTickets } from './components/organization-tickets/organization-tickets';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     OrganizationEmployeeDesignations,
     BankAccount,
     OrganizationVendors,
-    OrganizationPayoutComponent
+    OrganizationPayoutComponent,
+    OrganizationTickets
   ],
   imports: [
     CommonModule,

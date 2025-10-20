@@ -8,6 +8,7 @@ export const environment = {
   CLOUDINARY_PRESET_ID: 'unsigned_capstone',
   CLOUD_NAME:'drxdxao8z',
   //CLOUD_PUBLIC_ID: '634b6c03-b531-4ba8-9c24-90b9e2c98130',
+  apiBaseUrl : 'http://localhost:8080',
   CLOUD_API_KEY: '177387133778123',
   //CLOUD_API_SECRET: '8AwZHGjZUOpkVn2b8Kg7GZ2G2Q4'
 };

@@ -1,0 +1,323 @@
+<!-- organization-tickets.html -->
+
+<div class="main-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div>
+        <h1 class="page-title">
+          <i class="fas fa-ticket-alt"></i> Support Tickets
+        </h1>
+        <p class="page-subtitle">Manage and respond to organization support tickets</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-card">
+          <span class="stat-value">{{ tickets.length }}</span>
+          <span class="stat-label">Total Tickets</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-header">
+      <h2 class="filters-title">
+        <i class="fas fa-filter me-2"></i>Filter Tickets
+      </h2>
+    </div>
+
+    <div class="filter-card">
+      <div class="filter-grid">
+        <!-- Employee ID Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <i class="fas fa-user me-2"></i>Employee ID
+          </label>
+          <input 
+            type="number" 
+            class="form-control filter-input" 
+            placeholder="Enter employee ID"
+            [(ngModel)]="filter.employeeId"
+          />
+        </div>
+
+        <!-- Ticket ID Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <i class="fas fa-hashtag me-2"></i>Ticket ID
+          </label>
+          <input 
+            type="number" 
+            class="form-control filter-input" 
+            placeholder="Enter ticket ID"
+            [(ngModel)]="filter.ticketId"
+          />
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <i class="fas fa-circle me-2"></i>Status
+          </label>
+          <select class="form-control filter-select" [(ngModel)]="filter.status">
+            <option [ngValue]="null">All Status</option>
+            <option [ngValue]="ticketStatusEnum.OPEN">
+              <i class="fas fa-clock me-1"></i>OPEN
+            </option>
+            <option [ngValue]="ticketStatusEnum.CLOSE">
+              <i class="fas fa-check me-1"></i>CLOSED
+            </option>
+          </select>
+        </div>
+
+        <!-- Created After Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <i class="fas fa-calendar-alt me-2"></i>Created After
+          </label>
+          <input 
+            type="date" 
+            class="form-control filter-input" 
+            [(ngModel)]="filter.createdAfter"
+          />
+        </div>
+
+        <!-- Created Before Filter -->
+        <div class="filter-group">
+          <label class="filter-label">
+            <i class="fas fa-calendar-alt me-2"></i>Created Before
+          </label>
+          <input 
+            type="date" 
+            class="form-control filter-input" 
+            [(ngModel)]="filter.createdBefore"
+          />
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="filter-actions">
+          <button class="btn btn-apply" (click)="applyFilter()">
+            <i class="fas fa-search me-2"></i>Apply Filters
+          </button>
+          <button class="btn btn-reset" (click)="resetFilter()">
+            <i class="fas fa-redo me-2"></i>Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tickets Section -->
+  <div class="tickets-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-list-ul me-2"></i>Ticket List
+      </h2>
+      <p class="section-subtitle">{{ tickets.length }} ticket(s) found</p>
+    </div>
+
+    <!-- Tickets Table -->
+    <div *ngIf="tickets.length > 0" class="table-card">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-header">
+            <tr>
+              <th scope="col" class="col-id">
+                <i class="fas fa-hashtag me-1"></i>ID
+              </th>
+              <th scope="col" class="col-query">
+                <i class="fas fa-question-circle me-1"></i>Query
+              </th>
+              <th scope="col" class="col-status">
+                <i class="fas fa-circle me-1"></i>Status
+              </th>
+              <th scope="col" class="col-employee">
+                <i class="fas fa-user me-1"></i>Employee
+              </th>
+              <th scope="col" class="col-date">
+                <i class="fas fa-calendar me-1"></i>Created
+              </th>
+              <th scope="col" class="col-responses">
+                <i class="fas fa-comments me-1"></i>Responses
+              </th>
+              <th scope="col" class="col-actions">
+                <i class="fas fa-cog me-1"></i>Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ticket of tickets" class="ticket-row" [ngClass]="'status-' + ticket.status.toLowerCase()">
+              <td class="col-id">
+                <span class="badge badge-ticket">{{ ticket.ticketId }}</span>
+              </td>
+              <td class="col-query">
+                <div class="query-text">{{ ticket.query }}</div>
+              </td>
+              <td class="col-status">
+                <span class="status-badge" [ngClass]="ticket.status === ticketStatusEnum.OPEN ? 'status-open' : 'status-closed'">
+                  <i [ngClass]="ticket.status === ticketStatusEnum.OPEN ? 'fas fa-clock' : 'fas fa-check-circle'" class="me-1"></i>
+                  {{ ticket.status }}
+                </span>
+              </td>
+              <td class="col-employee">
+                <span class="employee-badge">{{ ticket.employeeId }}</span>
+              </td>
+              <td class="col-date">
+                <span class="date-badge">{{ ticket.createdAt | date:'short' }}</span>
+              </td>
+              <td class="col-responses">
+                <span class="response-badge">{{ ticket.responses?.length || 0 }}</span>
+              </td>
+              <td class="col-actions">
+                <div class="action-buttons">
+                  <button 
+                    class="btn btn-sm btn-reply"
+                    (click)="selectTicket(ticket)"
+                    title="Reply to this ticket"
+                  >
+                    <i class="fas fa-reply me-1"></i>Reply
+                  </button>
+                  <button 
+                    *ngIf="ticket.status === ticketStatusEnum.OPEN"
+                    class="btn btn-sm btn-close-ticket"
+                    (click)="closeTicket(ticket)"
+                    title="Close this ticket"
+                  >
+                    <i class="fas fa-check me-1"></i>Close
+                  </button>
+                  <span *ngIf="ticket.status !== ticketStatusEnum.OPEN" class="closed-badge">
+                    <i class="fas fa-lock me-1"></i>Closed
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="tickets.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-inbox"></i>
+      </div>
+      <h3>No Tickets Found</h3>
+      <p>Try adjusting your filters or create a new ticket</p>
+    </div>
+  </div>
+
+  <!-- Reply Section -->
+  <div *ngIf="selectedTicket" class="reply-section">
+    <div class="reply-card">
+      <!-- Reply Header -->
+      <div class="reply-header">
+        <div>
+          <h2 class="reply-title">
+            <i class="fas fa-reply me-2"></i>Reply to Ticket #{{ selectedTicket.ticketId }}
+          </h2>
+          <p class="reply-subtitle">Provide a response to the support request</p>
+        </div>
+        <button class="btn-close-reply" (click)="selectedTicket = null" title="Close reply panel">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Ticket Details -->
+      <div class="ticket-details">
+        <div class="detail-item">
+          <span class="detail-label">Query:</span>
+          <span class="detail-value">{{ selectedTicket.query }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Employee ID:</span>
+          <span class="detail-value">{{ selectedTicket.employeeId }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value">
+            <span class="status-badge" [ngClass]="selectedTicket.status === ticketStatusEnum.OPEN ? 'status-open' : 'status-closed'">
+              {{ selectedTicket.status }}
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Responses List -->
+      <div class="responses-section" *ngIf="selectedTicket.responses && selectedTicket.responses.length > 0">
+        <h4 class="responses-title">
+          <i class="fas fa-comments me-2"></i>Responses ({{ selectedTicket.responses.length }})
+        </h4>
+        <div class="responses-list">
+          <div *ngFor="let resp of selectedTicket.responses" class="response-item">
+            <div class="response-header">
+              <span class="response-date">{{ resp.createdAt | date:'short' }}</span>
+            </div>
+            <div class="response-body">
+              {{ resp.response }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Responses -->
+      <div *ngIf="!selectedTicket.responses || selectedTicket.responses.length === 0" class="no-responses">
+        <i class="fas fa-comment-slash me-2"></i>No responses yet
+      </div>
+
+      <!-- Reply Input -->
+      <div class="reply-input-section">
+        <label class="reply-label">
+          <i class="fas fa-pen-fancy me-2"></i>Your Response
+        </label>
+        <textarea 
+          class="form-control reply-textarea" 
+          [(ngModel)]="responseText" 
+          placeholder="Type your response here..."
+          rows="5"
+        ></textarea>
+        <button 
+          class="btn btn-send-reply" 
+          (click)="replyToTicket()"
+          [disabled]="!responseText.trim()"
+        >
+          <i class="fas fa-paper-plane me-2"></i>Send Reply
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Cards Section -->
+  <div class="info-cards-section">
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-lightbulb"></i>
+      </div>
+      <div class="info-content">
+        <h4>Ticket Management</h4>
+        <p>Click on Reply to respond to any ticket. Once resolved, close the ticket to mark it as complete.</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="info-content">
+        <h4>Ticket Status</h4>
+        <p><strong>OPEN:</strong> Awaiting response. <strong>CLOSED:</strong> Resolved and no longer active.</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <i class="fas fa-search"></i>
+      </div>
+      <div class="info-content">
+        <h4>Filter Tips</h4>
+        <p>Use filters to find specific tickets by employee, date range, or status. Combine multiple filters for precise results.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
