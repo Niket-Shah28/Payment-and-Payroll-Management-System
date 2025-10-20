@@ -1,0 +1,323 @@
+/* Base Styles */
+    :host {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      padding: 2rem;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Card Styling */
+    .employee-card {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .header-bg {
+      background: linear-gradient(to bottom right, #2563EB, #4F46E5); /* Blue-600 to Indigo-700 */
+      color: white;
+      padding: 32px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .header-subtitle {
+      color: #BFDBFE; /* Blue-200 */
+    }
+
+    .card-content {
+      padding: 24px;
+    }
+
+    /* --- Control Bar Layout Fix --- */
+    .controls {
+      display: flex;
+      flex-direction: column; /* Stack on mobile */
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 768px) { /* Desktop Layout */
+      .controls {
+        flex-direction: row;
+        justify-content: space-between; /* Space between search and upload groups */
+        align-items: center; /* ALIGNMENT FIX: Center the two main control groups vertically */
+      }
+    }
+    
+    /* Search Container (Input + Search Button) */
+    .search-container {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      width: 100%;
+      /* FIX: Changed alignment from flex-end to center for better vertical alignment */
+      align-items: center; 
+    }
+
+    @media (min-width: 768px) {
+      .search-container {
+        width: 66.666667%; /* Takes up two-thirds of the horizontal space */
+      }
+    }
+    
+    .search-field {
+      flex-grow: 1;
+    }
+
+    /* Upload/Download Container (Buttons) */
+    .upload-download-container {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      justify-content: flex-end; /* Push buttons to the right on mobile */
+    }
+    
+    @media (min-width: 768px) {
+      .upload-download-container {
+        width: auto; /* Shrink to fit content on desktop */
+      }
+    }
+
+    /* Button Sizing Fix: Reduced to 48px height for all actions */
+    .action-button {
+      height: 48px; /* Reduced from 56px */
+      padding: 0 16px;
+      font-size: 0.875rem; /* Standard font size */
+      font-weight: 600;
+      box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05); /* Lighter shadow */
+      transition: all 0.2s ease-in-out;
+      white-space: nowrap;
+    }
+    
+    .action-button:hover {
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05); /* Light hover effect */
+    }
+
+    .button-label {
+      margin-left: 8px;
+    }
+    /* --- End Control Bar Layout Fix --- */
+
+    .stroked-button {
+      border: 1px solid #3B82F6 !important;
+      color: #3B82F6 !important;
+      background-color: white !important;
+    }
+
+    .stroked-button:hover {
+      background-color: #EFF6FF !important; /* Blue-50 */
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    /* File Status */
+    .file-status-box {
+      padding: 16px;
+      margin-bottom: 24px;
+      background-color: #F0FFF4; /* Green-50 */
+      border-left: 4px solid #10B981; /* Green-500 */
+      color: #065F46; /* Green-700 */
+      border-radius: 6px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .file-status-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .file-status-icon {
+      color: #059669; /* Green-600 */
+    }
+
+    .file-status-text-medium {
+      font-weight: 500;
+    }
+
+    .file-status-text-strong {
+      color: #064E3B; /* Green-800 */
+    }
+
+    /* Loading Spinner */
+    .loading-spinner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      gap: 16px;
+    }
+
+    .loading-text {
+      color: #4B5563; /* Gray-600 */
+      font-weight: 500;
+    }
+
+    /* Table Styling */
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid #E5E7EB; /* Gray-200 */
+      border-radius: 8px;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    
+    .employee-table {
+      min-width: 100%;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .header-cell {
+      padding: 16px;
+      background-color: #F9FAFB; /* Gray-50 */
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6B7280; /* Gray-500 */
+      text-align: left;
+    }
+
+    .sn-cell {
+      width: 64px;
+    }
+    .action-header-cell {
+      text-align: center;
+      width: 96px;
+    }
+
+    .data-cell {
+      padding: 16px;
+      border-bottom: 1px solid #F3F4F6; /* Gray-100 */
+    }
+    .sn-data-cell {
+      text-align: center;
+    }
+
+    .data-row-hover:hover {
+      background-color: #F9FAFB; /* Gray-50 */
+      cursor: pointer;
+      transition: background-color 0.15s ease-in-out;
+    }
+
+    .serial-number-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 9999px; /* Rounded-full */
+      background-color: #3B82F6; /* Blue-500 */
+      color: white;
+      font-weight: bold;
+      font-size: 0.875rem;
+    }
+
+    .employee-id-chip {
+      background-color: #F3F4F6; /* Gray-100 */
+      color: #374151; /* Gray-800 */
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-family: monospace;
+      font-size: 0.875rem;
+    }
+
+    .name-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      color: #111827; /* Gray-900 */
+    }
+    
+    .icon-primary {
+      color: #3B82F6; /* Blue-500 */
+      font-size: 1.125rem;
+    }
+
+    .icon-subtle {
+      color: #6B7280; /* Gray-500 */
+      font-size: 0.875rem;
+      vertical-align: sub;
+      margin-right: 4px;
+    }
+
+    /* Note: Angular Material's chip styling is complex. We adjust the internal label for colors. */
+    .role-chip {
+        background-color: #E5E7EB !important; /* Gray-200 */
+        color: #4B5563 !important; /* Gray-700 */
+        font-size: 0.75rem;
+    }
+
+    .department-chip {
+        background-color: #DBEAFE !important; /* Blue-100 */
+        color: #2563EB !important; /* Blue-600 */
+        font-size: 0.75rem;
+    }
+    
+    .unit-chip {
+        background-color: #E0E7FF !important; /* Indigo-100 */
+        color: #4F46E5 !important; /* Indigo-600 */
+        font-size: 0.75rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .hover-effect:hover {
+      background-color: #EFF6FF; /* Blue-50 */
+      transition: background-color 0.15s ease-in-out;
+    }
+
+    /* No Data State */
+    .no-data-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      text-align: center;
+      background-color: white;
+    }
+
+    .no-data-icon {
+      color: #D1D5DB; /* Gray-300 */
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .no-data-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #4B5563; /* Gray-600 */
+    }
+
+    .no-data-message {
+      color: #9CA3AF; /* Gray-400 */
+      margin-top: 8px;
+    }
+
+    .paginator-bottom {
+      margin-top: 16px;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
