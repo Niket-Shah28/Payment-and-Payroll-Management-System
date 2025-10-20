@@ -1,10 +1,15 @@
 package com.aurionpro.payrollsystem.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -28,6 +33,7 @@ import com.aurionpro.payrollsystem.dto.employee.EmployeeDesignationUpdateDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeRequestDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeRoleDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
+import com.aurionpro.payrollsystem.dto.organization.EmployeePageResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
@@ -262,4 +268,44 @@ public class OrganizationController {
 		organizationService.addPaymentRequest((Long) authentication.getDetails(), dto);
 		return ResponseEntity.ok().build();
 	}
+	
+	@GetMapping("/payroll/data")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<byte[]> getPayrollEmployeeData(Authentication authentictaion){
+		byte[] csv = organizationService.getEmployeePayrollData((Long)authentictaion.getDetails());
+		return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=payroll.csv")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(csv);
+	}
+	
+	@GetMapping("/payroll/template/download")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+	public ResponseEntity<byte[]> downloadCloudinaryCsv() throws IOException {
+	    String fileUrl = "https://res.cloudinary.com/drxdxao8z/raw/upload/v1760927404/SalaryDisbursementTemplate_f20sal.csv"; // replace with your URL
+	    @SuppressWarnings("deprecation")
+		URL url = new URL(fileUrl);
+
+	    try (InputStream in = url.openStream()) {
+	        byte[] fileBytes = in.readAllBytes();
+
+	        return ResponseEntity.ok()
+	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=payrollDataTemplate.csv")
+	                .contentType(MediaType.parseMediaType("text/csv"))
+	                .body(fileBytes);
+	    }
+	}
+	
+	
+	@GetMapping("/employees/page")
+	@PreAuthorize("hasRole('ORGANIZATION')")
+    public ResponseEntity<EmployeePageResponseDto> getEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "") String search, 
+            Authentication authentication) {
+        
+        EmployeePageResponseDto response = organizationService.getEmployees(page, size, search, (Long)authentication.getDetails() );
+        return ResponseEntity.ok(response);
+    }
 }

@@ -1,14 +1,24 @@
 package com.aurionpro.payrollsystem.service.organization;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,14 +31,18 @@ import com.aurionpro.payrollsystem.dto.employee.EmployeeRequestDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeRoleDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeUploadDataDto;
+import com.aurionpro.payrollsystem.dto.organization.EmployeeDto;
+import com.aurionpro.payrollsystem.dto.organization.EmployeePageResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
 import com.aurionpro.payrollsystem.dto.payment.PaymentRequestDto;
+import com.aurionpro.payrollsystem.dto.transaction.PaymentRecipientData;
 import com.aurionpro.payrollsystem.dto.vendor.VendorDto;
 import com.aurionpro.payrollsystem.dto.vendor.VendorResponseDto;
 import com.aurionpro.payrollsystem.entity.bankAccount.OrganizationBankAccount;
 import com.aurionpro.payrollsystem.entity.employee.Employee;
+import com.aurionpro.payrollsystem.entity.employee.EmployeeDesignationRole;
 import com.aurionpro.payrollsystem.entity.employee.EmployeeSalary;
 import com.aurionpro.payrollsystem.entity.employee.Status;
 import com.aurionpro.payrollsystem.entity.organization.Organization;
@@ -585,4 +599,92 @@ public class OrganizationServiceImpl implements OrganizationService{
 		paymentRequestRepository.save(request);
 		return;
 	}
+	
+	@Override
+	public byte[] getEmployeePayrollData(long organizationId) {
+		List<PaymentRecipientData> list;
+		SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("get_employee_payroll_data");
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("p_organization_id", organizationId);
+
+        Map<String, Object> result = jdbcCall.execute(params);
+        String json = (String) result.get("payroll_data");
+        
+        try {
+            list =  Arrays.asList(objectMapper.readValue(json, PaymentRecipientData[].class));
+        } catch (Exception e) {
+            e.printStackTrace();
+            list = Collections.emptyList();
+        }
+        
+        try {
+			return getPayrollCsv(list);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private byte[] getPayrollCsv(List<PaymentRecipientData> list) throws IOException {
+
+        StringWriter writer = new StringWriter();
+        writer.append("Employee ID,Name,Email,Department,Role,Business Unit,Account Number,IFSC Code,Bank Name,Account Holder,Basic Salary,HRA,DA,PF,Other Allowance,Actual Salary,Final Salary,Attendance\n");
+
+        for (PaymentRecipientData p : list) {
+            writer.append(String.join(",", Arrays.asList(
+                    String.valueOf(p.getEmployeeId()), p.getName(), p.getEmail(), p.getDepartment(),
+                    p.getRole(), p.getBusinessUnit(), p.getAccountNumber(), p.getIfscCode(),
+                    p.getBankName(), p.getAccountHolderName(), String.valueOf(p.getBasicSalary()),
+                    String.valueOf(p.getHouseRentAllowance()), String.valueOf(p.getDearnessAllowance()),
+                    String.valueOf(p.getProvidentFund()), String.valueOf(p.getOtherAllowance()),
+                    String.valueOf(p.getActualSalary()), String.valueOf(p.getFinalSalary()),
+                    String.valueOf(p.getAttendance())
+            ))).append("\n");
+        }
+
+        return writer.toString().getBytes(StandardCharsets.UTF_8);
+    }
+	
+	@Override
+	public EmployeePageResponseDto getEmployees(int page, int size, String searchTerm, Long organizationId) {
+        Pageable pageable = PageRequest.of(page, size);
+        
+        Page<Employee> employeePage;
+        
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            employeePage = employeeRepository.findAll(pageable);
+        } else {
+            employeePage = employeeRepository.searchEmployees(searchTerm.trim(), pageable, organizationId);
+        }
+        
+        List<EmployeeDto> dtoList = employeePage.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        
+        return new EmployeePageResponseDto(dtoList, employeePage.getTotalElements(), employeePage.getTotalPages(), page, size);
+    }
+	
+	private EmployeeDto convertToDTO(Employee employee) {
+		EmployeeDesignationRole role = employee.getDesignation();
+		if (role == null) {
+		    return new EmployeeDto(
+		        employee.getEmployeeId(),
+		        employee.getFirstName() + " " + employee.getLastName(),
+		        null, null, null
+		    );
+		}
+
+		return new EmployeeDto(
+		    employee.getEmployeeId(),
+		    employee.getFirstName() + " " + employee.getLastName(),
+		    role.getEmployeeRoleId() != null ? role.getEmployeeRoleId().getRoleName() : null,
+		    role.getDepartmentId() != null ? role.getDepartmentId().getDepartmentName() : null,
+		    role.getBusinessUnitId() != null ? role.getBusinessUnitId().getBusinessUnitName() : null
+		);
+
+
+    }
 }

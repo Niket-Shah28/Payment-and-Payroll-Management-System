@@ -68,6 +68,12 @@ public class SecurityConfig {
                     "/swagger-resources",
                     "/webjars/**").permitAll()
 	        
+	        .requestMatchers(HttpMethod.GET, "/organization/payment/data").authenticated()
+	        
+	        .requestMatchers(HttpMethod.GET, "/payroll/template/download").authenticated()
+	        
+	        .requestMatchers(HttpMethod.GET, "/cloudinary/signature").authenticated()
+	        
 	        .requestMatchers(HttpMethod.POST, "/organization/requests").permitAll()
 	        
 	        .requestMatchers(HttpMethod.POST, "/organization/requests/documents").permitAll()
@@ -194,6 +200,7 @@ public class SecurityConfig {
 	        .requestMatchers(HttpMethod.GET, "/banks/organizations/*/documents/*/download").hasAuthority("ROLE_ADMIN")
 	        
 	        .requestMatchers("/organization/vendors/*").authenticated()
+
 	        // LOGOUT
 	        .requestMatchers("/logout").authenticated()
  

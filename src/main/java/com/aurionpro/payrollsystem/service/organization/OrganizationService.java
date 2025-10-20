@@ -10,10 +10,12 @@ import com.aurionpro.payrollsystem.dto.employee.EmployeeDesignationUpdateDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeRequestDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeRoleDto;
 import com.aurionpro.payrollsystem.dto.employee.EmployeeSalaryUpdateDto;
+import com.aurionpro.payrollsystem.dto.organization.EmployeePageResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationBankAccountResponseDto;
 import com.aurionpro.payrollsystem.dto.organization.OrganizationUpdateBankAccountDto;
 import com.aurionpro.payrollsystem.dto.payment.PaymentRequestDto;
+import com.aurionpro.payrollsystem.dto.transaction.PaymentRecipientData;
 import com.aurionpro.payrollsystem.dto.vendor.VendorDto;
 import com.aurionpro.payrollsystem.dto.vendor.VendorResponseDto;
 import com.aurionpro.payrollsystem.entity.employee.Status;
@@ -47,4 +49,6 @@ public interface OrganizationService {
 	void removeVendor(Long vendorId);
 	VendorDto getVendor(Long vendorId);
 	void addPaymentRequest(Long organizationId, PaymentRequestDto dto);
+	public byte[] getEmployeePayrollData(long organizationId);
+	public EmployeePageResponseDto getEmployees(int page, int size, String searchTerm, Long organizationId);
 }

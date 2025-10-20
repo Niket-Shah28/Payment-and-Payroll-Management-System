@@ -93,4 +93,7 @@ public class Employee {
 	
 	@OneToOne(mappedBy = "employeeId", fetch = FetchType.LAZY)
 	private EmployeeSalary salary;
+	
+	@OneToOne(mappedBy = "employeeId")
+	private EmployeeDesignationRole designation;
 }
