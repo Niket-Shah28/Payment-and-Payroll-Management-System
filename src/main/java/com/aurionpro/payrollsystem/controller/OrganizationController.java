@@ -40,7 +40,7 @@ import com.aurionpro.payrollsystem.service.organization.OrganizationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import okhttp3.OkHttpClient;
+//import okhttp3.OkHttpClient;
 
 @RestController
 @RequestMapping("/organization")
@@ -51,7 +51,7 @@ public class OrganizationController {
 	@Autowired
 	private OrganizationService organizationService;
 	
-	private final OkHttpClient client = new OkHttpClient();
+//	private final OkHttpClient client = new OkHttpClient();
 	
 	@PostMapping("/departments")
 	@PreAuthorize("hasRole('ORGANIZATION')")

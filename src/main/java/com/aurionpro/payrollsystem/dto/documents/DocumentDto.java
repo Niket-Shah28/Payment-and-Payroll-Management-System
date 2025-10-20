@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.URL;
 
 import com.aurionpro.payrollsystem.entity.documents.FileFormat;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,8 +25,9 @@ public class DocumentDto {
 	private String cloudinaryUrl;
 	
 	@NotNull
-	@Min(1)
+	@Max(5242880) // 5MB in bytes
 	private Integer documentSize;
+
 	
 	@NotNull
 	private FileFormat fileFormat;

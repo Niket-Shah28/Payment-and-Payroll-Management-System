@@ -2,15 +2,15 @@ package com.aurionpro.payrollsystem.service.employeeInterface;
 
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentDto;
 import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentTypeDto;
+import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentUploadDto;
 
 public interface DocumentService {
 
-	DocumentDto uploadDocument(Long employeeId, Long organizationId, Long documentTypeId, MultipartFile file);
+	//DocumentDto uploadDocument(Long employeeId, Long organizationId, Long documentTypeId, MultipartFile file);
 
+	   DocumentDto saveDocument(DocumentUploadDto uploadDto, Long employeeId);
 
 	List<DocumentDto> getDocumentsByEmployeeId(Long employeeId);
 

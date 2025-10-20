@@ -20,12 +20,6 @@ public class DocumentUploadDto {
 	@URL
 	private String cloudinaryUrl;
 
-	@NotNull(message = "Employee ID is required")
-	private Long employeeId;
-
-	@NotNull(message = "Organization ID is required")
-	private Long organizationId;
-
 	@NotNull(message = "Document Type ID is required")
 	private Long documentTypeId;
 

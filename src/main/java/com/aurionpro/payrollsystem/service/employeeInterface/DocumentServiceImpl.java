@@ -1,30 +1,25 @@
 package com.aurionpro.payrollsystem.service.employeeInterface;
 
-import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentDto;
 import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentTypeDto;
-import com.aurionpro.payrollsystem.entity.documents.DocumentRole;
+import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentUploadDto;
 import com.aurionpro.payrollsystem.entity.documents.DocumentType;
 import com.aurionpro.payrollsystem.entity.documents.Documents;
-import com.aurionpro.payrollsystem.entity.documents.FileFormat;
 import com.aurionpro.payrollsystem.entity.employee.Employee;
 import com.aurionpro.payrollsystem.entity.organization.Organization;
 import com.aurionpro.payrollsystem.repository.DocumentRepository;
 import com.aurionpro.payrollsystem.repository.DocumentTypeRepository;
 import com.aurionpro.payrollsystem.repository.EmployeeRepository;
 import com.aurionpro.payrollsystem.repository.OrganizationRepository;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
+import com.aurionpro.payrollsystem.entity.documents.Documents;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -35,8 +30,8 @@ public class DocumentServiceImpl implements DocumentService {
 	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
 
-	@Autowired
-	private Cloudinary cloudinary;
+//	@Autowired
+//	private Cloudinary cloudinary;
 	
 	@Autowired
 	private EmployeeRepository employeeRepository;
@@ -44,66 +39,66 @@ public class DocumentServiceImpl implements DocumentService {
 	@Autowired
 	private OrganizationRepository organizationRepository;
 
-	@Override
-	@Transactional
-	 public DocumentDto uploadDocument(Long employeeId, Long organizationId,  Long documentTypeId, MultipartFile file) {
-		
-
-		
-        try {
-            // Validate
-            if (file.isEmpty()) {
-                throw new IllegalArgumentException("File cannot be empty");
-            }
-
-            
-            
-            DocumentType documentType = documentTypeRepository.findById(documentTypeId)
-                    .orElseThrow(() -> new RuntimeException("Document type not found with id: " + documentTypeId));
-
-            // Validate format
-            String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.') + 1);
-            FileFormat fileFormat = FileFormat.valueOf(extension.toLowerCase());
-
-            if (!documentType.getFileFormat().equals(fileFormat)) {
-                throw new IllegalArgumentException(
-                        "Invalid file format. Expected: " + documentType.getFileFormat());
-            }
-
-            // Upload to Cloudinary
-            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(),
-                    ObjectUtils.asMap("folder", "employee_documents/"));
-
-            String cloudUrl = uploadResult.get("secure_url").toString();
-
-            // Save to DB
-            Documents document = new Documents();
-            document.setCloudinaryUrl(cloudUrl);
-            document.setDocumentType(documentType);
-            document.setDocumentSize((int) file.getSize());
-            document.setFileFormat(fileFormat);
-            document.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-           
-            
-            Employee emp = employeeRepository.findById(employeeId)
-    		        .orElseThrow(() -> new RuntimeException("Employee not found with id: " + employeeId));
-    		document.setEmployeeId(emp);
-    		
-    		Organization org = organizationRepository.findById(organizationId)
-    				.orElseThrow(() -> new RuntimeException("Organization not found with id: "+ organizationId));
-    		document.setOrganization(org);
-
-//            Employee emp = new Employee();
-//            emp.setEmployeeId(employeeId);
-//            document.setEmployeeId(emp);
-
-            Documents saved = documentRepository.save(document);
-            return convertToDto(saved);
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file to Cloudinary", e);
-        }
-    }
+//	@Override
+//	@Transactional
+//	 public DocumentDto uploadDocument(Long employeeId, Long organizationId,  Long documentTypeId, MultipartFile file) {
+//		
+//
+//		
+//        try {
+//            // Validate
+//            if (file.isEmpty()) {
+//                throw new IllegalArgumentException("File cannot be empty");
+//            }
+//
+//            
+//            
+//            DocumentType documentType = documentTypeRepository.findById(documentTypeId)
+//                    .orElseThrow(() -> new RuntimeException("Document type not found with id: " + documentTypeId));
+//
+//            // Validate format
+//            String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.') + 1);
+//            FileFormat fileFormat = FileFormat.valueOf(extension.toLowerCase());
+//
+//            if (!documentType.getFileFormat().equals(fileFormat)) {
+//                throw new IllegalArgumentException(
+//                        "Invalid file format. Expected: " + documentType.getFileFormat());
+//            }
+//
+//            // Upload to Cloudinary
+//            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(),
+//                    ObjectUtils.asMap("folder", "employee_documents/"));
+//
+//            String cloudUrl = uploadResult.get("secure_url").toString();
+//
+//            // Save to DB
+//            Documents document = new Documents();
+//            document.setCloudinaryUrl(cloudUrl);
+//            document.setDocumentType(documentType);
+//            document.setDocumentSize((int) file.getSize());
+//            document.setFileFormat(fileFormat);
+//            document.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+//           
+//            
+//            Employee emp = employeeRepository.findById(employeeId)
+//    		        .orElseThrow(() -> new RuntimeException("Employee not found with id: " + employeeId));
+//    		document.setEmployeeId(emp);
+//    		
+//    		Organization org = organizationRepository.findById(organizationId)
+//    				.orElseThrow(() -> new RuntimeException("Organization not found with id: "+ organizationId));
+//    		document.setOrganization(org);
+//
+////            Employee emp = new Employee();
+////            emp.setEmployeeId(employeeId);
+////            document.setEmployeeId(emp);
+//
+//            Documents saved = documentRepository.save(document);
+//            return convertToDto(saved);
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to upload file to Cloudinary", e);
+//        }
+//    }
 
 	@Override
 	public List<DocumentDto> getDocumentsByEmployeeId(Long employeeId) {
@@ -210,6 +205,53 @@ public class DocumentServiceImpl implements DocumentService {
 		dto.setCompulsory(documentType.getCompulsory());
 		return dto;
 	}
+	
+	@Override
+	public DocumentDto saveDocument(DocumentUploadDto uploadDto, Long employeeId) {
+
+	    // 1) Validate document type
+	    DocumentType documentType = documentTypeRepository.findById(uploadDto.getDocumentTypeId())
+	            .orElseThrow(() -> new IllegalArgumentException("Invalid Document Type ID: " + uploadDto.getDocumentTypeId()));
+
+	    // 2) Fetch employee (from authentication)
+	    Employee employee = employeeRepository.findById(employeeId)
+	            .orElseThrow(() -> new IllegalArgumentException("Employee not found with ID: " + employeeId));
+
+	    // 3) Get organization from employee
+	    Organization organization = employee.getOrganization();
+	    if (organization == null) {
+	        throw new IllegalArgumentException("Employee does not belong to any organization");
+	    }
+
+	    // 4) Validate file size
+	    uploadDto.validateFileSize();
+
+	    // 5) Create Documents entity
+	    Documents document = new Documents();
+	    document.setDocumentType(documentType);
+	    document.setCloudinaryUrl(uploadDto.getCloudinaryUrl());
+	    document.setEmployeeId(employee);
+	    document.setOrganization(organization);
+	    document.setFileFormat(uploadDto.getFileFormat());
+	    document.setDocumentSize(uploadDto.getDocumentSize());
+	    document.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+	    // 6) Persist
+	    Documents savedDoc = documentRepository.save(document);
+
+	    // 7) Map to DTO
+	    DocumentDto dto = new DocumentDto();
+	    dto.setDocumentId(savedDoc.getDocumentId());
+	    dto.setCloudinaryUrl(savedDoc.getCloudinaryUrl());
+	    dto.setDocumentTypeId(savedDoc.getDocumentType().getDocumentTypeId());
+	    dto.setDocumentSize(savedDoc.getDocumentSize());
+	    dto.setFileFormat(savedDoc.getFileFormat());
+
+	    return dto;
+	}
+
+
+
 
 //	private String formatFileSize(Integer sizeInBytes) {
 //		if (sizeInBytes == null) {

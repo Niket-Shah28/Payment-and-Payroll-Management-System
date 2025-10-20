@@ -86,14 +86,14 @@ public class TicketController {
    
 
     @GetMapping("/filter")
-    @PreAuthorize("hasRole('ORG_ADMIN')")
+    @PreAuthorize("hasRole('ORGANIZATION')")
     public ResponseEntity<List<TicketDto>> getTicketsWithFilters(@ModelAttribute OrganizationAdminTicketFilterDto filterDto) {
         List<TicketDto> tickets = ticketService.getAllTicketsWithFilters(filterDto);
         return ResponseEntity.ok(tickets);
     }
 
     @PostMapping("/org/respond")
-    @PreAuthorize("hasRole('ORG_ADMIN')")
+    @PreAuthorize("hasRole('ORGANIZATION')")
     public ResponseEntity<TicketDto> respondToTicket(@RequestBody OrganizationAdminTicketResponseDto responseDto,
                                                      Authentication authentication) {
         Long organizationId = (Long) authentication.getDetails();
@@ -102,7 +102,7 @@ public class TicketController {
     }
 
     @PatchMapping("/close")
-    @PreAuthorize("hasRole('ORG_ADMIN')")
+    @PreAuthorize("hasRole('ORGANIZATION')")
     public ResponseEntity<TicketDto> closeTicket(@RequestBody OrganizationAdminTicketCloseDto closeDto) {
         TicketDto updated = ticketService.closeTicket(closeDto);
         return ResponseEntity.ok(updated);

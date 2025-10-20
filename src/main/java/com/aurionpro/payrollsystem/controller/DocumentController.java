@@ -12,42 +12,46 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentDto;
 import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentTypeDto;
+import com.aurionpro.payrollsystem.dto.employeeDocs.DocumentUploadDto;
 import com.aurionpro.payrollsystem.service.employeeInterface.DocumentService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/employee")
-@CrossOrigin(origins="http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class DocumentController {
 	
 	
 	@Autowired
 	private DocumentService documentService;
 	
-//	@PostMapping("/documents")
-//    public ResponseEntity<DocumentDto> saveDocument(@Valid @RequestBody DocumentUploadDto uploadDto) {
-//        DocumentDto savedDocument = documentService.saveDocument(uploadDto);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
-//    }
+	@PostMapping("/documents")
+	  @PreAuthorize("hasRole('EMPLOYEE')")
+    public ResponseEntity<DocumentDto> saveDocument(@Valid @RequestBody DocumentUploadDto uploadDto, Authentication authentication) {
+		 Long employeeId = (Long) authentication.getDetails();
+		DocumentDto savedDocument = documentService.saveDocument(uploadDto, employeeId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
+    }
 	
-	 @PostMapping("/documents/upload")
-	    @PreAuthorize("hasRole('EMPLOYEE')")
-	    public ResponseEntity<DocumentDto> uploadDocument(
-	            @RequestParam("documentTypeId") Long documentTypeId,
-	            @RequestParam("file") MultipartFile file,
-	            @RequestParam("organizationId") Long organizationId,
-	            Authentication authentication) {
-
-	        Long employeeId = (Long) authentication.getDetails();
-	        DocumentDto savedDocument = documentService.uploadDocument(employeeId, organizationId,  documentTypeId, file);
-	        return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
-	    }
+//	 @PostMapping("/documents/upload")
+//	    @PreAuthorize("hasRole('EMPLOYEE')")
+//	    public ResponseEntity<DocumentDto> uploadDocument(
+//	            @RequestParam("documentTypeId") Long documentTypeId,
+//	            @RequestParam("file") MultipartFile file,
+//	            @RequestParam("organizationId") Long organizationId,
+//	            Authentication authentication) {
+//
+//	        Long employeeId = (Long) authentication.getDetails();
+//	        DocumentDto savedDocument = documentService.uploadDocument(employeeId, organizationId,  documentTypeId, file);
+//	        return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
+//	    }
     
     
     @GetMapping("/documents")
