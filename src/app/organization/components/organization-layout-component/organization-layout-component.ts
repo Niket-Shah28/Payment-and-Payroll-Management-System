@@ -11,7 +11,7 @@ export class OrganizationLayoutComponent {
 
   tabs = [
     { name: 'HOME', link: '/home' },
-    { name: 'MANAGE EMPLOYEES', link: '/manage-employees' },
+    { name: 'MANAGE EMPLOYEES', link: '/organization/dashboard/employees' },
     { name: 'MANAGE VENDORS', link: '/organization/dashboard/vendors' },
     { name: 'MANAGE DEPARTMENT', link: '/organization/dashboard/departments' },
     { name: 'MANAGE BUSINESS UNITS', link: '/organization/dashboard/business-units' },

@@ -1,0 +1,213 @@
+<div class="container">
+      <mat-card class="employee-card">
+        
+        <!-- Header -->
+        <div class="header-bg">
+          <mat-card-title class="header-title">Employee Management</mat-card-title>
+          <mat-card-subtitle class="header-subtitle">Manage and organize your employees efficiently across all units</mat-card-subtitle>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <mat-card-content class="card-content">
+          
+          <!-- Search and Upload Section -->
+          <div class="controls">
+            
+            <!-- Search Container (Input + Search Button) -->
+            <div class="search-container">
+              <mat-form-field appearance="outline" class="search-field">
+                <mat-label>Search by ID or Name</mat-label>
+                <input matInput [formControl]="searchControl" placeholder="Type name or EMP-ID...">
+                <mat-icon matSuffix>search</mat-icon>
+              </mat-form-field>
+              
+              <!-- Search Button -->
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="onSearchClick()" 
+                class="action-button primary-button search-button"
+                aria-label="Search employees"
+                [disabled]="isLoading || isUploading">
+                <mat-icon>{{ isSearching ? 'refresh' : 'search' }}</mat-icon>
+                <span class="button-label">{{ isSearching ? 'Searching...' : 'Search' }}</span>
+              </button>
+            </div>
+
+            <!-- Upload/Download Container (Download + Upload Buttons) -->
+            <div class="upload-download-container">
+              
+              <!-- Download Template Button -->
+              <button 
+                mat-stroked-button 
+                color="primary"
+                (click)="downloadBulkTemplate()"
+                class="action-button stroked-button"
+                aria-label="Download bulk upload template">
+                <mat-icon>download</mat-icon>
+                <span>Template</span>
+              </button>
+
+              <!-- Bulk Upload Button -->
+              <button 
+                mat-raised-button 
+                color="accent"
+                (click)="fileInput.click()"
+                [disabled]="isUploading || isLoading"
+                class="action-button accent-button">
+                <mat-icon>cloud_upload</mat-icon>
+                <span>Upload</span>
+              </button>
+
+              <input 
+                #fileInput
+                type="file" 
+                accept=".csv" 
+                (change)="onFileSelected($event)"
+                class="hidden-input">
+            </div>
+          </div>
+
+          <!-- File Upload Status -->
+          <div *ngIf="selectedFileName" 
+               class="file-status-box">
+            <div class="file-status-content">
+              <mat-icon class="file-status-icon">check_circle</mat-icon>
+              <span class="file-status-text-medium">File Selected:</span>
+              <span class="file-status-text-strong">{{ selectedFileName }}</span>
+            </div>
+            <button mat-icon-button color="warn" (click)="clearSelectedFile()" aria-label="Remove selected file">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <!-- Loading Spinner -->
+          <div *ngIf="isLoading" class="loading-spinner-container">
+            <mat-spinner diameter="50" color="primary"></mat-spinner>
+            <p class="loading-text">Loading employees...</p>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-wrapper" *ngIf="!isLoading">
+            <table mat-table [dataSource]="dataSource" matSort class="employee-table">
+
+              <!-- Serial Number Column -->
+              <ng-container matColumnDef="serialNumber">
+                <th mat-header-cell *matHeaderCellDef class="header-cell sn-cell">#</th>
+                <td mat-cell *matCellDef="let element; let i = index" class="data-cell sn-data-cell">
+                  <span class="serial-number-badge">
+                    {{ getSerialNumber(i) }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <!-- Employee ID Column -->
+              <ng-container matColumnDef="employeeId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="header-cell">
+                  <mat-icon matTooltip="Unique identifier for employee" class="icon-subtle">info</mat-icon>
+                  Employee ID
+                </th>
+                <td mat-cell *matCellDef="let element" class="data-cell">
+                  <span class="employee-id-chip">
+                    {{ element.employeeId }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="header-cell">Name</th>
+                <td mat-cell *matCellDef="let element" class="data-cell">
+                  <div class="name-content">
+                    <mat-icon class="icon-primary">person</mat-icon>
+                    <span>{{ element.name }}</span>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Role Column -->
+              <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="header-cell">Role</th>
+                <td mat-cell *matCellDef="let element" class="data-cell">
+                  <mat-chip-set aria-label="Role">
+                    <mat-chip class="role-chip">{{ element.role }}</mat-chip>
+                  </mat-chip-set>
+                </td>
+              </ng-container>
+
+              <!-- Department Column -->
+              <ng-container matColumnDef="department">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="header-cell">Department</th>
+                <td mat-cell *matCellDef="let element" class="data-cell">
+                  <mat-chip-set aria-label="Department">
+                    <mat-chip color="primary" class="department-chip">{{ element.department }}</mat-chip>
+                  </mat-chip-set>
+                </td>
+              </ng-container>
+
+              <!-- Business Unit Column -->
+              <ng-container matColumnDef="businessUnit">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="header-cell">Business Unit</th>
+                <td mat-cell *matCellDef="let element" class="data-cell">
+                  <mat-chip-set aria-label="Business Unit">
+                    <mat-chip color="accent" class="unit-chip">{{ element.businessUnit }}</mat-chip>
+                  </mat-chip-set>
+                </td>
+              </ng-container>
+
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="header-cell action-header-cell">Actions</th>
+                <td mat-cell *matCellDef="let element" class="data-cell action-data-cell">
+                  <div class="action-buttons">
+                    <button 
+                      mat-icon-button 
+                      matTooltip="View full profile"
+                      color="primary"
+                      (click)="viewFullProfile(element)"
+                      class="hover-effect"
+                      aria-label="View profile">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button 
+                      mat-icon-button 
+                      matTooltip="Remove employee"
+                      color="warn"
+                      (click)="removeEmployee(element)"
+                      class="hover-effect"
+                      aria-label="Remove employee">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Header and Row Definition -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+                  class="data-row-hover"></tr>
+            </table>
+
+            <!-- No Data State -->
+            <div *ngIf="dataSource.data.length === 0 && !isLoading" class="no-data-container">
+              <mat-icon class="no-data-icon">person_off</mat-icon>
+              <h3 class="no-data-title">No Employees Found</h3>
+              <p class="no-data-message">{{ searchControl.value.trim() ? 'Your search returned no results. Click Search again or clear the field to reset.' : 'Upload employees to get started with the bulk upload feature.' }}</p>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <mat-paginator 
+            [length]="totalElements"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions"
+            [pageIndex]="pageIndex"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            aria-label="Select page"
+            class="paginator-bottom">
+          </mat-paginator>
+        </mat-card-content>
+      </mat-card>
+    </div>

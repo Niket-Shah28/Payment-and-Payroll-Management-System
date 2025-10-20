@@ -30,6 +30,12 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { OrganizationTickets } from './components/organization-tickets/organization-tickets';
+import { OrganizationEmployees } from './components/organization-employees/organization-employees';
+
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSortModule } from '@angular/material/sort';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -41,7 +47,8 @@ import { OrganizationTickets } from './components/organization-tickets/organizat
     BankAccount,
     OrganizationVendors,
     OrganizationPayoutComponent,
-    OrganizationTickets
+    OrganizationTickets,
+    OrganizationEmployees
   ],
   imports: [
     CommonModule,
@@ -65,7 +72,11 @@ import { OrganizationTickets } from './components/organization-tickets/organizat
     MatDividerModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatPaginatorModule,
+    MatTooltipModule,
+    MatSortModule,
+    MatChipsModule
   ]
 })
 export class OrganizationModule { }

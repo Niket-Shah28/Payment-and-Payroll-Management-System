@@ -9,6 +9,9 @@ import { BankAccount } from './components/bank-account/bank-account';
 import { OrganizationVendors } from './components/organization-vendors/organization-vendors';
 import { OrganizationPayoutComponent } from './components/organization-payout-component/organization-payout-component';
 import { OrganizationTickets } from './components/organization-tickets/organization-tickets';
+import { OrganizationEmployees } from './components/organization-employees/organization-employees';
+
+
 
 const routes: Routes = [
   {
@@ -43,7 +46,11 @@ const routes: Routes = [
         path:'initiate-payout',
         component:OrganizationPayoutComponent
       },
-      {path:'organization-tickets', component:OrganizationTickets}
+      {path:'organization-tickets', component:OrganizationTickets},
+      {
+        path:'employees',
+        component:OrganizationEmployees
+      }
     ]
   },
 ];

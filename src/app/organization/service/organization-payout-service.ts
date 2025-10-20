@@ -13,4 +13,17 @@ export class OrganizationPayoutService {
   addRequest(paymentData:any):Observable<void>{
     return this.http.post<void>(this.paymentRequestUri, paymentData);
   }
+
+  downloadStoredData(): Observable<Blob> {
+    return this.http.get("http://localhost:8080/organization/payroll/data", {
+      responseType: 'blob'
+    });
+  }
+
+  downloadSalaryTemplate(): Observable<Blob> {
+    return this.http.get("http://localhost:8080/organization/payroll/template/download", {
+      responseType: 'blob'
+    });
+  }
+
 }

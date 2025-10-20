@@ -4,11 +4,12 @@ import { PaymentRecipientType } from '../../dto/PaymentRecipientType';
 import { Month } from '../../dto/Month';
 import { PaymentMode } from '../../dto/PaymentMode';
 import { PayoutFormValue } from '../../dto/PayoutFormValue';
-import { map } from 'rxjs';
+import { catchError, map, tap, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { OrganizationPayoutService } from '../../service/organization-payout-service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CloudinaryUploadService } from '../../../universal_services/cloudinary-upload-service';
 
 @Component({
   selector: 'app-organization-payout-component',
@@ -22,6 +23,7 @@ export class OrganizationPayoutComponent {
   isSubmitting = false;
   isFileUploading = false;
   selectedFileName = '';
+  file: File | null = null;
 
   // Enums for template
   PaymentRecipientType = PaymentRecipientType;
@@ -37,7 +39,8 @@ export class OrganizationPayoutComponent {
   constructor(
     private fb: FormBuilder,
     private payoutService: OrganizationPayoutService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cloudinaryService: CloudinaryUploadService
   ) {
     this.payoutForm = this.initializeForm();
   }
@@ -52,6 +55,7 @@ export class OrganizationPayoutComponent {
     // If employee is selected and bulk payment is active, switch to single
     if (recipientType === PaymentRecipientType.EMPLOYEE && !this.isSinglePayment) {
       this.payoutForm.get('singlePayment')?.setValue(true);
+      this.showSnackBar('Bulk payment is not available for employees. Switched to single payment.', 'error');
     }
   }
 
@@ -78,6 +82,11 @@ export class OrganizationPayoutComponent {
     this.payoutForm.get('singlePayment')?.valueChanges.subscribe(isSingle => {
       this.isSinglePayment = isSingle;
       this.updateFormValidators();
+    });
+
+    // Listen to recipient type changes
+    this.payoutForm.get('paymentRecipientType')?.valueChanges.subscribe(() => {
+      this.onRecipientTypeChange();
     });
   }
 
@@ -130,59 +139,32 @@ export class OrganizationPayoutComponent {
     }
 
     this.selectedFileName = file.name;
-    this.isFileUploading = true;
-
-    // this.payoutService.uploadFileToCloudinary(file).subscribe({
-    //   next: (response: { url: string }) => {
-    //     this.payoutForm.get('paymentFileUrl')?.setValue(response.url);
-    //     this.showSnackBar('File uploaded successfully', 'success');
-    //     this.isFileUploading = false;
-    //   },
-    //   error: (error) => {
-    //     this.showSnackBar('Failed to upload file: ' + error.message, 'error');
-    //     this.isFileUploading = false;
-    //     input.value = '';
-    //     this.selectedFileName = '';
-    //   }
-    // });
+    this.file = file;
+    this.payoutForm.get('paymentFileUrl')?.setValue(file.name);
   }
 
   downloadTemplate(): void {
-    const headers = ['Recipient Name', 'Account Number', 'Bank Name', 'IFSC Code', 'Amount'];
-    const csvContent = headers.join(',') + '\n' + ',,,,\n';
-    this.downloadCSV(csvContent, 'payout_template.csv');
+    this.payoutService.downloadSalaryTemplate().subscribe((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'payroll_template.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
   }
 
   downloadStoredData(): void {
     this.isFileUploading = true;
-    // this.payoutService.downloadPayoutData().subscribe({
-    //   next: (blob: Blob) => {
-    //     this.downloadFile(blob, 'payout_data.csv');
-    //     this.showSnackBar('Data downloaded successfully', 'success');
-    //     this.isFileUploading = false;
-    //   },
-    //   error: (error) => {
-    //     this.showSnackBar('Failed to download data: ' + error.message, 'error');
-    //     this.isFileUploading = false;
-    //   }
-    // });
-  }
+    this.payoutService.downloadStoredData().subscribe((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'payroll.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
 
-  private downloadCSV(content: string, filename: string): void {
-    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-    this.downloadFile(blob, filename);
-  }
-
-  private downloadFile(blob: Blob, filename: string): void {
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', filename);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   }
 
   onSubmit(): void {
@@ -194,6 +176,31 @@ export class OrganizationPayoutComponent {
     this.isSubmitting = true;
     const payload = this.buildPayload();
 
+    if (this.file && !this.isSinglePayment) {
+      // Upload file to Cloudinary first
+      this.cloudinaryService.uploadFile(this.file).pipe(
+        tap((response: any) => {
+          payload.paymentFileUrl = response;
+        }),
+        catchError((error: Error) => {
+          this.showSnackBar(`File upload failed: ${error.message}`, 'error');
+          this.isSubmitting = false;
+          throw error;
+        })
+      ).subscribe({
+        next: () => {
+          this.initiatePayment(payload);
+        },
+        error: () => {
+          this.isSubmitting = false;
+        }
+      });
+    } else {
+      this.initiatePayment(payload);
+    }
+  }
+
+  private initiatePayment(payload: PayoutFormValue): void {
     this.payoutService.addRequest(payload).subscribe({
       next: () => {
         this.showSnackBar(
@@ -241,6 +248,7 @@ export class OrganizationPayoutComponent {
       paymentMode: null
     });
     this.selectedFileName = '';
+    this.file = null;
     this.isSinglePayment = true;
   }
 
@@ -260,6 +268,7 @@ export class OrganizationPayoutComponent {
       paymentMode: null
     });
     this.selectedFileName = '';
+    this.file = null;
     this.isSinglePayment = true;
   }
 }
