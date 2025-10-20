@@ -13,7 +13,7 @@
       <div class="header-stats">
         <div class="stat-card">
           <span class="stat-value">{{ paymentRequests.length }}</span>
-          <span class="stat-label">Requests</span>
+          <span class="stat-label">Total Requests</span>
         </div>
       </div>
     </div>
@@ -37,11 +37,32 @@
     <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
   </div>
 
+  <!-- Toggle Buttons Section -->
+  <div class="toggle-section">
+    <div class="toggle-buttons">
+      <button 
+        class="toggle-btn" 
+        [class.active]="viewMode === 'single'"
+        (click)="setViewMode('single')">
+        <i class="fas fa-file-invoice"></i>
+        <span>Single Payments</span>
+      </button>
+      <button 
+        class="toggle-btn" 
+        [class.active]="viewMode === 'bulk'"
+        (click)="setViewMode('bulk')">
+        <i class="fas fa-layer-group"></i>
+        <span>Bulk Payments</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Payment Requests Section -->
   <div class="payments-section">
     <div class="section-header">
       <h2 class="section-title">
-        <i class="fas fa-list-check me-2"></i>Pending Payment Requests
+        <i class="fas fa-list-check me-2"></i>
+        {{ viewMode === 'single' ? 'Single Payment Requests' : 'Bulk Payment Requests' }}
       </h2>
       <p class="section-subtitle">{{ paymentRequests.length }} requests found</p>
     </div>
@@ -85,7 +106,7 @@
             <tr *ngFor="let request of paymentRequests" class="payment-row" [ngClass]="'status-' + request.status.toLowerCase()">
               <!-- ID -->
               <td class="col-id">
-                <span class="badge badge-id">{{ request.paymentRequestId }}</span>
+                <span class="badge-id">{{ request.paymentRequestId }}</span>
               </td>
 
               <!-- Recipient Name -->
@@ -179,7 +200,7 @@
           <i class="fas fa-inbox"></i>
         </div>
         <h3>No Payment Requests</h3>
-        <p>All payment requests have been processed</p>
+        <p>{{ viewMode === 'single' ? 'No single payment requests found' : 'No bulk payment requests found' }}</p>
       </div>
     </div>
 
