@@ -114,7 +114,7 @@ public class SecurityConfig {
 	        
 	        .requestMatchers(HttpMethod.POST, "/organization/bankAccount/*/deposit").authenticated()
 	        
-	        .requestMatchers(HttpMethod.POST, "/organization/paymentRequest/*").permitAll()
+	        .requestMatchers(HttpMethod.POST, "/organization/paymentRequest/*").authenticated()
 	        
 	        .requestMatchers(HttpMethod.GET, "/banks/transactions").authenticated()
 	        

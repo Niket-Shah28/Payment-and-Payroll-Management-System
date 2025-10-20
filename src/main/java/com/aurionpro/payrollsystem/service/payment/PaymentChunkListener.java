@@ -102,7 +102,7 @@ public class PaymentChunkListener implements ChunkListener{
 					Month.valueOf(month),
 					year
         		);
-        		//payslipService.generateAndSavePayslip(payslipData);
+        		payslipService.generateAndSavePayslip(payslipData);
         	}
         } 
 

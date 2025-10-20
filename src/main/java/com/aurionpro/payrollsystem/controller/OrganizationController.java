@@ -201,6 +201,7 @@ public class OrganizationController {
 	@PostMapping("/paymentRequest/{requestId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Void> acceptPaymentRequest(@PathVariable Long requestId, @RequestParam Status status){
+		System.out.println(status);
 		organizationService.processPaymentRequest(requestId, status);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}

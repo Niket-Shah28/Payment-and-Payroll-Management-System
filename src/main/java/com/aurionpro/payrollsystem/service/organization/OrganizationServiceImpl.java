@@ -213,7 +213,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 			e.printStackTrace();
 		};
 	
-		data.stream().forEach(a ->emailService.sendEmail("employee_joining_email_template.html", a, "Welcome To our Payroll Portal"));
+		//data.stream().forEach(a ->emailService.sendEmail("employee_joining_email_template.html", a, "Welcome To our Payroll Portal"));
 	}
 
 	@Override
@@ -664,7 +664,9 @@ public class OrganizationServiceImpl implements OrganizationService{
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
         
-        return new EmployeePageResponseDto(dtoList, employeePage.getTotalElements(), employeePage.getTotalPages(), page, size);
+        System.out.println(page);
+        
+        return new EmployeePageResponseDto(dtoList, employeePage.hasNext(), employeePage.getTotalElements(), employeePage.getTotalPages(), employeePage.getNumber(), employeePage.getSize());
     }
 	
 	private EmployeeDto convertToDTO(Employee employee) {

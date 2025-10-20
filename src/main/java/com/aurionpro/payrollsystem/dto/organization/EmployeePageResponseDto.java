@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EmployeePageResponseDto {
     private List<EmployeeDto> content;
+    private boolean hasNextPage;
     private long totalElements;
     private int totalPages;
     private int currentPage;
