@@ -36,6 +36,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
+import { AddEmployeeDialogComponent } from './components/add-employee-dialog-component/add-employee-dialog-component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -48,7 +51,8 @@ import { MatChipsModule } from '@angular/material/chips';
     OrganizationVendors,
     OrganizationPayoutComponent,
     OrganizationTickets,
-    OrganizationEmployees
+    OrganizationEmployees,
+    AddEmployeeDialogComponent
   ],
   imports: [
     CommonModule,
@@ -76,7 +80,9 @@ import { MatChipsModule } from '@angular/material/chips';
     MatPaginatorModule,
     MatTooltipModule,
     MatSortModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDialogModule,
+    MatAutocompleteModule
   ]
 })
 export class OrganizationModule { }

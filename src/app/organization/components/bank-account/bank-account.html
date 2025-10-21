@@ -38,7 +38,6 @@
                     <mat-select formControlName="accountType" required>
                         <mat-option value="SAVINGS">Savings</mat-option>
                         <mat-option value="CURRENT">Current</mat-option>
-                        <mat-option value="OD">Overdraft</mat-option>
                     </mat-select>
                     <mat-error *ngIf="addForm.get('accountType')?.invalid && addForm.get('accountType')?.touched">Required</mat-error>
                 </mat-form-field>

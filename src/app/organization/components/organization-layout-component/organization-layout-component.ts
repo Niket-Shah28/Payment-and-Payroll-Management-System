@@ -10,7 +10,7 @@ export class OrganizationLayoutComponent {
   isNavbarOpen = false;
 
   tabs = [
-    { name: 'HOME', link: '/home' },
+    { name: 'HOME', link: '/organization/dashboard/home' },
     { name: 'MANAGE EMPLOYEES', link: '/organization/dashboard/employees' },
     { name: 'MANAGE VENDORS', link: '/organization/dashboard/vendors' },
     { name: 'MANAGE DEPARTMENT', link: '/organization/dashboard/departments' },
@@ -28,4 +28,6 @@ export class OrganizationLayoutComponent {
   closeNavbar() {
     this.isNavbarOpen = false;
   }
+  
+
 }

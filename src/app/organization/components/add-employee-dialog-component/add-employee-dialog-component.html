@@ -1,0 +1,312 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="title-icon">person_add</mat-icon>
+    Add New Employee
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <form [formGroup]="employeeForm" class="employee-form">
+      
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>badge</mat-icon>
+          Personal Information
+        </h3>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Salutation</mat-label>
+            <mat-select formControlName="salutation">
+              <mat-option *ngFor="let sal of salutations" [value]="sal">
+                {{ sal }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getErrorMessage('salutation') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="Enter first name">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-error>{{ getErrorMessage('firstName') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Middle Name</mat-label>
+            <input matInput formControlName="middleName" placeholder="Enter middle name (optional)">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Enter last name">
+            <mat-error>{{ getErrorMessage('lastName') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender">
+              <mat-option *ngFor="let g of genders" [value]="g">
+                {{ g }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getErrorMessage('gender') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" 
+                   [max]="maxDate" placeholder="YYYY/MM/DD">
+            <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
+            <mat-datepicker #dobPicker></mat-datepicker>
+            <mat-error>{{ getErrorMessage('dateOfBirth') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Blood Group</mat-label>
+            <mat-select formControlName="bloodGroup">
+              <mat-option *ngFor="let bg of bloodGroups" [value]="bg">
+                {{ bg }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getErrorMessage('bloodGroup') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nationality</mat-label>
+            <input matInput formControlName="nationality" placeholder="Enter nationality">
+            <mat-icon matSuffix>flag</mat-icon>
+            <mat-error>{{ getErrorMessage('nationality') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Spouse Name</mat-label>
+            <input matInput formControlName="spouse" placeholder="Enter spouse name (optional)">
+            <mat-icon matSuffix>favorite</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Government IDs Section -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>credit_card</mat-icon>
+          Government IDs
+        </h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>PAN Number</mat-label>
+            <input matInput formControlName="panNumber" placeholder="ABCDE1234F" 
+                   style="text-transform: uppercase;">
+            <mat-icon matSuffix>fingerprint</mat-icon>
+            <mat-error>{{ getErrorMessage('panNumber') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Aadhar Number</mat-label>
+            <input matInput formControlName="aadharNumber" placeholder="123456789012" 
+                   maxlength="12">
+            <mat-icon matSuffix>fingerprint</mat-icon>
+            <mat-error>{{ getErrorMessage('aadharNumber') }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Contact Information Section -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>contact_mail</mat-icon>
+          Contact Information
+        </h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Office Email</mat-label>
+            <input matInput formControlName="officeEmail" type="email" 
+                   placeholder="employee@company.com">
+            <mat-icon matSuffix>business</mat-icon>
+            <mat-error>{{ getErrorMessage('officeEmail') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Personal Email</mat-label>
+            <input matInput formControlName="personalEmail" type="email" 
+                   placeholder="personal@email.com">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error>{{ getErrorMessage('personalEmail') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="phoneNumber" placeholder="9876543210" 
+                   maxlength="10">
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-error>{{ getErrorMessage('phoneNumber') }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Organizational Details Section -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>business_center</mat-icon>
+          Organizational Details
+        </h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Manager</mat-label>
+            <input matInput formControlName="managerId" 
+                   [matAutocomplete]="managerAuto"
+                   (input)="onManagerSearch($event)"
+                   placeholder="Search by name or ID">
+            <mat-icon matSuffix>manage_accounts</mat-icon>
+            <mat-autocomplete #managerAuto="matAutocomplete" 
+                              [displayWith]="displayManagerFn.bind(this)">
+              <mat-option *ngFor="let manager of filteredManagers" 
+                          [value]="manager.employeeId">
+                {{ manager.name }} ({{ manager.employeeId }})
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Grade</mat-label>
+            <input matInput formControlName="grade" type="number" 
+                   placeholder="Enter grade level" min="1">
+            <mat-icon matSuffix>star</mat-icon>
+            <mat-error>{{ getErrorMessage('grade') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="employeeRoleId">
+              <mat-option *ngFor="let role of roles" [value]="role.roleId">
+                {{ role.role }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getErrorMessage('employeeRoleId') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="departmentId">
+              <mat-option *ngFor="let dept of departments" [value]="dept.departmentId">
+                {{ dept.departmentName }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getErrorMessage('departmentId') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Business Unit</mat-label>
+            <mat-select formControlName="businessUnitId">
+              <mat-option *ngFor="let unit of businessUnits" [value]="unit.businessUnitId">
+                {{ unit.businessUnitName }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getErrorMessage('businessUnitId') }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Salary Information Section -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <mat-icon>payments</mat-icon>
+          Salary Information
+        </h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Basic Salary</mat-label>
+            <input matInput formControlName="basicSalary" type="number" 
+                   placeholder="0.00" min="0">
+            <span matPrefix>₹&nbsp;</span>
+            <mat-error>{{ getErrorMessage('basicSalary') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>House Rent Allowance</mat-label>
+            <input matInput formControlName="houseRentAllowance" type="number" 
+                   placeholder="0.00" min="0">
+            <span matPrefix>₹&nbsp;</span>
+            <mat-error>{{ getErrorMessage('houseRentAllowance') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Dearness Allowance</mat-label>
+            <input matInput formControlName="dearnessAllowance" type="number" 
+                   placeholder="0.00" min="0">
+            <span matPrefix>₹&nbsp;</span>
+            <mat-error>{{ getErrorMessage('dearnessAllowance') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Provident Fund</mat-label>
+            <input matInput formControlName="providentFund" type="number" 
+                   placeholder="0.00" min="0">
+            <span matPrefix>₹&nbsp;</span>
+            <mat-error>{{ getErrorMessage('providentFund') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Other Allowance</mat-label>
+            <input matInput formControlName="otherAllowance" type="number" 
+                   placeholder="0.00" min="0">
+            <span matPrefix>₹&nbsp;</span>
+            <mat-error>{{ getErrorMessage('otherAllowance') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Final Salary</mat-label>
+            <input matInput formControlName="finalSalary" type="number" readonly>
+            <span matPrefix>₹&nbsp;</span>
+            <mat-hint>Auto-calculated</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-button (click)="onCancel()" [disabled]="isSubmitting">
+      Cancel
+    </button>
+    <button mat-raised-button color="primary" 
+            (click)="onSubmit()" 
+            [disabled]="isSubmitting || employeeForm.invalid">
+      <mat-icon *ngIf="!isSubmitting">person_add</mat-icon>
+      <mat-spinner *ngIf="isSubmitting" diameter="20" color="accent"></mat-spinner>
+      <span>{{ isSubmitting ? 'Adding...' : 'Add Employee' }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>

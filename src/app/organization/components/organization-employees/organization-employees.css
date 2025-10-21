@@ -17,7 +17,7 @@
     }
 
     .header-bg {
-      background: linear-gradient(to bottom right, #2563EB, #4F46E5); /* Blue-600 to Indigo-700 */
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3a7bd5 100%); /* Blue-600 to Indigo-700 */
       color: white;
       padding: 32px;
       border-top-left-radius: 8px;

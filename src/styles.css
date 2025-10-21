@@ -5,3 +5,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* ensures this dialog appears above everything */
+::ng-deep .add-employee-dialog .mat-mdc-dialog-container {
+  z-index: 10000 !important;
+}
+
+/* also ensure overlay backdrop stacks correctly */
+::ng-deep .cdk-overlay-container {
+  z-index: 9999 !important;
+}
+
+

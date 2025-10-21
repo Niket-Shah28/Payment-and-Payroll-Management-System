@@ -35,9 +35,21 @@
               </button>
             </div>
 
-            <!-- Upload/Download Container (Download + Upload Buttons) -->
+            <!-- Action Buttons Container (Add Employee + Download + Upload) -->
             <div class="upload-download-container">
               
+              <!-- Add Employee Button -->
+              <button 
+                mat-raised-button 
+                color="primary"
+                (click)="openAddEmployeeDialog()"
+                class="action-button primary-button"
+                aria-label="Add new employee"
+                [disabled]="isLoading || isUploading">
+                <mat-icon>person_add</mat-icon>
+                <span>Add Employee</span>
+              </button>
+
               <!-- Download Template Button -->
               <button 
                 mat-stroked-button 
@@ -203,8 +215,8 @@
             [pageSize]="pageSize"
             [pageSizeOptions]="pageSizeOptions"
             [pageIndex]="pageIndex"
+            showFirstLastButtons="true"
             (page)="onPageChange($event)"
-            showFirstLastButtons
             aria-label="Select page"
             class="paginator-bottom">
           </mat-paginator>

@@ -65,7 +65,9 @@ mat-card {
 
 /* Header, Search, and Alerts */
 .action-card {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3a7bd5 100%);
     padding: 24px !important;
+    color:white;
 }
 
 .header-content {
@@ -73,6 +75,7 @@ mat-card {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    color:white;
 }
 
 .add-button {

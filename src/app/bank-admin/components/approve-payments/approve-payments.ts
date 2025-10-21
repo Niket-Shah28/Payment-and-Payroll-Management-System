@@ -45,6 +45,7 @@ export class ApprovePayments implements OnInit {
       next: (response) => {
         // Store all requests
         this.allPaymentRequests = response.content || [];
+        //this.allPaymentRequests.forEach(a=> console.log(a));
         // Filter based on current view mode
         this.filterPaymentsByMode();
         // Calculate total pages for current mode
@@ -109,7 +110,7 @@ export class ApprovePayments implements OnInit {
     this.paymentService.updatePaymentStatus(paymentRequestId, status).subscribe({
       next: (res) => {
         console.log('✅ API success response:', res);
-        this.successMessage = `Payment ${status.toLowerCase()} successfully`;
+        //this.successMessage = `Payment ${status.toLowerCase()} successfully`;
         this.errorMessage = '';
         this.loadPaymentRequests();
         setTimeout(() => (this.successMessage = ''), 3000);
@@ -118,7 +119,7 @@ export class ApprovePayments implements OnInit {
         // Handle 200/204 responses that Angular might interpret as errors
         if (error.status === 200 || error.status === 204) {
           console.warn('⚠️ Empty success response treated as success:', error);
-          this.successMessage = `Payment ${status.toLowerCase()} successfully`;
+          //this.successMessage = `Payment ${status.toLowerCase()} successfully`;
           this.errorMessage = '';
           this.loadPaymentRequests();
           setTimeout(() => (this.successMessage = ''), 3000);

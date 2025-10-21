@@ -24,6 +24,7 @@ export class EmployeeService {
   }
 
   uploadFile(file:File):Observable<void>{
+    console.log("UPLOADING")
     const payload = new FormData();
     payload.append("file", file);
     return this.http.post<void>("http://localhost:8080/organization/employees", payload);

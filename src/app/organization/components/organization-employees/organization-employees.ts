@@ -1,13 +1,13 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Employee } from '../../dto/Employee';
 import { FormControl } from '@angular/forms';
 import { EmployeeService } from '../../service/employee-service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { EmployeePageResponse } from '../../dto/EmployeePageResponse';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { AddEmployeeDialogComponent } from '../add-employee-dialog-component/add-employee-dialog-component';
 
 @Component({
   selector: 'app-organization-employees',
@@ -29,7 +29,6 @@ export class OrganizationEmployees {
   isSearching = false;
   hasNextPage = false;
 
-  // Pagination variables
   pageIndex = 0;
   pageSize = this.DEFAULT_PAGE_SIZE;
   pageSizeOptions = this.PAGE_SIZE_OPTIONS;
@@ -37,19 +36,21 @@ export class OrganizationEmployees {
 
   totalPages = 0;
 
-  // Store all loaded data for client-side operations (Mocking DB)
-  allEmployees: Employee[] = []; // Initialized to empty array as requested
-  filteredEmployees: Employee[] = []; // Current filtered set
+  allEmployees: Employee[] = [];
+  filteredEmployees: Employee[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  // Mocked SnackBar implementation
   private mockSnackBar: { open: (message: string, action: string, config: any) => void } = {
     open: (message, action, config) => console.log(`[SnackBar Mock - ${config.panelClass?.[0].split('-')[1] || 'info'}] ${message}`)
   };
 
-  constructor(private employeeService: EmployeeService) {
+  constructor(
+    private employeeService: EmployeeService, 
+    private cd: ChangeDetectorRef,
+    private dialog: MatDialog
+  ) {
     this.dataSource = new MatTableDataSource<Employee>([]);
   }
 
@@ -58,98 +59,111 @@ export class OrganizationEmployees {
   }
 
   ngAfterViewInit(): void {
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
-    if (this.sort) {
-        this.dataSource.sort = this.sort;
-    }
+    console.log("AFTER VIEW INIT");
+    this.dataSource.sort = this.sort;
   }
 
-  private loadEmployees(): void {
-  this.isLoading = true;
-  const searchTerm = this.searchControl.value.toLowerCase().trim();
+  private loadEmployees(resetPage: boolean = false): void {
+    this.isLoading = true;
+    const searchTerm = this.searchControl.value.toLowerCase().trim();
 
-  this.employeeService.getEmployees(this.pageIndex, this.pageSize, searchTerm).subscribe({
-    next: (response: EmployeePageResponse) => {
-      this.allEmployees = response.content;
-      this.filteredEmployees = response.content;
+    if (resetPage) {
+      this.pageIndex = 0;
+    }
 
-      // IMPORTANT: MatPaginator expects zero-based index
-      this.pageIndex = response.currentPage; // use as-is if backend is 0-based
-      this.dataSource.data = response.content;
-      this.totalElements = response.totalElements;
-      this.totalPages = response.totalPages;
-      this.pageSize = response.pageSize;
+    this.employeeService.getEmployees(this.pageIndex, this.pageSize, searchTerm).subscribe({
+      next: (response: EmployeePageResponse) => {
+        this.allEmployees = response.content;
+        this.filteredEmployees = response.content;
+        
+        this.totalElements = response.totalElements; 
+        this.pageIndex = response.currentPage; 
+        this.totalPages = response.totalPages;
+        this.pageSize = response.pageSize;
 
-      // Force paginator refresh
-      if (this.paginator) {
-        this.paginator.length = this.totalElements;
-        this.paginator.pageIndex = this.pageIndex;
-        this.paginator.pageSize = this.pageSize;
+        this.dataSource.data = response.content;
+        this.isLoading = false;
+
+        if (this.paginator) {
+          this.paginator.length = this.totalElements; 
+          this.paginator.pageIndex = this.pageIndex; 
+        }
+        this.cd.detectChanges();
+
+        if (this.dataSource.data.length > 0) {
+          this.showSnackBar(`Loaded ${response.totalElements} employees`, 'success');
+        }
+      },
+      error: (error) => {
+        this.showSnackBar('Failed to load employees: ' + error.message, 'error');
+        this.isLoading = false;
       }
+    });
+  }
 
-      this.isLoading = false;
+  openAddEmployeeDialog(): void {
+  const dialogRef = this.dialog.open(AddEmployeeDialogComponent, {
+    width: '850px',
+    maxWidth: '95vw',
+    maxHeight: '90vh',
+    disableClose: false,
+    autoFocus: true,
+    panelClass: ['add-employee-dialog']
+  });
 
-      if (this.dataSource.data.length > 0) {
-        this.showSnackBar(`Loaded ${response.totalElements} employees`, 'success');
-      }
-    },
-    error: (error) => {
-      this.showSnackBar('Failed to load employees: ' + error.message, 'error');
-      this.isLoading = false;
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.handleAddEmployee(result);
     }
   });
 }
 
 
-  /**
-   * Triggers a new search operation.
-   */
-  onSearchClick(): void {
-  const searchTerm = this.searchControl.value;
+  private handleAddEmployee(employeeData: any): void {
+    this.isLoading = true;
 
-  if (!searchTerm.trim() && this.allEmployees.length > 0) {
-    this.onResetSearch();
-    return;
+    // TODO: Replace with actual API call
+    // this.employeeService.addEmployee(employeeData).subscribe({
+    //   next: (response) => {
+    //     this.showSnackBar('Employee added successfully', 'success');
+    //     this.loadEmployees(true);
+    //   },
+    //   error: (error) => {
+    //     this.showSnackBar('Failed to add employee: ' + error.message, 'error');
+    //     this.isLoading = false;
+    //   }
+    // });
+
+    // Mock API call
+    setTimeout(() => {
+      console.log('Employee data to be sent to backend:', employeeData);
+      this.showSnackBar('Employee added successfully', 'success');
+      this.loadEmployees(true);
+    }, 1000);
   }
 
-  // Reset to first page when searching
-  this.pageIndex = 0; 
-  this.loadEmployees();
-}
+  onSearchClick(): void {
+    const searchTerm = this.searchControl.value;
 
+    if (!searchTerm.trim() && this.allEmployees.length > 0) {
+      this.onResetSearch();
+      return;
+    }
+    this.loadEmployees(true);
+  }
 
-  /**
-   * Clears the search field and reloads the full employee list.
-   */
   onResetSearch(): void {
     this.searchControl.setValue('');
-    this.pageIndex = 0;
-    this.loadEmployees();
+    this.loadEmployees(true);
     this.showSnackBar('Search reset. Showing all employees.', 'info');
   }
 
-  /**
-   * Handles pagination changes and reloads the data.
-   */
   onPageChange(event: PageEvent): void {
-  // Keep pageIndex within valid range
-  this.pageIndex = event.pageIndex;
-  this.pageSize = event.pageSize;
-
-  // If pageIndex exceeds totalPages (after pageSize change), reset to last page
-  if (this.pageIndex >= this.totalPages) {
-    this.pageIndex = this.totalPages - 1;
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadEmployees();
   }
 
-  this.loadEmployees();
-}
-
-
-  /**
-   * Handles file selection for bulk upload.
-   */
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -165,41 +179,29 @@ export class OrganizationEmployees {
     }
 
     this.selectedFileName = file.name;
+    console.log(this.selectedFileName)
     this.isUploading = true;
 
-    // Simulate upload process
-    // setTimeout(() => {
-    //   // In a real app, you would parse the CSV here and push data to allEmployees
-    //   // For now, we mock adding 10 employees to show a change.
-    //   const mockAddedEmployees: Employee[] = Array.from({ length: 10 }, (_, i) => ({
-    //     id: `m${this.allEmployees.length + i + 1}`,
-    //     employeeId: `MOCK-${100 + i}`,
-    //     name: `Uploaded User ${i + 1}`,
-    //     role: 'New Hire',
-    //     department: 'HR',
-    //     businessUnit: 'Support',
-    //   }));
-
-    //   this.allEmployees.push(...mockAddedEmployees);
-
-    //   this.showSnackBar(`File processed. ${mockAddedEmployees.length} employees uploaded successfully (Mock).`, 'success');
-    //   this.clearSelectedFile();
-    //   this.isUploading = false;
-    //   this.loadEmployees();
-    //   input.value = '';
-    // }, 2000);
+    this.employeeService.uploadFile(file).subscribe({
+      next: () => {
+        this.showSnackBar('File uploaded successfully', 'success');   
+        this.clearSelectedFile();
+        this.isUploading = false;
+        this.loadEmployees();
+        input.value = '';
+      },
+      error: (error) => {
+        this.showSnackBar('File upload failed: ' + error.message, 'error');
+        this.isUploading = false;
+        input.value = '';
+      }
+    });
   }
 
-  /**
-   * Clears the selected file name from the UI.
-   */
   clearSelectedFile(): void {
-      this.selectedFileName = '';
+    this.selectedFileName = '';
   }
 
-  /**
-   * Generates and downloads a CSV template for bulk upload.
-   */
   downloadBulkTemplate(): void {
     const headers = ['employeeId', 'name', 'role', 'department', 'businessUnit'];
     const sampleRow = ['EMP001', 'John Doe', 'Senior Developer', 'Engineering', 'Technology'];
@@ -211,43 +213,28 @@ export class OrganizationEmployees {
     this.showSnackBar('Template downloaded successfully', 'success');
   }
 
-  /**
-   * Simulates viewing a full employee profile.
-   */
   viewFullProfile(employee: Employee): void {
     console.log('View profile for:', employee);
     this.showSnackBar(`Profile view for ${employee.name} - Coming soon`, 'info');
   }
 
-  /**
-   * Removes an employee from the mock list.
-   */
   removeEmployee(employee: Employee): void {
-    // NOTE: Using console.log instead of window.confirm in compliance with guidelines.
     console.log(`[Action] Attempting to remove employee ${employee.name}`);
 
     this.isLoading = true;
-    
-    // Simulate API call delay
+
     setTimeout(() => {
-        // Mock successful removal
-        this.allEmployees = this.allEmployees.filter(e => e.employeeId !== employee.employeeId);
-        this.showSnackBar(`Employee ${employee.employeeId} removed successfully (Mock)`, 'success');
-        this.loadEmployees(); // Reload data to update table
+      this.allEmployees = this.allEmployees.filter(e => e.employeeId !== employee.employeeId);
+      this.showSnackBar(`Employee ${employee.employeeId} removed successfully (Mock)`, 'success');
+      this.loadEmployees();
     }, 800);
   }
 
-  /**
-   * Helper function to download a CSV blob.
-   */
   private downloadCSV(content: string, filename: string): void {
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     this.downloadFile(blob, filename);
   }
-  
-  /**
-   * Core function to create and click a temporary download link.
-   */
+
   private downloadFile(blob: Blob, filename: string): void {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -260,9 +247,6 @@ export class OrganizationEmployees {
     URL.revokeObjectURL(url);
   }
 
-  /**
-   * Mock implementation of MatSnackBar.
-   */
   private showSnackBar(message: string, type: 'success' | 'error' | 'info'): void {
     this.mockSnackBar.open(message, 'Close', {
       duration: 5000,
@@ -272,11 +256,6 @@ export class OrganizationEmployees {
     });
   }
 
-  
-
-  /**
-   * Calculates the serial number for the current page index.
-   */
   getSerialNumber(index: number): number {
     return this.pageIndex * this.pageSize + index + 1;
   }

@@ -88,9 +88,6 @@
               <th scope="col" class="col-mode">
                 <i class="fas fa-credit-card me-2"></i>Payment Mode
               </th>
-              <th scope="col" class="col-month">
-                <i class="fas fa-calendar me-2"></i>Period
-              </th>
               <th scope="col" class="col-account">
                 <i class="fas fa-university me-2"></i>Bank Details
               </th>
@@ -103,7 +100,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let request of paymentRequests" class="payment-row" [ngClass]="'status-' + request.status.toLowerCase()">
+            <tr *ngFor="let request of paymentRequests" class="payment-row" [ngClass]="'status-' + request.status">
               <!-- ID -->
               <td class="col-id">
                 <span class="badge-id">{{ request.paymentRequestId }}</span>
@@ -133,14 +130,9 @@
 
               <!-- Payment Mode -->
               <td class="col-mode">
-                <span class="mode-badge" [ngClass]="'mode-' + request.paymentMode.toLowerCase()">
+                <span class="mode-badge" [ngClass]="'mode-' + request.paymentMode">
                   <i class="fas fa-arrow-right me-1"></i>{{ request.paymentMode }}
                 </span>
-              </td>
-
-              <!-- Month/Year -->
-              <td class="col-month">
-                <span class="period-badge">{{ request.month }}/{{ request.year }}</span>
               </td>
 
               <!-- Account Information -->
@@ -160,7 +152,7 @@
 
               <!-- Status -->
               <td class="col-status">
-                <span class="status-badge" [ngClass]="'status-badge-' + request.status.toLowerCase()">
+                <span class="status-badge" [ngClass]="'status-badge-' + request.status">
                   <i [ngClass]="request.status === 'PENDING' ? 'fas fa-hourglass-half' : 
                                   request.status === 'APPROVED' ? 'fas fa-check-circle' : 
                                   'fas fa-times-circle'" class="me-1"></i>
